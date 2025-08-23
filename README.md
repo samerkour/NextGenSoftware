@@ -1,15 +1,15 @@
 # 🌭 NextGen Software Modular Monolith
 
-[![.NET](https://github.com/mehdihadeli/food-delivery-modular-monolith/actions/workflows/build-test.yml/badge.svg?branch=main&style=flat-square)](https://github.com/mehdihadeli/food-delivery-modular-monolith/actions/workflows/build-test.yml)
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod&style=flat-square&color=ff69b4)](https://gitpod.io/#https://github.com/mehdihadeli/food-delivery-modular-monolith)
+[![.NET](https://github.com/samerkour/NextGen-modular-monolith/actions/workflows/build-test.yml/badge.svg?branch=main&style=flat-square)](https://github.com/samerkour/NextGen-modular-monolith/actions/workflows/build-test.yml)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod&style=flat-square&color=ff69b4)](https://gitpod.io/#https://github.com/samerkour/NextGen-modular-monolith)
 
-![food-delivery-modular-monolith](https://socialify.git.ci/mehdihadeli/food-delivery-modular-monolith/image?description=1&forks=1&issues=1&language=1&owner=1&pulls=1&stargazers=1)
+![NextGen-modular-monolith](https://socialify.git.ci/samerkour/NextGen-modular-monolith/image?description=1&forks=1&issues=1&language=1&owner=1&pulls=1&stargazers=1)
 
 > `NextGen Software Modular Monolith` is a practical and imaginary NextGen Software modular monolith, built with .Net Core and different software architecture and technologies like **Modular Monolith Architecture**, **Vertical Slice Architecture** , **CQRS Pattern**, **Domain Driven Design (DDD)**, **Event Driven Architecture**. For `communication` between independent modules, we use asynchronous messaging using our [In-Memory Broker](src/BuildingBlocks/BuildingBlocks.Core/Messaging/Broker/InMemory/InMemoryBus.cs), also we use synchronous communication for real-time communications using REST and gRPC calls.
 
 💡 This application is not business-oriented and my focus is mostly on the technical part, I just want to implement a sample using different technologies, software architecture design, principles, and all the things we need for creating a modular monolith app.
 
-This application ported to `microservices architecture` in another repository which is available in [food-delivery-microservices](https://github.com/mehdihadeli/food-delivery-microservices) repository.
+This application ported to `microservices architecture` in another repository which is available in [NextGen-microservices](https://github.com/samerkour/NextGen-microservices) repository.
 
 🌀 Keep in mind this repository is a work in progress and will be completed over time 🚀
 
@@ -165,9 +165,9 @@ TODO
 4. Install Visual Studio 2022, Rider or VSCode.
 5. Install docker - [https://docs.docker.com/docker-for-windows/install/](https://docs.docker.com/docker-for-windows/install/).
 6. Make sure that you have ~10GB disk space.
-7. Clone Project [https://github.com/mehdihadeli/food-delivery-modular-monolith](https://github.com/mehdihadeli/food-delivery-modular-monolith), make sure that's compiling
+7. Clone Project [https://github.com/koursamer/NextGen-modular-monolith](https://github.com/samerkour/NextGen-modular-monolith), make sure that's compiling
 8. Run the [docker-compose.infrastructure.yaml](deployments/docker-compose/docker-compose.infrastructure.yaml) file, for running prerequisites infrastructures with `docker-compose -f ./deployments/docker-compose.infrastructure.yaml -d` command.
-9. Open [food-delivery.sln](./food-delivery.sln) solution.
+9. Open [NextGen.sln](./NextGen.sln) solution.
 
 ## How to Run
 
@@ -190,4 +190,4 @@ The application is in development status. You are feel free to submit pull reque
 - [https://github.com/DijanaPenic/DDD-VShop](https://github.com/DijanaPenic/DDD-VShop)
 
 ## License
-The project is under [MIT license](https://github.com/mehdihadeli/food-delivery-modular-monolith/blob/main/LICENSE).
+The project is under [MIT license](https://github.com/samerkour/NextGen-modular-monolith/blob/main/LICENSE).
