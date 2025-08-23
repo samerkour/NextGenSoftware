@@ -20,7 +20,6 @@
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
     <PackageReference Include="OpenTelemetry.Api" />
-    <PackageReference Include="EFCore.NamingConventions" />
 
   </ItemGroup>
 

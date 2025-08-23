@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
                 {
                     sqlOptions.MigrationsAssembly((migrationAssembly ?? typeof(TDbContext).Assembly).GetName().Name);
                     sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                }).UseSnakeCaseNamingConvention();
+                });
 
                 builder?.Invoke(options);
             },

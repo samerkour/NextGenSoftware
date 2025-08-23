@@ -1,12 +1,12 @@
 using System.Data;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Abstractions.Persistence;
-using NextGen.Modules.Identity.Shared.Models;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Shared.Data;
 

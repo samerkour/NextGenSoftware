@@ -215,7 +215,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_asp_net_role_claims_role_id",
+                name: "IX_asp_net_role_claims_role_id",
                 table: "asp_net_role_claims",
                 column: "role_id");
 
@@ -227,17 +227,17 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 filter: "[normalized_name] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "ix_asp_net_user_claims_user_id",
+                name: "IX_asp_net_user_claims_user_id",
                 table: "asp_net_user_claims",
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_asp_net_user_logins_user_id",
+                name: "IX_asp_net_user_logins_user_id",
                 table: "asp_net_user_logins",
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_asp_net_user_roles_role_id",
+                name: "IX_asp_net_user_roles_role_id",
                 table: "asp_net_user_roles",
                 column: "role_id");
 
@@ -248,7 +248,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_asp_net_users_email",
+                name: "IX_asp_net_users_email",
                 table: "asp_net_users",
                 column: "email",
                 unique: true);
@@ -260,13 +260,13 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_refresh_tokens_token_user_id",
+                name: "IX_refresh_tokens_token_user_id",
                 table: "refresh_tokens",
                 columns: new[] { "token", "user_id" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_refresh_tokens_user_id",
+                name: "IX_refresh_tokens_user_id",
                 table: "refresh_tokens",
                 column: "user_id");
         }

@@ -41,7 +41,7 @@ public abstract class DbContextDesignFactoryBase<TDbContext> : IDesignTimeDbCont
                     sqlOptions.MigrationsAssembly(GetType().Assembly.FullName);
                     sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(30), null);
                 }
-            ).UseSnakeCaseNamingConvention();
+            );
 
         Console.WriteLine(options.ConnectionString);
         return (TDbContext)Activator.CreateInstance(typeof(TDbContext), optionsBuilder.Options);

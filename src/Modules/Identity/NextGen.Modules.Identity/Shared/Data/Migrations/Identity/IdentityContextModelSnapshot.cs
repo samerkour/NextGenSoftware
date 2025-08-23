@@ -46,8 +46,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasKey("Id")
                         .HasName("pk_asp_net_role_claims");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_asp_net_role_claims_role_id");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("asp_net_role_claims", (string)null);
                 });
@@ -76,8 +75,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasKey("Id")
                         .HasName("pk_asp_net_user_claims");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_asp_net_user_claims_user_id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("asp_net_user_claims", (string)null);
                 });
@@ -103,8 +101,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasKey("LoginProvider", "ProviderKey")
                         .HasName("pk_asp_net_user_logins");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_asp_net_user_logins_user_id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("asp_net_user_logins", (string)null);
                 });
@@ -272,8 +269,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                         .HasName("pk_asp_net_users");
 
                     b.HasIndex("Email")
-                        .IsUnique()
-                        .HasDatabaseName("ix_asp_net_users_email");
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .IsUnique()
@@ -299,8 +295,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasKey("UserId", "RoleId")
                         .HasName("pk_asp_net_user_roles");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_asp_net_user_roles_role_id");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("asp_net_user_roles", (string)null);
                 });
@@ -410,12 +405,10 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasKey("Id")
                         .HasName("pk_refresh_tokens");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_refresh_tokens_user_id");
+                    b.HasIndex("UserId");
 
                     b.HasIndex("Token", "UserId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_refresh_tokens_token_user_id");
+                        .IsUnique();
 
                     b.ToTable("refresh_tokens", (string)null);
                 });
