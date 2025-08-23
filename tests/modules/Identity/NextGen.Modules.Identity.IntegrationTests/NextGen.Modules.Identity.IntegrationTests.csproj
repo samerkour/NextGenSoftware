@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Api\NextGen.Api\NextGen.Api.csproj" />
+    <ProjectReference Include="..\..\..\shared\Tests.Shared\Tests.Shared.csproj" />
+  </ItemGroup>
+
+  <!--  https://github.com/dotnet/core/issues/907-->
+  <PropertyGroup>
+    <WarningsAsErrors></WarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

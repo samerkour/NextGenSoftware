@@ -1,0 +1,26 @@
+{
+  "Orders": {
+    "SqlServerOptions": {
+      "ConnectionString": "Server=192.168.117.217;Database=NextGenDb_test;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;",
+      "UseInMemory": false
+    },
+    "MongoOptions": {
+      "ConnectionString": "mongodb://localhost:27017",
+      "DatabaseName": "NextGen_test"
+    },
+    "EmailOptions": {
+      "From": "info@fooddelivery.modular-monolith.com",
+      "Enable": true,
+      "DisplayName": "Food Delivery Application Mail",
+      "MimeKitOptions": {
+        "Host": "smtp.ethereal.email",
+        "Port": 587,
+        "UserName": "",
+        "Password": ""
+      }
+    },
+    "MessagePersistenceOptions": {
+      "Interval": 5
+    }
+  }
+}

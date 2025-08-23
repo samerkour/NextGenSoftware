@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Catalogs\NextGen.Modules.Catalogs\NextGen.Modules.Catalogs.csproj" />
+    <ProjectReference Include="..\..\Modules\Customers\NextGen.Modules.Customers\NextGen.Modules.Customers.csproj" />
+    <ProjectReference Include="..\..\Modules\Identity\NextGen.Modules.Identity\NextGen.Modules.Identity.csproj" />
+    <ProjectReference Include="..\..\Modules\Orders\NextGen.Modules.Orders\NextGen.Modules.Orders.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

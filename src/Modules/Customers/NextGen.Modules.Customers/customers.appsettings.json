@@ -1,0 +1,35 @@
+{
+  "Customers": {
+    "SqlServerOptions": {
+      "ConnectionString": "Server=192.168.117.217;Database=NextGenDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;",
+      "UseInMemory": false
+    },
+    "MongoOptions": {
+      "ConnectionString": "mongodb://localhost:27017",
+      "DatabaseName": "NextGen"
+    },
+    "EmailOptions": {
+      "From": "info@fooddelivery.modular-monolith.com",
+      "Enable": true,
+      "DisplayName": "Food Delivery Application Mail",
+      "MimeKitOptions": {
+        "Host": "smtp.ethereal.email",
+        "Port": 587,
+        "UserName": "",
+        "Password": ""
+      }
+    },
+    "IdentityApiClientOptions": {
+      "BaseApiAddress": "http://localhost:5000",
+      "UsersEndpoint": "api/v1/identity/users"
+    },
+    "CatalogsApiClientOptions": {
+      "BaseApiAddress": "http://localhost:5000",
+      "ProductsEndpoint": "api/v1/catalogs/products"
+    },
+    "MessagePersistenceOptions": {
+      "Interval": 30
+    }
+  }
+}
+
