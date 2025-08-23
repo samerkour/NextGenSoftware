@@ -1,11 +1,11 @@
-# 🌭 Food Delivery Modular Monolith
+# 🌭 NextGen Software Modular Monolith
 
 [![.NET](https://github.com/mehdihadeli/food-delivery-modular-monolith/actions/workflows/build-test.yml/badge.svg?branch=main&style=flat-square)](https://github.com/mehdihadeli/food-delivery-modular-monolith/actions/workflows/build-test.yml)
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod&style=flat-square&color=ff69b4)](https://gitpod.io/#https://github.com/mehdihadeli/food-delivery-modular-monolith)
 
 ![food-delivery-modular-monolith](https://socialify.git.ci/mehdihadeli/food-delivery-modular-monolith/image?description=1&forks=1&issues=1&language=1&owner=1&pulls=1&stargazers=1)
 
-> `Food Delivery Modular Monolith` is a practical and imaginary food delivery modular monolith, built with .Net Core and different software architecture and technologies like **Modular Monolith Architecture**, **Vertical Slice Architecture** , **CQRS Pattern**, **Domain Driven Design (DDD)**, **Event Driven Architecture**. For `communication` between independent modules, we use asynchronous messaging using our [In-Memory Broker](src/BuildingBlocks/BuildingBlocks.Core/Messaging/Broker/InMemory/InMemoryBus.cs), also we use synchronous communication for real-time communications using REST and gRPC calls.
+> `NextGen Software Modular Monolith` is a practical and imaginary NextGen Software modular monolith, built with .Net Core and different software architecture and technologies like **Modular Monolith Architecture**, **Vertical Slice Architecture** , **CQRS Pattern**, **Domain Driven Design (DDD)**, **Event Driven Architecture**. For `communication` between independent modules, we use asynchronous messaging using our [In-Memory Broker](src/BuildingBlocks/BuildingBlocks.Core/Messaging/Broker/InMemory/InMemoryBus.cs), also we use synchronous communication for real-time communications using REST and gRPC calls.
 
 💡 This application is not business-oriented and my focus is mostly on the technical part, I just want to implement a sample using different technologies, software architecture design, principles, and all the things we need for creating a modular monolith app.
 
