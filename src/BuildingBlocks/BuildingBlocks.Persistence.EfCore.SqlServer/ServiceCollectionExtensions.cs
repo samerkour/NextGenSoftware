@@ -28,7 +28,6 @@ public static class ServiceCollectionExtensions
         Action<DbContextOptionsBuilder>? builder = null)
         where TDbContext : DbContext, IDbFacadeResolver, IDomainEventContext
     {
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         var config = configuration.GetOptions<SqlServerOptions>(optionSection);
 
