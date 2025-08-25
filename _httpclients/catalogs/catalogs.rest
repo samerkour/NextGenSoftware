@@ -15,7 +15,7 @@ accept: application/json
 Content-Type: application/json
 
 {
-  "userNameOrEmail": "mehdi",
+  "userNameOrEmail": "admin",
   "password": "123456",
   "remember": true
 }

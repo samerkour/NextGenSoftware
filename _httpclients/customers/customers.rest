@@ -14,7 +14,7 @@ accept: application/json
 Content-Type: application/json
 
 {
-  "userNameOrEmail": "mehdi",
+  "userNameOrEmail": "admin",
   "password": "123456",
   "remember": true
 }
@@ -40,7 +40,7 @@ accept: application/json
 Content-Type: application/json
 
 {
-  "email": "mehdi3@test.com"
+  "email": "admin3@test.com"
 }
 
 ###
@@ -57,8 +57,8 @@ authorization: bearer {{Authenticate.response.body.accessToken}}
 
 ###
 # @name Get_Restock_Subscriptions_By_Emails
-@email1=mehdi@test.com
-@email2=mehdi2@test.com
+@email1=admin@test.com
+@email2=admin2@test.com
 GET {{api-address}}/api/v1/customers/restock-subscriptions/by-emails?Emails={{email1}}&Emails={{email2}}
 accept: application/json
 authorization: bearer {{Authenticate.response.body.accessToken}}
@@ -74,7 +74,7 @@ authorization: bearer {{Authenticate.response.body.accessToken}}
 
 ###
 # @name Create_Restock_Subscriptions_By
-@email="mehdi3@test.com"
+@email="admin3@test.com"
 POST {{api-address}}/api/v1/customers/restock-subscriptions
 accept: application/json
 Content-Type: application/json

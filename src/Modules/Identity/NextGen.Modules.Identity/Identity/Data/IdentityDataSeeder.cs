@@ -32,14 +32,14 @@ public class IdentityDataSeeder : IDataSeeder
 
     private async Task SeedUsers()
     {
-        if (await _userManager.FindByEmailAsync("mehdi@test.com") == null)
+        if (await _userManager.FindByEmailAsync("admin@test.com") == null)
         {
             var user = new ApplicationUser
             {
-                UserName = "mehdi",
-                FirstName = "Mehdi",
+                UserName = "admin",
+                FirstName = "Admin",
                 LastName = "test",
-                Email = "mehdi@test.com",
+                Email = "admin@test.com",
             };
 
             var result = await _userManager.CreateAsync(user, "123456");
@@ -47,11 +47,11 @@ public class IdentityDataSeeder : IDataSeeder
             if (result.Succeeded) await _userManager.AddToRoleAsync(user, ApplicationRole.Admin.Name);
         }
 
-        if (await _userManager.FindByEmailAsync("mehdi2@test.com") == null)
+        if (await _userManager.FindByEmailAsync("admin2@test.com") == null)
         {
             var user = new ApplicationUser
             {
-                UserName = "mehdi2", FirstName = "Mehdi", LastName = "Test", Email = "mehdi2@test.com"
+                UserName = "admin2", FirstName = "Admin", LastName = "Test", Email = "admin2@test.com"
             };
 
             var result = await _userManager.CreateAsync(user, "123456");

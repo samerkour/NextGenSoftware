@@ -22,14 +22,14 @@ public static class IdentityServerConfig
 
 
     public static IEnumerable<ApiScope> ApiScopes =>
-        new List<ApiScope> { new("food-delivery-api", "NextGen.Modules.Catalogs API") };
+        new List<ApiScope> { new("NextGen-api", "NextGen.Modules.Catalogs API") };
 
     public static IList<ApiResource> ApiResources =>
         new List<ApiResource>
         {
             new ApiResource("FoodDeliveryApiResource", "NextGen.Modules.Catalogs API Resource")
             {
-                Scopes = { "food-delivery-api" },
+                Scopes = { "NextGen-api" },
                 UserClaims = { JwtClaimTypes.Role, JwtClaimTypes.Name, JwtClaimTypes.Id }
             }
         };
@@ -50,7 +50,7 @@ public static class IdentityServerConfig
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
                     "roles",
-                    "food-delivery-api"
+                    "NextGen-api"
                 }
             },
             new()
@@ -65,7 +65,7 @@ public static class IdentityServerConfig
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
                     "roles",
-                    "food-delivery-api"
+                    "NextGen-api"
                 }
             }
         };

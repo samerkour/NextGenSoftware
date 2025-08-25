@@ -85,7 +85,6 @@ public class
         });
     }
 
-
     private Task RemoveOldRefreshTokens(Guid userId, long? ttlRefreshToken = null)
     {
         var refreshTokens = _context.Set<Shared.Models.RefreshToken>().Where(rt => rt.UserId == userId);

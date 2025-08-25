@@ -1,5 +1,7 @@
 using Asp.Versioning.Builder;
 using BuildingBlocks.Abstractions.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using NextGen.Modules.Identity.Identity.Data;
 using NextGen.Modules.Identity.Identity.Features.GetClaims;
 using NextGen.Modules.Identity.Identity.Features.Login;
@@ -9,8 +11,6 @@ using NextGen.Modules.Identity.Identity.Features.RevokeRefreshToken;
 using NextGen.Modules.Identity.Identity.Features.SendEmailVerificationCode;
 using NextGen.Modules.Identity.Identity.Features.VerifyEmail;
 using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 
 namespace NextGen.Modules.Identity.Identity;
 

@@ -4,15 +4,12 @@ using BuildingBlocks.Abstractions.CQRS.Query;
 using BuildingBlocks.Abstractions.Persistence;
 using BuildingBlocks.Core.Exception;
 using BuildingBlocks.Security.Jwt;
-using NextGen.Modules.Identity.Identity.Exceptions;
-using NextGen.Modules.Identity.Identity.Features.GenerateJwtToken;
-using NextGen.Modules.Identity.Identity.Features.GenerateRefreshToken;
-using NextGen.Modules.Identity.Shared.Exceptions;
-using NextGen.Modules.Identity.Shared.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NextGen.Modules.Identity.Identity.Exceptions;
+using NextGen.Modules.Identity.Shared.Exceptions;
+using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Identity.Features.Login;
 

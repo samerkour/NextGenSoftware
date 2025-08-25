@@ -14,7 +14,7 @@ accept: application/json
 Content-Type: application/json
 
 {
-  "userNameOrEmail": "mehdi",
+  "userNameOrEmail": "admin",
   "password": "123456",
   "remember": true
 }
@@ -27,10 +27,10 @@ accept: application/json
 Content-Type: application/json
 
 {
-  "firstName": "mehdi114",
+  "firstName": "admin114",
   "lastName": "test",
-  "userName": "mehdi114",
-  "email": "mehdi114@test.com",
+  "userName": "admin114",
+  "email": "admin114@test.com",
   "password": "123456",
   "confirmPassword": "123456",
   "roles": [
@@ -50,7 +50,7 @@ Content-Type: application/x-www-form-urlencoded
 
 ###
 # @name Get_User_By_Email
-@email=mehdi@test.com
+@email=admin@test.com
 GET {{api-address}}/api/v1/identity/users/by-email/{{email}}
 accept: application/json
 ###
