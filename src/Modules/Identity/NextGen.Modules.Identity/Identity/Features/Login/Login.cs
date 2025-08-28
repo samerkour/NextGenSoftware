@@ -4,12 +4,16 @@ using BuildingBlocks.Abstractions.CQRS.Query;
 using BuildingBlocks.Abstractions.Persistence;
 using BuildingBlocks.Core.Exception;
 using BuildingBlocks.Security.Jwt;
+using FirebirdSql.Data.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using NextGen.Modules.Identity.Identity.Exceptions;
 using NextGen.Modules.Identity.Shared.Exceptions;
 using NextGen.Modules.Identity.Shared.Models;
+using SendGrid.Helpers.Mail;
+using Spectre.Console;
+using static IdentityModel.OidcConstants;
 
 namespace NextGen.Modules.Identity.Identity.Features.Login;
 
@@ -20,10 +24,11 @@ internal class LoginValidator : AbstractValidator<Login>
 {
     public LoginValidator()
     {
+        // Validations to prevent malformed inputs, aligns with security best practices, and reduces the risk of injection attacks(though ASP.NET Core Identity sanitizes inputs).
         RuleFor(x => x.UserNameOrEmail)
             .NotEmpty().WithMessage("UserNameOrEmail cannot be empty")
             .MaximumLength(256).WithMessage("UserNameOrEmail cannot exceed 256 characters")
-            .When(x => x.UserNameOrEmail.Contains("@"))
+            .When(x => x.UserNameOrEmail.Contains('@'))
             .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Invalid email format");
 
         RuleFor(x => x.Password)
@@ -69,48 +74,48 @@ internal class LoginHandler : ICommandHandler<Login, LoginResponse>
         var identityUser = await _userManager.FindByNameAsync(request.UserNameOrEmail) ??
                            await _userManager.FindByEmailAsync(request.UserNameOrEmail);
 
-        Guard.Against.Null(identityUser, new UserNotFoundException(request.UserNameOrEmail));
-
-        // instead of PasswordSignInAsync, we use CheckPasswordSignInAsync because we don't want set cookie, instead we use JWT
-        var signinResult = await _signInManager.CheckPasswordSignInAsync(
-            identityUser,
-            request.Password,
-            false);
-
-        if (signinResult.IsNotAllowed)
+        // Avoid specific exceptions until after password check
+        if (identityUser == null)
         {
-            if (!await _userManager.IsEmailConfirmedAsync(identityUser))
-                throw new EmailNotConfirmedException(identityUser.Email);
-
-            if (!await _userManager.IsPhoneNumberConfirmedAsync(identityUser))
-                throw new PhoneNumberNotConfirmedException(identityUser.PhoneNumber);
-        }
-        else if (signinResult.IsLockedOut)
-        {
-            throw new UserLockedException(identityUser.Id.ToString());
-        }
-        else if (signinResult.RequiresTwoFactor)
-        {
-            throw new RequiresTwoFactorException("Require two factor authentication.");
-        }
-        else if (!signinResult.Succeeded)
-        {
-            throw new PasswordIsInvalidException("Password is invalid.");
+            // Use a generic error message for all login failures to prevent user enumeration, and log detailed errors internally.
+            // A generic LoginFailedException with a message like “Login failed for username: {UserNameOrEmail}” prevents attackers from distinguishing between invalid usernames and passwords. Detailed logging helps with debugging without exposing sensitive details to clients.
+            _logger.LogWarning("Login attempt failed for {UserNameOrEmail}: User not found", request.UserNameOrEmail);
+            throw new LoginFailedException(request.UserNameOrEmail);
         }
 
-        var refreshToken =
-            (await _commandProcessor.SendAsync(
-                new GenerateRefreshToken.GenerateRefreshToken {UserId = identityUser.Id},
-                cancellationToken)).RefreshToken;
+        var signinResult = await _signInManager.CheckPasswordSignInAsync(identityUser, request.Password, false);
 
-        var accessToken =
-            await _commandProcessor.SendAsync(
-                new GenerateJwtToken.GenerateJwtToken(identityUser, refreshToken.Token),
-                cancellationToken);
+        if (!signinResult.Succeeded)
+        {
+            _logger.LogWarning(
+                "Login attempt failed for {UserNameOrEmail}: {Reason}",
+                request.UserNameOrEmail,
+                signinResult.IsNotAllowed ? "Not allowed" :
+                signinResult.IsLockedOut ? "Locked out" :
+                signinResult.RequiresTwoFactor ? "Requires 2FA" : "Invalid password");
+
+            if (signinResult.IsNotAllowed && !await _userManager.IsEmailConfirmedAsync(identityUser))
+                throw new LoginFailedException(request.UserNameOrEmail);
+            if (signinResult.IsNotAllowed && !await _userManager.IsPhoneNumberConfirmedAsync(identityUser))
+                throw new LoginFailedException(request.UserNameOrEmail);
+            if (signinResult.IsLockedOut)
+                throw new LoginFailedException(request.UserNameOrEmail);
+            if (signinResult.RequiresTwoFactor)
+                throw new LoginFailedException(request.UserNameOrEmail);
+
+            throw new LoginFailedException(request.UserNameOrEmail);
+        }
+
+        var refreshToken = (await _commandProcessor.SendAsync(
+            new GenerateRefreshToken.GenerateRefreshToken { UserId = identityUser.Id },
+            cancellationToken)).RefreshToken;
+
+        var accessToken = await _commandProcessor.SendAsync(
+            new GenerateJwtToken.GenerateJwtToken(identityUser, refreshToken.Token),
+            cancellationToken);
 
         _logger.LogInformation("User with ID: {ID} has been authenticated", identityUser.Id);
 
-        // we can don't return value from command and get token from a short term session in our request with `TokenStorageService`
         return new LoginResponse(identityUser, accessToken, refreshToken.Token);
     }
 }

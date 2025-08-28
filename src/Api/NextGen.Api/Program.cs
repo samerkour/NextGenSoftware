@@ -1,4 +1,5 @@
 using System.Reflection;
+using AspNetCoreRateLimit; // Added for rate limiting
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Core.Extensions.ServiceCollection;
 using BuildingBlocks.Logging;
@@ -24,8 +25,6 @@ using NextGen.Modules.Orders;
 using Serilog;
 using Serilog.Events;
 
-// https://docs.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis
-// https://benfoster.io/blog/mvc-to-minimal-apis-aspnet-6/
 var builder = WebApplication.CreateBuilder(args);
 
 RegisterServices(builder);
@@ -113,6 +112,37 @@ static void RegisterServices(WebApplicationBuilder builder)
             new(ApiConstants.Role.Admin, new List<string> {ApiConstants.Role.Admin}),
             new(ApiConstants.Role.User, new List<string> {ApiConstants.Role.User})
         });
+
+    // Add rate limiting services
+    builder.Services.AddMemoryCache(); // Required for in-memory rate limiting
+    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>(); // Added for rate limiting
+    builder.Services.AddInMemoryRateLimiting(); // Use in-memory store for simplicity
+    builder.Services.Configure<IpRateLimitOptions>(options =>
+    {
+        options.GeneralRules = new List<RateLimitRule>
+        {
+            new RateLimitRule
+            {
+                Endpoint = "POST:/api/v1/identity/login", // Target login endpoint (v1)
+                Limit = 5, // 5 requests
+                Period = "1m" // per minute
+            },
+            new RateLimitRule
+            {
+                Endpoint = "POST:/api/v2/identity/login", // Target login endpoint (v2)
+                Limit = 5,
+                Period = "1m"
+            }
+        };
+        options.QuotaExceededResponse = new QuotaExceededResponse
+        {
+            ContentType = "application/json",
+            Content = "{\"error\": \"Rate limit exceeded. Try again later.\"}",
+            StatusCode = 429 // Too Many Requests
+        };
+    });
+    builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+    builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 }
 
 static async Task ConfigureApplication(WebApplication app)
@@ -122,6 +152,9 @@ static async Task ConfigureApplication(WebApplication app)
     app.UseProblemDetails();
 
     app.UseSerilogRequestLogging();
+
+    // Add rate limiting middleware before routing
+    app.UseIpRateLimiting(); // Added for rate limiting
 
     app.UseRouting();
     app.UseAppCors();
@@ -140,7 +173,7 @@ static async Task ConfigureApplication(WebApplication app)
     // automatic discover minimal endpoints
     app.MapEndpoints(typeof(ApiRoot).Assembly);
 
-    app.MapGet("/", (HttpContext _) => "Food Delivery Modular Monolith Api.").ExcludeFromDescription();
+    app.MapGet("/", (HttpContext _) => "Next Gen Modular Monolith Api.").ExcludeFromDescription();
 
     if (environment.IsDevelopment() || environment.IsEnvironment("docker"))
     {
@@ -148,7 +181,7 @@ static async Task ConfigureApplication(WebApplication app)
         app.UseCustomSwagger();
     }
 
-    app.UseFoodDeliveryMonitoring();
+    app.UseNextGenMonitoring();
 
     app.Lifetime.ApplicationStopping.Register(() =>
     {

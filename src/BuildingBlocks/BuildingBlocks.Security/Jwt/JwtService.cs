@@ -49,7 +49,8 @@ public class JwtService : IJwtService
             new(JwtRegisteredClaimNames.Email, email),
             new(JwtRegisteredClaimNames.GivenName, fullName ?? ""),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Iat,
+            new(
+                JwtRegisteredClaimNames.Iat,
                 DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)),
             new(CustomClaimTypes.RefreshToken, refreshToken ?? ""),
             new(CustomClaimTypes.IpAddress, ipAddress),

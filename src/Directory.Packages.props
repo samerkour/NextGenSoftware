@@ -11,6 +11,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.Publisher.Prometheus" Version="8.0.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.System" Version="8.0.1" />
+    <PackageVersion Include="AspNetCoreRateLimit" Version="5.0.0" />
     <PackageVersion Include="Ben.Demystifier" Version="0.4.1" />
     <PackageVersion Include="EventStore.Client.Grpc.Streams" Version="23.3.3" />
     <PackageVersion Include="FluentMigrator.Runner" Version="5.2.0" />

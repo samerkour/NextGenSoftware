@@ -11,7 +11,7 @@
     "EmailOptions": {
       "From": "info@fooddelivery.modular-monolith.com",
       "Enable": true,
-      "DisplayName": "Food Delivery Application Mail",
+      "DisplayName": "Next Gen Application Mail",
       "MimeKitOptions": {
         "Host": "smtp.ethereal.email",
         "Port": 587,

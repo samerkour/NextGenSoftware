@@ -4,7 +4,7 @@ namespace NextGen.Api.Extensions.ApplicationBuilderExtensions;
 
 public static partial class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseFoodDeliveryMonitoring(this IApplicationBuilder app)
+    public static IApplicationBuilder UseNextGenMonitoring(this IApplicationBuilder app)
     {
         app.UseMonitoring();
 
