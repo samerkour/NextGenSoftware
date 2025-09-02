@@ -3,6 +3,7 @@ using BuildingBlocks.Abstractions.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using NextGen.Modules.Identity.Identity.Data;
+using NextGen.Modules.Identity.Identity.Features.GenerateCaptcha;
 using NextGen.Modules.Identity.Identity.Features.GetClaims;
 using NextGen.Modules.Identity.Identity.Features.Login;
 using NextGen.Modules.Identity.Identity.Features.Logout;
@@ -55,6 +56,7 @@ internal static class IdentityConfigs
                 Roles = Constants.Role.Admin)]
             () => new {Role = Constants.Role.Admin}).WithTags("Identity");
 
+        endpoints.MapGenerateCaptchaEndpoint();
         endpoints.MapLoginUserEndpoint();
         endpoints.MapLogoutEndpoint();
         endpoints.MapSendEmailVerificationCodeEndpoint();

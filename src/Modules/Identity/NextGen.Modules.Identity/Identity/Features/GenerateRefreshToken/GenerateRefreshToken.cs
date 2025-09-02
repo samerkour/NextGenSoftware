@@ -14,8 +14,7 @@ public record GenerateRefreshToken : ICommand<GenerateRefreshTokenResponse>
     public string Token { get; init; }
 }
 
-public class
-    GenerateRefreshTokenHandler : ICommandHandler<GenerateRefreshToken, GenerateRefreshTokenResponse>
+public class GenerateRefreshTokenHandler : ICommandHandler<GenerateRefreshToken, GenerateRefreshTokenResponse>
 {
     private readonly IdentityContext _context;
 

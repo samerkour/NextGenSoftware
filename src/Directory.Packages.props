@@ -58,6 +58,7 @@
     <PackageVersion Include="Serilog.Exceptions.EntityFrameworkCore" Version="8.4.0" />
     <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.0.0-dev-00317" />
+    <PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
     <PackageVersion Include="System.Threading.RateLimiting" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>

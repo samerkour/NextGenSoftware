@@ -17,10 +17,10 @@ using static IdentityModel.OidcConstants;
 
 namespace NextGen.Modules.Identity.Identity.Features.Login;
 
-public record Login(string UserNameOrEmail, string Password, bool Remember) :
+public record LoginCommand(string UserNameOrEmail, string Password, bool Remember) :
     ICommand<LoginResponse>, ITxRequest;
 
-internal class LoginValidator : AbstractValidator<Login>
+internal class LoginValidator : AbstractValidator<LoginCommand>
 {
     public LoginValidator()
     {
@@ -39,7 +39,7 @@ internal class LoginValidator : AbstractValidator<Login>
     }
 }
 
-internal class LoginHandler : ICommandHandler<Login, LoginResponse>
+internal class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
 {
     private readonly ICommandProcessor _commandProcessor;
     private readonly IJwtService _jwtService;
@@ -67,9 +67,9 @@ internal class LoginHandler : ICommandHandler<Login, LoginResponse>
         _logger = logger;
     }
 
-    public async Task<LoginResponse> Handle(Login request, CancellationToken cancellationToken)
+    public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        Guard.Against.Null(request, nameof(Login));
+        Guard.Against.Null(request, nameof(LoginCommand));
 
         var identityUser = await _userManager.FindByNameAsync(request.UserNameOrEmail) ??
                            await _userManager.FindByEmailAsync(request.UserNameOrEmail);
