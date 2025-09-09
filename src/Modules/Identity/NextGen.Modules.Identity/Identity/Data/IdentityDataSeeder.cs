@@ -38,11 +38,11 @@ public class IdentityDataSeeder : IDataSeeder
             {
                 UserName = "admin",
                 FirstName = "Admin",
-                LastName = "test",
+                LastName = "Test",
                 Email = "admin@test.com",
             };
 
-            var result = await _userManager.CreateAsync(user, "123456");
+            var result = await _userManager.CreateAsync(user, "Admin@123456");
 
             if (result.Succeeded) await _userManager.AddToRoleAsync(user, ApplicationRole.Admin.Name);
         }
@@ -51,10 +51,13 @@ public class IdentityDataSeeder : IDataSeeder
         {
             var user = new ApplicationUser
             {
-                UserName = "admin2", FirstName = "Admin", LastName = "Test", Email = "admin2@test.com"
+                UserName = "user",
+                FirstName = "User",
+                LastName = "Test",
+                Email = "user@test.com"
             };
 
-            var result = await _userManager.CreateAsync(user, "123456");
+            var result = await _userManager.CreateAsync(user, "User@123456");
 
             if (result.Succeeded) await _userManager.AddToRoleAsync(user, ApplicationRole.User.Name);
         }

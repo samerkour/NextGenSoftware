@@ -15,7 +15,7 @@ public static class LoginEndpoint
             {
                 return gatewayProcessor.ExecuteCommand(async commandProcessor =>
                 {
-                    var command = new LoginCommand(request.UserNameOrEmail, request.Password, request.Remember);
+                    var command = new LoginCommand(request.Captcha, request.UserNameOrEmail, request.Password, request.Remember);
 
                     var result = await commandProcessor.SendAsync(command, cancellationToken);
 

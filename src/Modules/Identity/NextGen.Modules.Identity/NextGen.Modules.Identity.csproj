@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="BuildingBlocks.Core.IntegrationTests" />
-    <InternalsVisibleTo Include="FoodDelivery.Modules.Identity.IntegrationTests" />
+    <InternalsVisibleTo Include="nextgen.Modules.Identity.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,6 +73,26 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\Users\s_kour\.nuget\packages\microsoft.visualstudio.threading.analyzers\17.10.48\build\AdditionalFiles\vs-threading.LegacyThreadSwitchingMembers.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\Users\s_kour\.nuget\packages\microsoft.visualstudio.threading.analyzers\17.10.48\build\AdditionalFiles\vs-threading.MainThreadAssertingMethods.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\Users\s_kour\.nuget\packages\microsoft.visualstudio.threading.analyzers\17.10.48\build\AdditionalFiles\vs-threading.MainThreadSwitchingMethods.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\Users\s_kour\.nuget\packages\microsoft.visualstudio.threading.analyzers\17.10.48\build\AdditionalFiles\vs-threading.MembersRequiringMainThread.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\Users\s_kour\.nuget\packages\microsoft.visualstudio.threading.analyzers\17.10.48\build\AdditionalFiles\vs-threading.MembersRequiringMainThread.txt" />
   </ItemGroup>
 
 </Project>

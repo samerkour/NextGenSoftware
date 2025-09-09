@@ -10,11 +10,11 @@ namespace NextGen.Modules.Identity.Identity.Features.GenerateCaptcha
     {
         public GenerateCaptchaResponse(Guid captchaId, string captchaImage)
         {
-            CaptchaId = captchaId;
-            CaptchaImage = captchaImage;
+            Id = captchaId;
+            ImageBase64 = captchaImage;
         }
 
-        public Guid CaptchaId { get; }
-        public string CaptchaImage { get; }
+        public Guid Id { get; }
+        public string ImageBase64 { get; }
     }
 }

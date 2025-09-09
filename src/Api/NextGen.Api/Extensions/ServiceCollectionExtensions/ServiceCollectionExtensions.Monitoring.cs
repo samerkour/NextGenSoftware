@@ -11,7 +11,7 @@ namespace NextGen.Api.Extensions.ServiceCollectionExtensions;
 
 public static partial class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddFoodDeliveryMonitoring(
+    public static IServiceCollection AddNextGenMonitoring(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -24,8 +24,8 @@ public static partial class ServiceCollectionExtensions
 
             healthChecksBuilder.AddSqlServer(
                 catalogSqlServerOptions.ConnectionString,
-                name: "Catalogs-Module-Postgres-Check",
-                tags: new[] {"catalogs-postgres"});
+                name: "Catalogs-Module-SqlServer-Check",
+                tags: new[] {"catalogs-sqlserver"});
 
 
             var customerSqlServerOptions = configuration.GetOptions<SqlServerOptions>(
@@ -35,8 +35,8 @@ public static partial class ServiceCollectionExtensions
 
             healthChecksBuilder.AddSqlServer(
                 customerSqlServerOptions.ConnectionString,
-                name: "Customers-Module-Postgres-Check",
-                tags: new[] {"customers-postgres"});
+                name: "Customers-Module-SqlServer-Check",
+                tags: new[] {"customers-sqlserver"});
 
             var identitySqlServerOptions = configuration.GetOptions<SqlServerOptions>(
                 $"{IdentityModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
@@ -44,8 +44,8 @@ public static partial class ServiceCollectionExtensions
 
             healthChecksBuilder.AddSqlServer(
                 identitySqlServerOptions.ConnectionString,
-                name: "Identity-Module-Postgres-Check",
-                tags: new[] {"identity-postgres"});
+                name: "Identity-Module-SqlServer-Check",
+                tags: new[] {"identity-sqlserver"});
 
             var orderSqlServerOptions =
                 configuration.GetOptions<SqlServerOptions>(
@@ -55,8 +55,8 @@ public static partial class ServiceCollectionExtensions
 
             healthChecksBuilder.AddSqlServer(
                 orderSqlServerOptions.ConnectionString,
-                name: "Orders-Modules-Postgres-Check",
-                tags: new[] {"orders-postgres"});
+                name: "Orders-Modules-SqlServer-Check",
+                tags: new[] {"orders-sqlserver"});
         });
 
         return services;

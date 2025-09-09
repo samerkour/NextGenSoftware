@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="BuildingBlocks.Core.IntegrationTests" />
-    <InternalsVisibleTo Include="FoodDelivery.Modules.Orders.IntegrationTests" />
+    <InternalsVisibleTo Include="nextgen.Modules.Orders.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>

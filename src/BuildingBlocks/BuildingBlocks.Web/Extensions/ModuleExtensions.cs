@@ -200,21 +200,26 @@ public static class ModuleExtensions
     }
 
     public static void AddModulesSettingsFile(
-        this ConfigurationManager configurationManager,
-        string root,
-        string environment)
+     this ConfigurationManager configurationManager,
+     string root,
+     params string[] environments) // support multiple environments
     {
+        // Load base settings first
         foreach (string file in Directory.GetFiles(root, "*.appsettings.json", SearchOption.AllDirectories))
         {
-            configurationManager.AddJsonFile(file);
+            configurationManager.AddJsonFile(file, optional: false, reloadOnChange: true);
         }
 
-        foreach (string file in Directory.GetFiles(
-                     root,
-                     $"*.appsettings.{environment}.json",
-                     SearchOption.AllDirectories))
+        // Load environment-specific settings (for each environment)
+        foreach (var environment in environments)
         {
-            configurationManager.AddJsonFile(file, true, true);
+            foreach (string file in Directory.GetFiles(
+                         root,
+                         $"*.appsettings.{environment}.json",
+                         SearchOption.AllDirectories))
+            {
+                configurationManager.AddJsonFile(file, optional: true, reloadOnChange: true);
+            }
         }
     }
 }

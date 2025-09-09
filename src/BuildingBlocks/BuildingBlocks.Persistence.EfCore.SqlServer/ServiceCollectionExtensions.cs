@@ -97,7 +97,6 @@ public static class ServiceCollectionExtensions
         return services.RegisterService<IEfUnitOfWork<TContext>, EfUnitOfWork<TContext>>(lifeTime);
     }
 
-
     public static void MigrateDataFromScript(this MigrationBuilder migrationBuilder)
     {
         var assembly = Assembly.GetCallingAssembly();
@@ -128,7 +127,7 @@ public static class ServiceCollectionExtensions
         var scope = app.ApplicationServices.CreateAsyncScope();
         var dbFacadeResolver = scope.ServiceProvider.GetService<IDbFacadeResolver>();
 
-        var policy = CreatePolicy(3, logger, "postgres");
+        var policy = CreatePolicy(3, logger, "sqlserver");
         await policy.ExecuteAsync(async () =>
         {
             if (!await dbFacadeResolver?.Database.CanConnectAsync(cancellationToken)!)

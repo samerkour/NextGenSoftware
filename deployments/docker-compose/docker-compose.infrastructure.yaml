@@ -34,18 +34,18 @@ services:
       - NextGen
 
     #######################################################
-    #  postgres
+    #  sqlserver
     #######################################################
-  postgres:
-    image: postgres:latest
-    container_name: postgres
+  sqlserver:
+    image: sqlserver:latest
+    container_name: sqlserver
     restart: on-failure
     ports:
       - ${POSTGRES_HOST_PORT:-5432}:${POSTGRES_PORT:-5432}
     #https://docs.docker.com/compose/environment-variables/env-file/#parameter-expansion
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_USER=${POSTGRES_USER:-sqlserver}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-sqlserver}
     networks:
       - NextGen
 

@@ -47,7 +47,7 @@ internal class GenerateCaptchaHandler : ICommandHandler<GenerateCaptchaCommand, 
         var captchaCode = GenerateRandomCaptchaCode(4);
 
         // Store the CAPTCHA code in cache with size specified
-        _cache.Set(captchaId, captchaCode, new MemoryCacheEntryOptions
+        _cache.Set(captchaCode.ToLower(), captchaCode.ToLower(), new MemoryCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
             Size = 1 // Specify cache entry size

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\Api\FoodDelivery.Api\NextGen.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Api\nextgen.Api\NextGen.Api.csproj" />
     <ProjectReference Include="..\..\..\..\src\Api\NextGen.Api\NextGen.Api.csproj" />
     <ProjectReference Include="..\..\..\shared\Tests.Shared\Tests.Shared.csproj" />
   </ItemGroup>

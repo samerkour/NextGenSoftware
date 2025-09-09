@@ -27,7 +27,7 @@ public static class IdentityServerConfig
     public static IList<ApiResource> ApiResources =>
         new List<ApiResource>
         {
-            new ApiResource("FoodDeliveryApiResource", "NextGen.Modules.Catalogs API Resource")
+            new ApiResource("nextgenApiResource", "NextGen.Modules.Catalogs API Resource")
             {
                 Scopes = { "NextGen-api" },
                 UserClaims = { JwtClaimTypes.Role, JwtClaimTypes.Name, JwtClaimTypes.Id }

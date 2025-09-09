@@ -35,7 +35,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 
     private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
     {
-        var text = new StringBuilder("An example application with OpenAPI, Swashbuckle, and API versioning.");
+        var text = new StringBuilder("A backend with OpenAPI, Swashbuckle, and API versioning.");
         var info = new OpenApiInfo
         {
             Version = description.ApiVersion.ToString(),

@@ -21,7 +21,7 @@ public abstract class DbContextDesignFactoryBase<TDbContext> : IDesignTimeDbCont
     public TDbContext CreateDbContext(string[] args)
     {
         Console.WriteLine($"BaseDirectory: {AppContext.BaseDirectory}");
-        Console.WriteLine($"Postgres Option Section: {_SqlServerOptionsection}");
+        Console.WriteLine($"SqlServer Option Section: {_SqlServerOptionsection}");
 
         var configuration = ConfigurationHelper.GetConfiguration(_moduleName, AppContext.BaseDirectory);
         var options = configuration.GetOptions<SqlServerOptions>(_SqlServerOptionsection);

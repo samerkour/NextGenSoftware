@@ -1,15 +1,15 @@
 {
   "Customers": {
     "SqlServerOptions": {
-      "ConnectionString": "Server=192.168.117.217;Database=NextGenDb_test;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;",
-      "UseInMemory": false
+      "ConnectionString": "Server=192.168.117.224;Database=NextGenDb_test;User Id=sa;Password=Admin@123;MultipleActiveResultSets=True;Encrypt=true;TrustServerCertificate=true;",
+        "UseInMemory": false
     },
     "MongoOptions": {
       "ConnectionString": "mongodb://localhost:27017",
       "DatabaseName": "NextGen_test"
     },
     "EmailOptions": {
-      "From": "info@fooddelivery.modular-monolith.com",
+      "From": "info@nextgen.modular-monolith.com",
       "Enable": true,
       "DisplayName": "Next Gen Application Mail",
       "MimeKitOptions": {

@@ -105,7 +105,7 @@ TODO
 ### Key Architectural Patterns:
 
 * CQRS for separating **read** and **write** models.
-* Postgres for **write side (ACID)**.
+* SqlServer for **write side (ACID)**.
 * MongoDB for **read side (scalability & performance)**.
 * **Outbox/Inbox Patterns** for reliable messaging.
 * **At-least-once delivery** + **Idempotent receivers**.
