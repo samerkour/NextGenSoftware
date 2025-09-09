@@ -17,8 +17,6 @@ public static partial class ApplicationBuilderExtensions
 
             logger.LogInformation("Updating catalog database...");
 
-            var con = catalogDbContext.Database.GetConnectionString();
-            var con1= catalogDbContext.Database.GetDbConnection().ConnectionString;
             await catalogDbContext.Database.MigrateAsync();
 
             logger.LogInformation("Updated catalog database");
