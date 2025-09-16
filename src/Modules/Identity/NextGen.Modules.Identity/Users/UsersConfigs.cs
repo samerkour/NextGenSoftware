@@ -2,6 +2,7 @@ using Asp.Versioning.Builder;
 using NextGen.Modules.Identity.Users.Features.GettingUerByEmail;
 using NextGen.Modules.Identity.Users.Features.GettingUserById;
 using NextGen.Modules.Identity.Users.Features.GettingUsers;
+using NextGen.Modules.Identity.Users.Features.ProfilePicture;
 using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUserState;
 
@@ -27,6 +28,7 @@ internal static class UsersConfigs
         endpoints.MapGetUsersEndpoint();
         endpoints.MapGetUserByIdEndpoint();
         endpoints.MapGetUserByEmailEndpoint();
+        endpoints.MapUploadProfilePictureEndpoint();
         endpoints.MapRegisterNewUserEndpoint();
         endpoints.MapUpdateUserStateEndpoint();
 

@@ -9,28 +9,53 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
+        // Basic string properties
         builder.Property(x => x.FirstName).HasMaxLength(100).IsRequired();
         builder.Property(x => x.LastName).HasMaxLength(100).IsRequired();
+        builder.Property(x => x.MiddleName).HasMaxLength(100).IsRequired(false);
+        builder.Property(x => x.PlaceOfBirth).HasMaxLength(100).IsRequired(false);
+        builder.Property(x => x.ProfileImagePath).HasMaxLength(255).IsRequired(false);
+
+        // Location / Address fields
+        builder.Property(x => x.Country).HasMaxLength(100).IsRequired(false);
+        builder.Property(x => x.City).HasMaxLength(100).IsRequired(false);
+        builder.Property(x => x.State).HasMaxLength(100).IsRequired(false);
+        builder.Property(x => x.Address).HasMaxLength(250).IsRequired(false);
+        builder.Property(x => x.PostalCode).HasMaxLength(20).IsRequired(false);
+
         builder.Property(x => x.UserName).HasMaxLength(50).IsRequired();
         builder.Property(x => x.NormalizedUserName).HasMaxLength(50).IsRequired();
         builder.Property(x => x.Email).HasMaxLength(50).IsRequired();
         builder.Property(x => x.NormalizedEmail).HasMaxLength(50).IsRequired();
         builder.Property(x => x.PhoneNumber).HasMaxLength(15).IsRequired(false);
 
+        // Date properties
         builder.Property(x => x.CreatedAt).HasDefaultValueSql(EfConstants.DateAlgorithm);
+        builder.Property(x => x.DateOfBirth).IsRequired(false);
+        builder.Property(x => x.PasswordLastChangedOn).IsRequired();
+        builder.Property(x => x.TwoFactorEnabledOn).IsRequired(false);
+        builder.Property(x => x.LockoutEnabledOn).IsRequired(false);
 
+        // UserState enum
         builder.Property(x => x.UserState)
             .HasDefaultValue(UserState.Active)
             .HasConversion(x => x.ToString(), x => (UserState)Enum.Parse(typeof(UserState), x));
 
+        // Indexes
         builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.NormalizedEmail).IsUnique();
 
-        // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model#add-navigation-properties
-        // Each User can have many entries in the UserRole join table
+        // Navigation: UserRoles
         builder.HasMany(e => e.UserRoles)
             .WithOne(e => e.User)
             .HasForeignKey(ur => ur.UserId)
             .IsRequired();
+
+        // Navigation: RefreshTokens
+        builder.HasMany(e => e.RefreshTokens)
+            .WithOne(rt => rt.ApplicationUser)
+            .HasForeignKey(rt => rt.UserId)
+            .IsRequired();
     }
 }
+

@@ -22,9 +22,9 @@ public static class RegisterUserEndpoint
     }
 
     private static Task<IResult> RegisterUser(
-        RegisterUserRequest request,
-        IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
-        CancellationToken cancellationToken)
+     RegisterUserRequest request,
+     IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
+     CancellationToken cancellationToken)
     {
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
@@ -35,7 +35,17 @@ public static class RegisterUserEndpoint
                 request.Email,
                 request.Password,
                 request.ConfirmPassword,
-                request.Roles?.ToList());
+                request.MiddleName,
+                request.DateOfBirth,
+                request.PlaceOfBirth,
+                request.ProfileImagePath,
+                request.Country,
+                request.City,
+                request.State,
+                request.Address,
+                request.PostalCode,
+                request.Roles?.ToList()
+            );
 
             var result = await commandProcessor.SendAsync(command, cancellationToken);
 

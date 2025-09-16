@@ -31,16 +31,26 @@ internal class RegisterUserHandler : ICommandHandler<RegisterUserCommand, Regist
             Id = request.Id,
             FirstName = request.FirstName,
             LastName = request.LastName,
+            MiddleName = request.MiddleName,
             UserName = request.UserName,
             Email = request.Email,
+            DateOfBirth = request.DateOfBirth,
+            PlaceOfBirth = request.PlaceOfBirth,
+            ProfileImagePath = request.ProfileImagePath,
+            Country = request.Country,
+            City = request.City,
+            State = request.State,
+            Address = request.Address,
+            PostalCode = request.PostalCode,
             UserState = UserState.Active,
             CreatedAt = request.CreatedAt,
+            PasswordLastChangedOn = DateTime.UtcNow
         };
 
         var identityResult = await _userManager.CreateAsync(applicationUser, request.Password);
         var roleResult = await _userManager.AddToRolesAsync(
             applicationUser,
-            request.Roles ?? new List<string> {Constants.Role.User});
+            request.Roles ?? new List<string> { Constants.Role.User });
 
         if (!identityResult.Succeeded)
             throw new RegisterIdentityUserException(string.Join(',', identityResult.Errors.Select(e => e.Description)));
@@ -48,8 +58,6 @@ internal class RegisterUserHandler : ICommandHandler<RegisterUserCommand, Regist
         if (!roleResult.Succeeded)
             throw new RegisterIdentityUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
 
-        // publish our integration event and save to outbox should do in same transaction of our business logic actions. we could use TxBehaviour or ITxDbContextExecutes interface
-        // This service is not DDD, so we couldn't use DomainEventPublisher to publish mapped integration events
         await _bus.PublishAsync(
             new UserRegistered(
                 applicationUser.Id,
@@ -68,10 +76,19 @@ internal class RegisterUserHandler : ICommandHandler<RegisterUserCommand, Regist
             UserName = applicationUser.UserName,
             FirstName = applicationUser.FirstName,
             LastName = applicationUser.LastName,
-            Roles = request.Roles ?? new List<string> {Constants.Role.User},
+            Roles = request.Roles ?? new List<string> { Constants.Role.User },
             RefreshTokens = applicationUser?.RefreshTokens?.Select(x => x.Token),
             CreatedAt = request.CreatedAt,
-            UserState = UserState.Active
+            UserState = UserState.Active,
+            MiddleName = applicationUser?.MiddleName,
+            DateOfBirth = applicationUser?.DateOfBirth,
+            PlaceOfBirth = applicationUser?.PlaceOfBirth,
+            ProfileImagePath = applicationUser?.ProfileImagePath,
+            Country = applicationUser?.Country,
+            City = applicationUser?.City,
+            State = applicationUser?.State,
+            Address = applicationUser?.Address,
+            PostalCode = applicationUser?.PostalCode
         });
     }
 }

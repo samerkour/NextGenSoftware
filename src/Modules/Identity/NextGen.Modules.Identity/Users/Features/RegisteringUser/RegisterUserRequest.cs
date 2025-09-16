@@ -6,7 +6,17 @@ public record RegisterUserRequest(
     string UserName,
     string Email,
     string Password,
-    string ConfirmPassword)
+    string ConfirmPassword,
+    string? MiddleName = null,
+    DateTime? DateOfBirth = null,
+    string? PlaceOfBirth = null,
+    string? ProfileImagePath = null,
+    string? Country = null,
+    string? City = null,
+    string? State = null,
+    string? Address = null,
+    string? PostalCode = null
+)
 {
     public IEnumerable<string> Roles { get; init; } = new List<string> { Constants.Role.User };
 }
