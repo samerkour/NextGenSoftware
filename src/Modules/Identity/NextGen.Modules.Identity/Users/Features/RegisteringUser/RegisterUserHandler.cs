@@ -10,66 +10,9 @@ using UserState = NextGen.Modules.Identity.Shared.Models.UserState;
 
 namespace NextGen.Modules.Identity.Users.Features.RegisteringUser;
 
-public record RegisterUser(
-    string FirstName,
-    string LastName,
-    string UserName,
-    string Email,
-    string Password,
-    string ConfirmPassword,
-    List<string>? Roles = null) : ITxCreateCommand<RegisterUserResponse>
-{
-    public DateTime CreatedAt { get; init; } = DateTime.Now;
-    public Guid Id { get; init; } = Guid.NewGuid();
-}
-
-internal class RegisterUserValidator : AbstractValidator<RegisterUser>
-{
-    public RegisterUserValidator()
-    {
-        CascadeMode = CascadeMode.Stop;
-
-        RuleFor(v => v.FirstName)
-            .NotEmpty()
-            .WithMessage("FirstName is required.");
-
-        RuleFor(v => v.LastName)
-            .NotEmpty()
-            .WithMessage("LastName is required.");
-
-        RuleFor(v => v.Email)
-            .NotEmpty()
-            .WithMessage("Email is required.")
-            .EmailAddress();
-
-        RuleFor(v => v.UserName)
-            .NotEmpty()
-            .WithMessage("UserName is required.");
-
-        RuleFor(v => v.Password)
-            .NotEmpty()
-            .WithMessage("Password is required.");
-
-        RuleFor(v => v.ConfirmPassword)
-            .Equal(x => x.Password)
-            .WithMessage("The password and confirmation password do not match.")
-            .NotEmpty();
-
-        RuleFor(v => v.Roles).Custom((roles, c) =>
-        {
-            if (roles != null &&
-                !roles.All(x => x.Contains(Constants.Role.Admin, StringComparison.Ordinal) ||
-                                x.Contains(Constants.Role.User, StringComparison.Ordinal)))
-            {
-                c.AddFailure("Invalid roles.");
-            }
-        });
-    }
-}
-
 // using transaction script instead of using domain business logic here
 // https://www.youtube.com/watch?v=PrJIMTZsbDw
-internal class RegisterUserHandler : ICommandHandler<RegisterUser, RegisterUserResponse>
+internal class RegisterUserHandler : ICommandHandler<RegisterUserCommand, RegisterUserResponse>
 {
     private readonly IBus _bus;
 
@@ -81,7 +24,7 @@ internal class RegisterUserHandler : ICommandHandler<RegisterUser, RegisterUserR
         _userManager = Guard.Against.Null(userManager, nameof(userManager));
     }
 
-    public async Task<RegisterUserResponse> Handle(RegisterUser request, CancellationToken cancellationToken)
+    public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var applicationUser = new ApplicationUser
         {

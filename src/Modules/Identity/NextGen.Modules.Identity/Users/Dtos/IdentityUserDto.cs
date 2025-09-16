@@ -2,16 +2,16 @@ using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Users.Dtos;
 
-public class IdentityUserDto
+public record IdentityUserDto
 {
-    public Guid Id { get; set; }
-    public string UserName { get; set; } = null!;
-    public string Email { get; set; } = null!;
-    public string FirstName { get; set; } = null!;
-    public string LastName { get; set; } = null!;
-    public DateTime? LastLoggedInAt { get; set; }
-    public IEnumerable<string>? RefreshTokens { get; set; }
-    public IEnumerable<string>? Roles { get; set; }
-    public UserState UserState { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public Guid Id { get; init; }
+    public string UserName { get; init; } = string.Empty;
+    public string Email { get; init; } = string.Empty;
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
+    public DateTime? LastLoggedInAt { get; init; }
+    public IEnumerable<string>? RefreshTokens { get; init; }
+    public IEnumerable<string>? Roles { get; init; }
+    public UserState UserState { get; init; }
+    public DateTime CreatedAt { get; init; }
 }

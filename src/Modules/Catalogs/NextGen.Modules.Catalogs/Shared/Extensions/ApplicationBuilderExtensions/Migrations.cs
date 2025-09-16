@@ -1,6 +1,6 @@
 using BuildingBlocks.Persistence.EfCore.SqlServer;
-using NextGen.Modules.Catalogs.Shared.Data;
 using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Catalogs.Shared.Data;
 
 namespace NextGen.Modules.Catalogs.Shared.Extensions.ApplicationBuilderExtensions;
 

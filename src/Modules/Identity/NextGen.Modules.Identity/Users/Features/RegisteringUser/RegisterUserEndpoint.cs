@@ -28,7 +28,7 @@ public static class RegisterUserEndpoint
     {
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
-            var command = new RegisterUser(
+            var command = new RegisterUserCommand(
                 request.FirstName,
                 request.LastName,
                 request.UserName,

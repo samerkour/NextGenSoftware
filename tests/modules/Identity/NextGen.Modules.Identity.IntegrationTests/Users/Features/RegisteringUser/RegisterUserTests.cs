@@ -12,14 +12,14 @@ namespace NextGen.Modules.Identity.IntegrationTests.Users.Features.RegisteringUs
 
 public class RegisterUserTests : ModuleTestBase<Program, IdentityModuleConfiguration>
 {
-    private static RegisterUser _registerUser;
+    private static RegisterUserCommand _registerUser;
 
     public RegisterUserTests(IntegrationTestFixture<Program> integrationTestFixture, ITestOutputHelper outputHelper) :
         base(integrationTestFixture, outputHelper)
     {
         // Arrange
-        _registerUser = new Faker<RegisterUser>().CustomInstantiator(faker =>
-                new RegisterUser(
+        _registerUser = new Faker<RegisterUserCommand>().CustomInstantiator(faker =>
+                new RegisterUserCommand(
                     faker.Person.FirstName,
                     faker.Person.LastName,
                     faker.Person.UserName,

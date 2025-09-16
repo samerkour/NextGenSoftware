@@ -331,6 +331,14 @@ namespace NextGen.Api
             responseBody.Seek(0, SeekOrigin.Begin);
             var responseContent = await new StreamReader(responseBody).ReadToEndAsync();
 
+            if (!string.IsNullOrEmpty(responseContent) &&
+                (responseContent.Contains("\"success\":") && responseContent.Contains("\"apiVersion\":")))
+            {
+                // Already wrapped -> just forward
+                await CopyStreamToOriginal(responseBody, originalBodyStream);
+                return;
+            }
+
             object? data = null;
             string? message = null;
             var success = context.Response.StatusCode >= 200 && context.Response.StatusCode < 300;
@@ -374,6 +382,10 @@ namespace NextGen.Api
                 context.Response.Body = originalBodyStream;
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = 200;
+
+                // Clear Content-Length so ASP.NET recalculates it
+                context.Response.Headers.ContentLength = null;
+                context.Response.Headers.Remove("Content-Length");
 
                 var jsonResponse = JsonSerializer.Serialize(apiResponse, new JsonSerializerOptions
                 {

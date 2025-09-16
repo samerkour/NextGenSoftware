@@ -9,18 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace NextGen.Modules.Identity.Users.Features.GettingUserById;
 
-public record GetUserById(Guid Id) : IQuery<UserByIdResponse>;
-
-internal class GetUserByIdValidator : AbstractValidator<GetUserById>
-{
-    public GetUserByIdValidator()
-    {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.");
-    }
-}
-
-internal class GetUserByIdHandler : IQueryHandler<GetUserById, UserByIdResponse>
+internal class GetUserByIdHandler : IQueryHandler<GetUserByIdQuery, UserByIdResponse>
 {
     private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -31,13 +20,13 @@ internal class GetUserByIdHandler : IQueryHandler<GetUserById, UserByIdResponse>
         _userManager = Guard.Against.Null(userManager, nameof(userManager));
     }
 
-    public async Task<UserByIdResponse> Handle(GetUserById query, CancellationToken cancellationToken)
+    public async Task<UserByIdResponse> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
     {
         Guard.Against.Null(query, nameof(query));
 
-        var identityUser = await _userManager.FindUserWithRoleByIdAsync(query.Id);
+        ApplicationUser? identityUser = await _userManager.FindUserWithRoleByIdAsync(query.Id);
 
-        var identityUserDto = _mapper.Map<IdentityUserDto>(identityUser);
+        IdentityUserDto identityUserDto = _mapper.Map<IdentityUserDto>(identityUser);
 
         return new UserByIdResponse(identityUserDto);
     }

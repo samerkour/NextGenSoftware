@@ -29,7 +29,7 @@ public static class GetUserByIdEndpoint
     {
         return gatewayProcessor.ExecuteQuery(async queryProcessor =>
         {
-            var result = await queryProcessor.SendAsync(new GetUserById(userId), cancellationToken);
+            var result = await queryProcessor.SendAsync(new GetUserByIdQuery(userId), cancellationToken);
 
             return Results.Ok(result);
         });

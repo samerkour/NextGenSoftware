@@ -1,6 +1,7 @@
 using Asp.Versioning.Builder;
 using NextGen.Modules.Identity.Users.Features.GettingUerByEmail;
 using NextGen.Modules.Identity.Users.Features.GettingUserById;
+using NextGen.Modules.Identity.Users.Features.GettingUsers;
 using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUserState;
 
@@ -23,10 +24,11 @@ internal static class UsersConfigs
     {
         VersionSet = endpoints.NewApiVersionSet(Tag).Build();
 
-        endpoints.MapRegisterNewUserEndpoint();
-        endpoints.MapUpdateUserStateEndpoint();
+        endpoints.MapGetUsersEndpoint();
         endpoints.MapGetUserByIdEndpoint();
         endpoints.MapGetUserByEmailEndpoint();
+        endpoints.MapRegisterNewUserEndpoint();
+        endpoints.MapUpdateUserStateEndpoint();
 
         return endpoints;
     }

@@ -1,51 +1,60 @@
-using Ardalis.ApiEndpoints;
-using Ardalis.GuardClauses;
-using Asp.Versioning;
-using BuildingBlocks.Abstractions.CQRS.Query;
-using Swashbuckle.AspNetCore.Annotations;
+using Asp.Versioning.Conventions;
+using BuildingBlocks.Abstractions.CQRS;
+using BuildingBlocks.Abstractions.Web;
+using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 
 namespace NextGen.Modules.Identity.Users.Features.GettingUsers;
 
-// https://www.youtube.com/watch?v=SDu0MA6TmuM
-// https://github.com/ardalis/ApiEndpoints
-public class GetUsersEndpoint : EndpointBaseAsync
-    .WithRequest<GetUsersRequest?>
-    .WithActionResult<GetUsersResponse>
+public static class GetUsersEndpoint
 {
-    private readonly IQueryProcessor _queryProcessor;
-
-    public GetUsersEndpoint(IQueryProcessor queryProcessor)
+    internal static IEndpointRouteBuilder MapGetUsersEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        _queryProcessor = queryProcessor;
+        endpoints.MapGet(UsersConfigs.UsersPrefixUri, GetUsers)
+            .AllowAnonymous()
+            .WithTags(UsersConfigs.Tag)
+            .Produces<GetUsersResponse>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status400BadRequest)
+            .WithName("GetUsers")
+            .WithDisplayName("Get all users.")
+            .WithApiVersionSet(UsersConfigs.VersionSet)
+            .HasApiVersion(1.0);
+
+        return endpoints;
     }
 
-    [HttpGet(UsersConfigs.UsersPrefixUri, Name = "GetUsers")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ApiVersion(1.0)]
-    [SwaggerOperation(
-        Summary = "Get all users",
-        Description = "Get all users",
-        OperationId = "GetUsers",
-        Tags = new[] { UsersConfigs.Tag })]
-    public override async Task<ActionResult<GetUsersResponse>> HandleAsync(
-        [FromQuery] GetUsersRequest? request,
-        CancellationToken cancellationToken = default)
+    private static Task<IResult> GetUsers(
+      [FromQuery] int page,
+      [FromQuery] int pageSize,
+      [FromQuery] string[]? includes,
+      [FromQuery] string[]? sorts,
+      //[FromQuery] FilterModel[]? filters,
+      IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
+      CancellationToken cancellationToken)
     {
-        Guard.Against.Null(request, nameof(request));
+        var request = new GetUsersRequest
+        {
+            Page = page,
+            PageSize = pageSize,
+            Includes = includes,
+            Sorts = sorts,
+            //Filters = filters
+        };
 
-        var result = await _queryProcessor.SendAsync(
-            new GetUsers
-            {
-                Filters = request.Filters,
-                Includes = request.Includes,
-                Page = request.Page,
-                Sorts = request.Sorts,
-                PageSize = request.PageSize
-            },
-            cancellationToken);
+        return gatewayProcessor.ExecuteQuery(async queryProcessor =>
+        {
+            var result = await queryProcessor.SendAsync(
+                new GetUsersQuery
+                {
+                    //Filters = request.Filters,
+                    Includes = request.Includes,
+                    Page = request.Page,
+                    Sorts = request.Sorts,
+                    PageSize = request.PageSize
+                },
+                cancellationToken);
 
-        return Ok(result);
+            return Results.Ok(result);
+        });
     }
 }
