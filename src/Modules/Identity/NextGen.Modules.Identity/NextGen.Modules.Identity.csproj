@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Duende.IdentityServer" />
     <PackageReference Include="Duende.IdentityServer.Storage" />
@@ -66,6 +67,7 @@
 
   <ItemGroup>
     <Folder Include="Shared\Data\Migrations\Identity\" />
+    <Folder Include="Users\Features\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>

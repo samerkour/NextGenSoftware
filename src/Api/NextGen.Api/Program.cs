@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using Amazon.S3;
 using AspNetCoreRateLimit; // Added for rate limiting
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Core.Extensions.ServiceCollection;
@@ -40,6 +41,19 @@ await app.RunAsync();
 
 static void RegisterServices(WebApplicationBuilder builder)
 {
+    // Register AmazonS3Client for MinIO
+    builder.Services.AddSingleton<IAmazonS3>(_ =>
+        new AmazonS3Client(
+            "minioadmin", // access key
+            "minioadmin", // secret key
+            new AmazonS3Config
+            {
+                ServiceURL = "http://localhost:9000", // MinIO endpoint
+                ForcePathStyle = true // required for MinIO
+            }
+        )
+    );
+
     builder.Host.UseDefaultServiceProvider((env, c) =>
     {
         // Handling Captive Dependency Problem

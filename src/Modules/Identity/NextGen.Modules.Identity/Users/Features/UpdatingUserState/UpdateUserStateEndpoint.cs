@@ -30,7 +30,7 @@ public static class UpdateUserStateEndpoint
     {
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
-            var command = new UpdateUserState(userId, request.UserState);
+            var command = new UpdateUserStateCommand(userId, request.UserState);
 
             await commandProcessor.SendAsync(command, cancellationToken);
 

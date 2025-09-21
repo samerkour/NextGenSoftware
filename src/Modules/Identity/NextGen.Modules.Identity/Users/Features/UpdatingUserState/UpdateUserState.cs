@@ -12,23 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace NextGen.Modules.Identity.Users.Features.UpdatingUserState;
 
-public record UpdateUserState(Guid UserId, UserState State) : ITxUpdateCommand;
-
-internal class UpdateUserStateValidator : AbstractValidator<UpdateUserState>
-{
-    public UpdateUserStateValidator()
-    {
-        CascadeMode = CascadeMode.Stop;
-
-        RuleFor(v => v.State)
-            .NotEmpty();
-
-        RuleFor(v => v.UserId)
-            .NotEmpty();
-    }
-}
-
-internal class UpdateUserStateHandler : ICommandHandler<UpdateUserState>
+internal class UpdateUserStateHandler : ICommandHandler<UpdateUserStateCommand>
 {
     private readonly IBus _bus;
     private readonly ILogger<UpdateUserStateHandler> _logger;
@@ -44,7 +28,7 @@ internal class UpdateUserStateHandler : ICommandHandler<UpdateUserState>
         _userManager = Guard.Against.Null(userManager, nameof(userManager));
     }
 
-    public async Task<Unit> Handle(UpdateUserState request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateUserStateCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId.ToString());
         Guard.Against.Null(user, new UserNotFoundException(request.UserId));
@@ -70,7 +54,6 @@ internal class UpdateUserStateHandler : ICommandHandler<UpdateUserState>
             (UserState)(int)request.State);
 
         await _bus.PublishAsync(userStateUpdated, null, cancellationToken);
-
 
         _logger.LogInformation(
             "Updated state for user with ID: '{UserId}', '{PreviousState}' -> '{UserState}'",

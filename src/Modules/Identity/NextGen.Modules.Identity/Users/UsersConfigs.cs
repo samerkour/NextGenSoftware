@@ -4,6 +4,7 @@ using NextGen.Modules.Identity.Users.Features.GettingUserById;
 using NextGen.Modules.Identity.Users.Features.GettingUsers;
 using NextGen.Modules.Identity.Users.Features.ProfilePicture;
 using NextGen.Modules.Identity.Users.Features.RegisteringUser;
+using NextGen.Modules.Identity.Users.Features.UpdatingUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUserState;
 
 namespace NextGen.Modules.Identity.Users;
@@ -30,6 +31,7 @@ internal static class UsersConfigs
         endpoints.MapGetUserByEmailEndpoint();
         endpoints.MapUploadProfilePictureEndpoint();
         endpoints.MapRegisterNewUserEndpoint();
+        endpoints.MapUpdateUserEndpoint();
         endpoints.MapUpdateUserStateEndpoint();
 
         return endpoints;
