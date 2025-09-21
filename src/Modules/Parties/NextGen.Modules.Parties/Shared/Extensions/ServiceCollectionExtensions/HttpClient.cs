@@ -1,5 +1,5 @@
 using BuildingBlocks.Resiliency.Extensions;
-using NextGen.Modules.Parties.Shared.Clients.Catalogs;
+using NextGen.Modules.Parties.Shared.Clients.Inventorys;
 using NextGen.Modules.Parties.Shared.Clients.Identity;
 
 namespace NextGen.Modules.Parties.Shared.Extensions.ServiceCollectionExtensions;
@@ -14,12 +14,12 @@ public static partial class ServiceCollectionExtensions
                 $"{PartiesModuleConfiguration.ModuleName}:{nameof(IdentityApiClientOptions)}"))
             .ValidateDataAnnotations();
 
-        services.AddOptions<CatalogsApiClientOptions>().Bind(
+        services.AddOptions<InventorysApiClientOptions>().Bind(
                 configuration.GetSection(
-                    $"{PartiesModuleConfiguration.ModuleName}:{nameof(CatalogsApiClientOptions)}"))
+                    $"{PartiesModuleConfiguration.ModuleName}:{nameof(InventorysApiClientOptions)}"))
             .ValidateDataAnnotations();
 
-        services.AddHttpApiClient<ICatalogApiClient, CatalogApiClient>();
+        services.AddHttpApiClient<IInventoryApiClient, InventoryApiClient>();
         services.AddHttpApiClient<IIdentityApiClient, IdentityApiClient>();
 
         return services;

@@ -6,8 +6,8 @@
     <PackageReference Include="AspNetCoreRateLimit" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Catalogs\NextGen.Modules.Catalogs\NextGen.Modules.Catalogs.csproj" />
     <ProjectReference Include="..\..\Modules\Identity\NextGen.Modules.Identity\NextGen.Modules.Identity.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventories\NextGen.Modules.Inventories\NextGen.Modules.Inventories.csproj" />
     <ProjectReference Include="..\..\Modules\Orders\NextGen.Modules.Orders\NextGen.Modules.Orders.csproj" />
     <ProjectReference Include="..\..\Modules\Parties\NextGen.Modules.Parties\NextGen.Modules.Parties.csproj" />
   </ItemGroup>

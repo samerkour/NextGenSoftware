@@ -2,7 +2,7 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Monitoring;
 using BuildingBlocks.Persistence.EfCore.SqlServer;
-using NextGen.Modules.Catalogs;
+using NextGen.Modules.Inventorys;
 using NextGen.Modules.Parties;
 using NextGen.Modules.Identity;
 using NextGen.Modules.Orders;
@@ -17,15 +17,15 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddMonitoring(healthChecksBuilder =>
         {
-            var catalogSqlServerOptions = configuration.GetOptions<SqlServerOptions>(
-                $"{CatalogModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
+            var inventorySqlServerOptions = configuration.GetOptions<SqlServerOptions>(
+                $"{InventoryModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
 
-            Guard.Against.Null(catalogSqlServerOptions, nameof(catalogSqlServerOptions));
+            Guard.Against.Null(inventorySqlServerOptions, nameof(inventorySqlServerOptions));
 
             healthChecksBuilder.AddSqlServer(
-                catalogSqlServerOptions.ConnectionString,
-                name: "Catalogs-Module-SqlServer-Check",
-                tags: new[] {"catalogs-sqlserver"});
+                inventorySqlServerOptions.ConnectionString,
+                name: "Inventorys-Module-SqlServer-Check",
+                tags: new[] {"inventorys-sqlserver"});
 
 
             var partySqlServerOptions = configuration.GetOptions<SqlServerOptions>(

@@ -10,7 +10,7 @@ using NextGen.Modules.Parties.RestockSubscriptions.Dtos;
 using NextGen.Modules.Parties.RestockSubscriptions.Features.CreatingRestockSubscription.Exceptions;
 using NextGen.Modules.Parties.RestockSubscriptions.Models.Write;
 using NextGen.Modules.Parties.RestockSubscriptions.ValueObjects;
-using NextGen.Modules.Parties.Shared.Clients.Catalogs;
+using NextGen.Modules.Parties.Shared.Clients.Inventorys;
 using NextGen.Modules.Parties.Shared.Data;
 using NextGen.Modules.Parties.Shared.Extensions;
 using FluentValidation;
@@ -43,18 +43,18 @@ internal class CreateRestockSubscriptionHandler
     : ICommandHandler<CreateRestockSubscription, CreateRestockSubscriptionResponse>
 {
     private readonly PartiesDbContext _partiesDbContext;
-    private readonly ICatalogApiClient _catalogApiClient;
+    private readonly IInventoryApiClient _inventoryApiClient;
     private readonly IMapper _mapper;
     private readonly ILogger<CreateRestockSubscriptionHandler> _logger;
 
     public CreateRestockSubscriptionHandler(
         PartiesDbContext partiesDbContext,
-        ICatalogApiClient catalogApiClient,
+        IInventoryApiClient inventoryApiClient,
         IMapper mapper,
         ILogger<CreateRestockSubscriptionHandler> logger)
     {
         _partiesDbContext = partiesDbContext;
-        _catalogApiClient = catalogApiClient;
+        _inventoryApiClient = inventoryApiClient;
         _mapper = mapper;
         _logger = logger;
     }
@@ -68,7 +68,7 @@ internal class CreateRestockSubscriptionHandler
         var existsParty = await _partiesDbContext.ExistsPartyByIdAsync(request.PartyId);
         Guard.Against.NotExists(existsParty, new PartyNotFoundException(request.PartyId));
 
-        var product = (await _catalogApiClient.GetProductByIdAsync(request.ProductId, cancellationToken))?.Product;
+        var product = (await _inventoryApiClient.GetProductByIdAsync(request.ProductId, cancellationToken))?.Product;
         Guard.Against.NotFound(product, new ProductNotFoundException(request.ProductId));
 
         if (product!.AvailableStock > 0)

@@ -23,8 +23,8 @@
       "UsersEndpoint": "api/v1/identity/users",
       "BaseApiAddress": null
     },
-    "CatalogsApiClientOptions": {
-      "ProductsEndpoint": "api/v1/catalogs/products",
+    "InventorysApiClientOptions": {
+      "ProductsEndpoint": "api/v1/inventorys/products",
       "BaseApiAddress": null
     },
     "MessagePersistenceOptions": {

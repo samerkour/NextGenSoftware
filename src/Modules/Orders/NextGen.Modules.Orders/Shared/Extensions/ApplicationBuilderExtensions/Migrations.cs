@@ -16,11 +16,11 @@ public static partial class ApplicationBuilderExtensions
             using var serviceScope = app.ApplicationServices.CreateScope();
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<OrdersDbContext>();
 
-            logger.LogInformation("Updating catalog database...");
+            logger.LogInformation("Updating inventory database...");
 
             await dbContext.Database.MigrateAsync();
 
-            logger.LogInformation("Updated catalog database");
+            logger.LogInformation("Updated inventory database");
         }
     }
 }
