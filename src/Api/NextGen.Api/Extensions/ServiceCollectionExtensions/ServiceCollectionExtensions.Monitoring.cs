@@ -5,7 +5,7 @@ using BuildingBlocks.Persistence.EfCore.SqlServer;
 using NextGen.Modules.Inventorys;
 using NextGen.Modules.Parties;
 using NextGen.Modules.Identity;
-using NextGen.Modules.Orders;
+using NextGen.Modules.Sales;
 
 namespace NextGen.Api.Extensions.ServiceCollectionExtensions;
 
@@ -47,16 +47,16 @@ public static partial class ServiceCollectionExtensions
                 name: "Identity-Module-SqlServer-Check",
                 tags: new[] {"identity-sqlserver"});
 
-            var orderSqlServerOptions =
+            var saleSqlServerOptions =
                 configuration.GetOptions<SqlServerOptions>(
-                    $"{OrdersModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
+                    $"{SalesModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
 
-            Guard.Against.Null(orderSqlServerOptions, nameof(orderSqlServerOptions));
+            Guard.Against.Null(saleSqlServerOptions, nameof(saleSqlServerOptions));
 
             healthChecksBuilder.AddSqlServer(
-                orderSqlServerOptions.ConnectionString,
-                name: "Orders-Modules-SqlServer-Check",
-                tags: new[] {"orders-sqlserver"});
+                saleSqlServerOptions.ConnectionString,
+                name: "Sales-Modules-SqlServer-Check",
+                tags: new[] {"sales-sqlserver"});
         });
 
         return services;

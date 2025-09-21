@@ -7,13 +7,19 @@ public class ApplicationRole : IdentityRole<Guid>
 {
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = default!;
 
+    public static ApplicationRole SecurityAdmin => new()
+    {
+        Name = Constants.Role.SecurityAdmin,
+        NormalizedName = nameof(SecurityAdmin).ToUpper(CultureInfo.InvariantCulture)
+    };
+    public static ApplicationRole Admin => new()
+    {
+        Name = Constants.Role.Admin,
+        NormalizedName = nameof(Admin).ToUpper(CultureInfo.InvariantCulture)
+    };
+
     public static ApplicationRole User => new()
     {
         Name = Constants.Role.User, NormalizedName = nameof(User).ToUpper(CultureInfo.InvariantCulture),
-    };
-
-    public static ApplicationRole Admin => new()
-    {
-        Name = Constants.Role.Admin, NormalizedName = nameof(Admin).ToUpper(CultureInfo.InvariantCulture)
     };
 }

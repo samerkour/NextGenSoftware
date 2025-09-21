@@ -49,7 +49,7 @@ public class StreamEventData
 
     /// <summary>
     ///  Gets or sets the event number of this event in the stream (StreamPosition).
-    /// (also named version, order of occurrence, etc.): the number used to decide the order of the event's occurrence for the specific object (stream).
+    /// (also named version, sale of occurrence, etc.): the number used to decide the sale of the event's occurrence for the specific object (stream).
     /// </summary>
     public int EventNumber { get; set; }
 }

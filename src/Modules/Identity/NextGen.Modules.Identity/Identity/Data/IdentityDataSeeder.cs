@@ -23,6 +23,9 @@ public class IdentityDataSeeder : IDataSeeder
 
     private async Task SeedRoles()
     {
+        if (!await _roleManager.RoleExistsAsync(ApplicationRole.SecurityAdmin.Name))
+            await _roleManager.CreateAsync(ApplicationRole.SecurityAdmin);
+
         if (!await _roleManager.RoleExistsAsync(ApplicationRole.Admin.Name))
             await _roleManager.CreateAsync(ApplicationRole.Admin);
 
@@ -32,6 +35,22 @@ public class IdentityDataSeeder : IDataSeeder
 
     private async Task SeedUsers()
     {
+        if (await _userManager.FindByEmailAsync("securityAdmin@test.com") == null)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = "securityAdmin",
+                FirstName = "SecurityAdmin",
+                LastName = "Test",
+                Email = "securityAdmin@test.com",
+            };
+
+            var result = await _userManager.CreateAsync(user, "SecurityAdmin@123456");
+
+            if (result.Succeeded)
+                await _userManager.AddToRoleAsync(user, ApplicationRole.SecurityAdmin.Name);
+        }
+
         if (await _userManager.FindByEmailAsync("admin@test.com") == null)
         {
             var user = new ApplicationUser
@@ -47,7 +66,7 @@ public class IdentityDataSeeder : IDataSeeder
             if (result.Succeeded) await _userManager.AddToRoleAsync(user, ApplicationRole.Admin.Name);
         }
 
-        if (await _userManager.FindByEmailAsync("admin2@test.com") == null)
+        if (await _userManager.FindByEmailAsync("user@test.com") == null)
         {
             var user = new ApplicationUser
             {

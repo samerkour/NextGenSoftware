@@ -14,7 +14,7 @@ public record Stock
     public int Available { get; private set; }
 
     /// <summary>
-    /// Gets available stock at which we should reorder.
+    /// Gets available stock at which we should resale.
     /// </summary>
     public int RestockThreshold { get; private set; }
 

@@ -23,11 +23,11 @@ using NextGen.Api.Extensions.ApplicationBuilderExtensions;
 using NextGen.Api.Extensions.ServiceCollectionExtensions;
 using NextGen.Modules.Inventorys;
 using NextGen.Modules.Identity;
-using NextGen.Modules.Orders;
 using NextGen.Modules.Parties;
 using Serilog;
 using Serilog.Events;
 using Spectre.Console;
+using NextGen.Modules.Sales;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -129,7 +129,7 @@ static void RegisterServices(WebApplicationBuilder builder)
     builder.Services.AddCustomVersioning();
     builder.AddCustomSwagger(new[]
     {
-        typeof(InventoryRoot).Assembly, typeof(IdentityRoot).Assembly, typeof(OrdersRoot).Assembly,
+        typeof(InventoryRoot).Assembly, typeof(IdentityRoot).Assembly, typeof(SalesRoot).Assembly,
         typeof(PartiesRoot).Assembly,
     });
 
