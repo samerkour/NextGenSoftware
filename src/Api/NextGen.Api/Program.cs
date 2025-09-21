@@ -137,6 +137,7 @@ static void RegisterServices(WebApplicationBuilder builder)
     builder.Services.AddCustomAuthorization(
         rolePolicies: new List<RolePolicy>
         {
+            new(ApiConstants.Role.Admin, new List<string> {ApiConstants.Role.SecurityAdmin}),
             new(ApiConstants.Role.Admin, new List<string> {ApiConstants.Role.Admin}),
             new(ApiConstants.Role.User, new List<string> {ApiConstants.Role.User})
         });
