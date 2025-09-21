@@ -22,9 +22,9 @@ using NextGen.Api;
 using NextGen.Api.Extensions.ApplicationBuilderExtensions;
 using NextGen.Api.Extensions.ServiceCollectionExtensions;
 using NextGen.Modules.Catalogs;
-using NextGen.Modules.Customers;
 using NextGen.Modules.Identity;
 using NextGen.Modules.Orders;
+using NextGen.Modules.Parties;
 using Serilog;
 using Serilog.Events;
 using Spectre.Console;
@@ -95,7 +95,7 @@ static void RegisterServices(WebApplicationBuilder builder)
         {
             config.WriteTo.File(
                 NextGen.Api.Program.GetLogPath(builder.Environment, loggingOptions) ??
-                "../logs/customers-service.log",
+                "../logs/parties-service.log",
                 outputTemplate: loggingOptions?.LogTemplate ??
                                 "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level} - {Message:lj}{NewLine}{Exception}",
                 rollingInterval: RollingInterval.Day,
@@ -130,7 +130,7 @@ static void RegisterServices(WebApplicationBuilder builder)
     builder.AddCustomSwagger(new[]
     {
         typeof(CatalogRoot).Assembly, typeof(IdentityRoot).Assembly, typeof(OrdersRoot).Assembly,
-        typeof(CustomersRoot).Assembly,
+        typeof(PartiesRoot).Assembly,
     });
 
     builder.Services.AddCustomJwtAuthentication(builder.Configuration);

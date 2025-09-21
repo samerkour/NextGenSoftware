@@ -14,7 +14,6 @@ using NextGen.Modules.Identity.Identity.Features.VerifyEmail;
 using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
 
 namespace NextGen.Modules.Identity.Identity;
-
 internal static class IdentityConfigs
 {
     public const string Tag = "Identity";

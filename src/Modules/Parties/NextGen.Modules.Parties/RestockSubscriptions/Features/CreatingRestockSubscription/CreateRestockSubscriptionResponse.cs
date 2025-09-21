@@ -1,0 +1,5 @@
+using NextGen.Modules.Parties.RestockSubscriptions.Dtos;
+
+namespace NextGen.Modules.Parties.RestockSubscriptions.Features.CreatingRestockSubscription;
+
+public record CreateRestockSubscriptionResponse(RestockSubscriptionDto RestockSubscription);

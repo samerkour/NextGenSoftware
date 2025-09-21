@@ -3,7 +3,7 @@ using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Monitoring;
 using BuildingBlocks.Persistence.EfCore.SqlServer;
 using NextGen.Modules.Catalogs;
-using NextGen.Modules.Customers;
+using NextGen.Modules.Parties;
 using NextGen.Modules.Identity;
 using NextGen.Modules.Orders;
 
@@ -28,15 +28,15 @@ public static partial class ServiceCollectionExtensions
                 tags: new[] {"catalogs-sqlserver"});
 
 
-            var customerSqlServerOptions = configuration.GetOptions<SqlServerOptions>(
-                $"{CustomersModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
+            var partySqlServerOptions = configuration.GetOptions<SqlServerOptions>(
+                $"{PartiesModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");
 
-            Guard.Against.Null(customerSqlServerOptions, nameof(customerSqlServerOptions));
+            Guard.Against.Null(partySqlServerOptions, nameof(partySqlServerOptions));
 
             healthChecksBuilder.AddSqlServer(
-                customerSqlServerOptions.ConnectionString,
-                name: "Customers-Module-SqlServer-Check",
-                tags: new[] {"customers-sqlserver"});
+                partySqlServerOptions.ConnectionString,
+                name: "Parties-Module-SqlServer-Check",
+                tags: new[] {"parties-sqlserver"});
 
             var identitySqlServerOptions = configuration.GetOptions<SqlServerOptions>(
                 $"{IdentityModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}");

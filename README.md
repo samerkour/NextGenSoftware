@@ -161,7 +161,7 @@ TODO
 
   * [REST Client (VSCode)](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
   * Swagger → `/swagger`
-* Email: Uses [Ethereal](https://ethereal.email/) fake SMTP (see [settings](./src/Modules/Customers/NextGen.Modules.Customers/customers.appsettings.json))
+* Email: Uses [Ethereal](https://ethereal.email/) fake SMTP (see [settings](./src/Modules/Parties/NextGen.Modules.Parties/parties.appsettings.json))
 
 ---
 

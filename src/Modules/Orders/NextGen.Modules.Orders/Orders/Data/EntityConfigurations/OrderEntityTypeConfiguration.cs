@@ -19,12 +19,12 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasConversion(x => x.Value, id => id)
             .ValueGeneratedNever();
 
-        builder.OwnsOne(m => m.Customer, a =>
+        builder.OwnsOne(m => m.Party, a =>
         {
             a.Property(p => p.Name)
                 .HasMaxLength(EfConstants.Lenght.Medium);
 
-            a.Property(p => p.CustomerId);
+            a.Property(p => p.PartyId);
         });
 
         builder.OwnsOne(m => m.Product, a =>

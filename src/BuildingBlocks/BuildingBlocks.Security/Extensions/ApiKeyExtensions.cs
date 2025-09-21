@@ -18,15 +18,15 @@ public static class ApiKeyExtensions
         services.AddAuthorization(options =>
         {
             options.AddPolicy(
-                Policies.OnlyCustomers,
-                policy => policy.Requirements.Add(new OnlyCustomersRequirement()));
+                Policies.OnlyParties,
+                policy => policy.Requirements.Add(new OnlyPartiesRequirement()));
             options.AddPolicy(Policies.OnlyAdmins, policy => policy.Requirements.Add(new OnlyAdminsRequirement()));
             options.AddPolicy(
                 Policies.OnlyThirdParties,
                 policy => policy.Requirements.Add(new OnlyThirdPartiesRequirement()));
         });
 
-        services.AddSingleton<IAuthorizationHandler, OnlyCustomersAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationHandler, OnlyPartiesAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, OnlyAdminsAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, OnlyThirdPartiesAuthorizationHandler>();
 

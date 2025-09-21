@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -20,8 +20,8 @@ namespace NextGen.Modules.Orders.Shared.Data.Migrations.Order
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false),
-                    Customer_Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Customer_CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    Party_Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Party_PartyId = table.Column<long>(type: "bigint", nullable: false),
                     Product_Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Product_ProductId = table.Column<long>(type: "bigint", nullable: false),
                     Product_Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),

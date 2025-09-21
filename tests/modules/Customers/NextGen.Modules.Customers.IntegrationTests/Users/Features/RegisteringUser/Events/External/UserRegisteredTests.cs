@@ -1,11 +1,11 @@
 using Bogus;
 using BuildingBlocks.Abstractions.Web.Module;
-using NextGen.Modules.Customers.Customers.Features;
-using NextGen.Modules.Customers.Customers.Features.CreatingCustomer.Events.Integration;
-using NextGen.Modules.Customers.Shared.Clients.Identity;
-using NextGen.Modules.Customers.Shared.Clients.Identity.Dtos;
-using NextGen.Modules.Customers.Shared.Data;
-using NextGen.Modules.Customers.Users.Features.RegisteringUser.Events.External;
+using NextGen.Modules.Parties.Parties.Features;
+using NextGen.Modules.Parties.Parties.Features.CreatingParty.Events.Integration;
+using NextGen.Modules.Parties.Shared.Clients.Identity;
+using NextGen.Modules.Parties.Shared.Clients.Identity.Dtos;
+using NextGen.Modules.Parties.Shared.Data;
+using NextGen.Modules.Parties.Users.Features.RegisteringUser.Events.External;
 using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,10 +16,10 @@ using Tests.Shared.Fixtures;
 using Xunit.Abstractions;
 using Program = NextGen.Api.Program;
 
-namespace NextGen.Modules.Customers.IntegrationTests.Users.Features.RegisteringUser.Events.External;
+namespace NextGen.Modules.Parties.IntegrationTests.Users.Features.RegisteringUser.Events.External;
 
 public class
-    UserRegisteredTests : ModuleTestBase<Program, CustomersModuleConfiguration, CustomersDbContext, CustomersReadDbContext>
+    UserRegisteredTests : ModuleTestBase<Program, PartiesModuleConfiguration, PartiesDbContext, PartiesReadDbContext>
 {
     private static UserRegistered _userRegistered;
 
@@ -40,7 +40,7 @@ public class
     {
         base.RegisterModulesTestsServices(services, module);
 
-        if (module.GetType() == typeof(CustomersModuleConfiguration))
+        if (module.GetType() == typeof(PartiesModuleConfiguration))
         {
             services.Replace(ServiceDescriptor.Transient<IIdentityApiClient>(x =>
             {
@@ -104,7 +104,7 @@ public class
     }
 
     [Fact]
-    public async Task user_registered_message_should_create_new_customer_in_sqlserver_write_db()
+    public async Task user_registered_message_should_create_new_party_in_sqlserver_write_db()
     {
         _userRegistered = new Faker<UserRegistered>().CustomInstantiator(faker =>
                 new UserRegistered(
@@ -124,50 +124,50 @@ public class
 
         await shouldConsume.Validate(60.Seconds());
 
-        var customer = await ModuleFixture.ExecuteContextAsync(async ctx =>
+        var party = await ModuleFixture.ExecuteContextAsync(async ctx =>
         {
-            var res = await ctx.Customers.AnyAsync(x => x.Email == _userRegistered.Email.ToLower());
+            var res = await ctx.Parties.AnyAsync(x => x.Email == _userRegistered.Email.ToLower());
 
             return res;
         });
 
-        customer.Should().BeTrue();
+        party.Should().BeTrue();
     }
 
 
     [Fact]
-    public async Task user_registered_message_should_create_new_customer_in_internal_persistence_message_and_mongo()
+    public async Task user_registered_message_should_create_new_party_in_internal_persistence_message_and_mongo()
     {
         // Act
         await ModuleFixture.PublishMessageAsync(_userRegistered, cancellationToken: CancellationToken);
 
         // Assert
-        await ModuleFixture.ShouldProcessedPersistInternalCommand<CreateMongoCustomerReadModels>();
+        await ModuleFixture.ShouldProcessedPersistInternalCommand<CreateMongoPartyReadModels>();
 
-        var existsCustomer = await ModuleFixture.ExecuteReadContextAsync(async ctx =>
+        var existsParty = await ModuleFixture.ExecuteReadContextAsync(async ctx =>
         {
-            var res = await ctx.Customers.AsQueryable().AnyAsync(x => x.Email == _userRegistered.Email.ToLower());
+            var res = await ctx.Parties.AsQueryable().AnyAsync(x => x.Email == _userRegistered.Email.ToLower());
 
             return res;
         });
 
-        existsCustomer.Should().BeTrue();
+        existsParty.Should().BeTrue();
     }
 
     [Fact]
-    public async Task user_registered_message_should_create_customer_created_in_the_outbox()
+    public async Task user_registered_message_should_create_party_created_in_the_outbox()
     {
         // Act
         await ModuleFixture.PublishMessageAsync(_userRegistered, cancellationToken: CancellationToken);
 
-        await ModuleFixture.ShouldProcessedOutboxPersistMessage<CustomerCreated>();
+        await ModuleFixture.ShouldProcessedOutboxPersistMessage<PartyCreated>();
     }
 
     [Fact]
-    public async Task user_registered_should_should_publish_customer_created()
+    public async Task user_registered_should_should_publish_party_created()
     {
         // Arrange
-        var shouldPublish = await ModuleFixture.ShouldPublish<CustomerCreated>();
+        var shouldPublish = await ModuleFixture.ShouldPublish<PartyCreated>();
 
         // Act
         await ModuleFixture.PublishMessageAsync(_userRegistered, cancellationToken: CancellationToken);

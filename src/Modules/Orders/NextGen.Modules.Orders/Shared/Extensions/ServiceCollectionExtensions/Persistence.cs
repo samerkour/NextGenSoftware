@@ -32,7 +32,7 @@ public static partial class ServiceCollectionExtensions
                 $"{OrdersModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}:UseInMemory"))
         {
             services.AddDbContext<OrdersDbContext>(options =>
-                options.UseInMemoryDatabase("NextGen.Modules.Customers"));
+                options.UseInMemoryDatabase("NextGen.Modules.Parties"));
 
             services.AddScoped<IDbFacadeResolver>(provider => provider.GetService<OrdersDbContext>()!);
         }

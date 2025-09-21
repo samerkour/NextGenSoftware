@@ -2,8 +2,8 @@
 // using BuildingBlocks.Abstractions.Messaging;
 // using BuildingBlocks.Abstractions.Messaging.Context;
 // using BuildingBlocks.Abstractions.Web.Module;
-// using NextGen.Modules.Customers;
-// using NextGen.Modules.Customers.Users.Features.RegisteringUser.Events.External;
+// using NextGen.Modules.Parties;
+// using NextGen.Modules.Parties.Users.Features.RegisteringUser.Events.External;
 // using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 // using Humanizer;
 // using Hypothesist;
@@ -64,14 +64,14 @@
 //             .For<UserRegistered>()
 //             .Any(x => x.Email == message.Email && x.UserName == message.UserName);
 //
-//         // CustomersModule.Bus.Consume(hypothesis.AsMessageHandler());
+//         // PartiesModule.Bus.Consume(hypothesis.AsMessageHandler());
 //
-//         CustomersModule.Bus.Consume<UserRegistered>(async (consumeContext, ct) =>
+//         PartiesModule.Bus.Consume<UserRegistered>(async (consumeContext, ct) =>
 //         {
 //             await hypothesis.Test(consumeContext.Message);
 //         });
 //
-//         // should receive in customer service.
+//         // should receive in party service.
 //         var result = await IdentityModule.GatewayProcessor.ExecuteCommand(
 //             async commandProcessor => await commandProcessor.SendAsync(newUser, CancellationToken));
 //
