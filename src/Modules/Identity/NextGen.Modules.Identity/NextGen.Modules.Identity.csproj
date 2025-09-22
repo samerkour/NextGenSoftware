@@ -7,14 +7,6 @@
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
 
-
-
-  <ItemGroup>
-    <Compile Remove="Users\Features\NewFolder\**" />
-    <EmbeddedResource Remove="Users\Features\NewFolder\**" />
-    <None Remove="Users\Features\NewFolder\**" />
-  </ItemGroup>
-
   <ItemGroup>
     <Content Include="identity.appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
