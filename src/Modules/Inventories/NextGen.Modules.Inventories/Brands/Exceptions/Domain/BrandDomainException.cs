@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Domain.Exceptions;
 
-namespace NextGen.Modules.Inventorys.Brands.Exceptions.Domain;
+namespace NextGen.Modules.Inventories.Brands.Exceptions.Domain;
 
 public class BrandDomainException : DomainException
 {

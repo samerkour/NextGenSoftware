@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys.Shared.Extensions.ApplicationBuilderExtensions;
+namespace NextGen.Modules.Inventories.Shared.Extensions.ApplicationBuilderExtensions;
 
 public static partial class ApplicationBuilderExtensions
 {

@@ -1,3 +1,3 @@
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductSupplier;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductSupplier;
 
 internal record ChangeProductSupplierResponse;

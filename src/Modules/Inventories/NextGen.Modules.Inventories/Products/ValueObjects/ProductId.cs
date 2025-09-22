@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.Domain;
 
-namespace NextGen.Modules.Inventorys.Products.ValueObjects;
+namespace NextGen.Modules.Inventories.Products.ValueObjects;
 
 public record ProductId : AggregateId
 {

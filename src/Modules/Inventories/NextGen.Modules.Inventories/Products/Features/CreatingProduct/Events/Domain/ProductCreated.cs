@@ -2,12 +2,12 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Core.CQRS.Event.Internal;
 using BuildingBlocks.Core.Exception;
-using NextGen.Modules.Inventorys.Products.Exceptions.Application;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Shared.Data;
+using NextGen.Modules.Inventories.Products.Exceptions.Application;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Shared.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Domain;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Domain;
 
 public record ProductCreated(Product Product) : DomainEvent;
 

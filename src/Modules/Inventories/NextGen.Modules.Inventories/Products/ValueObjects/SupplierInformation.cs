@@ -1,9 +1,9 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Exception;
-using NextGen.Modules.Inventorys.Products.Exceptions.Domain;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Products.Exceptions.Domain;
+using NextGen.Modules.Inventories.Suppliers;
 
-namespace NextGen.Modules.Inventorys.Products.ValueObjects;
+namespace NextGen.Modules.Inventories.Products.ValueObjects;
 
 public record SupplierInformation
 {

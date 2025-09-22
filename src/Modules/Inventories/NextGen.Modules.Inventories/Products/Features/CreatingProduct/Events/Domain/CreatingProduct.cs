@@ -1,11 +1,11 @@
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Brands;
-using NextGen.Modules.Inventorys.Categories;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Brands;
+using NextGen.Modules.Inventories.Categories;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Suppliers;
 
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Domain;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Domain;
 
 public record CreatingProduct(
     ProductId Id,

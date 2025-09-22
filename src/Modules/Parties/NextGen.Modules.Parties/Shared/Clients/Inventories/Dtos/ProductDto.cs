@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Parties.Shared.Clients.Inventorys.Dtos;
+namespace NextGen.Modules.Parties.Shared.Clients.Inventories.Dtos;
 
 public record ProductDto
 {

@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.CQRS.Query;
-using NextGen.Modules.Inventorys.Products.Dtos;
+using NextGen.Modules.Inventories.Products.Dtos;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProducts;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProducts;
 
 public record GetProductsResponse(ListResultModel<ProductDto> Products);

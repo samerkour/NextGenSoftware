@@ -1,11 +1,11 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Extensions;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Extensions;
+using NextGen.Modules.Inventories.Suppliers;
 
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductSupplier.Events;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductSupplier.Events;
 
 public record ChangingProductSupplier(SupplierId SupplierId) : DomainEvent;
 

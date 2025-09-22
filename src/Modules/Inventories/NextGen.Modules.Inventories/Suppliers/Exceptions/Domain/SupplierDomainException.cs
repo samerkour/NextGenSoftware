@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Domain.Exceptions;
 
-namespace NextGen.Modules.Inventorys.Suppliers.Exceptions.Domain;
+namespace NextGen.Modules.Inventories.Suppliers.Exceptions.Domain;
 
 public class SupplierDomainException : DomainException
 {

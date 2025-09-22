@@ -1,11 +1,11 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Categories;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Extensions;
+using NextGen.Modules.Inventories.Categories;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Extensions;
 
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductCategory.Events;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductCategory.Events;
 
 public record ChangingProductCategory(CategoryId CategoryId) : DomainEvent;
 

@@ -1,10 +1,10 @@
 using BuildingBlocks.Persistence.Mongo;
-using NextGen.Modules.Inventorys.Products.Models.Read;
+using NextGen.Modules.Inventories.Products.Models.Read;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace NextGen.Modules.Inventorys.Shared.Data;
+namespace NextGen.Modules.Inventories.Shared.Data;
 
 public class InventoryReadDbContext : MongoDbContext
 {

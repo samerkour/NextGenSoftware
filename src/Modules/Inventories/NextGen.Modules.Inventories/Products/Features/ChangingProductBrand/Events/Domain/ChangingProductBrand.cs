@@ -1,11 +1,11 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Brands;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Extensions;
+using NextGen.Modules.Inventories.Brands;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Extensions;
 
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductBrand.Events.Domain;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductBrand.Events.Domain;
 
 internal record ChangingProductBrand(BrandId BrandId) : DomainEvent;
 

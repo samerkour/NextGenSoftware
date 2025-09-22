@@ -1,6 +1,6 @@
 using BuildingBlocks.Abstractions.CQRS.Command;
 
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductCategory;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductCategory;
 
 internal record ChangeProductCategory : ITxCommand<ChangeProductCategoryResponse>;
 

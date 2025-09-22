@@ -3,19 +3,19 @@ using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Command;
 using BuildingBlocks.Core.Exception;
 using BuildingBlocks.Core.IdsGenerator;
-using NextGen.Modules.Inventorys.Brands.Exceptions.Application;
-using NextGen.Modules.Inventorys.Categories.Exceptions.Domain;
-using NextGen.Modules.Inventorys.Products.Dtos;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Requests;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Extensions;
-using NextGen.Modules.Inventorys.Suppliers.Exceptions.Application;
+using NextGen.Modules.Inventories.Brands.Exceptions.Application;
+using NextGen.Modules.Inventories.Categories.Exceptions.Domain;
+using NextGen.Modules.Inventories.Products.Dtos;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Requests;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Extensions;
+using NextGen.Modules.Inventories.Suppliers.Exceptions.Application;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct;
 
 public record CreateProduct(
     string Name,

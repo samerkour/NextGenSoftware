@@ -1,11 +1,11 @@
 using AutoMapper;
-using NextGen.Modules.Inventorys.Products.Dtos;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Requests;
-using NextGen.Modules.Inventorys.Products.Features.GettingProductsView;
-using NextGen.Modules.Inventorys.Products.Models;
+using NextGen.Modules.Inventories.Products.Dtos;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Requests;
+using NextGen.Modules.Inventories.Products.Features.GettingProductsView;
+using NextGen.Modules.Inventories.Products.Models;
 
-namespace NextGen.Modules.Inventorys.Products;
+namespace NextGen.Modules.Inventories.Products;
 
 public class ProductMappers : Profile
 {

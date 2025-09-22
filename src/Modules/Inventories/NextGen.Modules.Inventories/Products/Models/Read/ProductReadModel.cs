@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys.Products.Models.Read;
+namespace NextGen.Modules.Inventories.Products.Models.Read;
 
 public class ProductReadModel
 {

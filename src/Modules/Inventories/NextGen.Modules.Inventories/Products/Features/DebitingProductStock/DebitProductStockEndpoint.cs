@@ -2,7 +2,7 @@ using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace NextGen.Modules.Inventorys.Products.Features.DebitingProductStock;
+namespace NextGen.Modules.Inventories.Products.Features.DebitingProductStock;
 
 // POST api/v1/inventory/products/{productId}/debit-stock
 public static class DebitProductStockEndpoint

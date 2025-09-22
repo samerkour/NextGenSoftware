@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Exception.Types;
 
-namespace NextGen.Modules.Inventorys.Products.Exceptions.Application;
+namespace NextGen.Modules.Inventories.Products.Exceptions.Application;
 
 public class ProductNotFoundException : NotFoundException
 {

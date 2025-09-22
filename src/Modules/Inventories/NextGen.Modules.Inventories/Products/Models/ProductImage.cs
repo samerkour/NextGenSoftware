@@ -1,9 +1,9 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.Domain;
 using BuildingBlocks.Core.Domain;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
+using NextGen.Modules.Inventories.Products.ValueObjects;
 
-namespace NextGen.Modules.Inventorys.Products.Models;
+namespace NextGen.Modules.Inventories.Products.Models;
 
 public class ProductImage : Entity<EntityId>
 {

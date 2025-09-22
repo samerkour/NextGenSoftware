@@ -1,3 +1,3 @@
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductBrand;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductBrand;
 
 internal record ChangeProductBrandResponse;

@@ -1,11 +1,11 @@
 using Bogus;
 using BuildingBlocks.Abstractions.Persistence;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Shared.Contracts;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Shared.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Products.Data;
+namespace NextGen.Modules.Inventories.Products.Data;
 
 public class ProductDataSeeder : IDataSeeder
 {

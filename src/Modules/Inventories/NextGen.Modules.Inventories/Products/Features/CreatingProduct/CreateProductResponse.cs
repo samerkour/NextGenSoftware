@@ -1,5 +1,5 @@
-using NextGen.Modules.Inventorys.Products.Dtos;
+using NextGen.Modules.Inventories.Products.Dtos;
 
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct;
 
 public record CreateProductResponse(ProductDto Product);

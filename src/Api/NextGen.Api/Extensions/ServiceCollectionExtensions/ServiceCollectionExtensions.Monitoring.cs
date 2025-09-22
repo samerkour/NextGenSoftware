@@ -2,7 +2,7 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Monitoring;
 using BuildingBlocks.Persistence.EfCore.SqlServer;
-using NextGen.Modules.Inventorys;
+using NextGen.Modules.Inventories;
 using NextGen.Modules.Parties;
 using NextGen.Modules.Identity;
 using NextGen.Modules.Sales;
@@ -24,8 +24,8 @@ public static partial class ServiceCollectionExtensions
 
             healthChecksBuilder.AddSqlServer(
                 inventorySqlServerOptions.ConnectionString,
-                name: "Inventorys-Module-SqlServer-Check",
-                tags: new[] {"inventorys-sqlserver"});
+                name: "Inventories-Module-SqlServer-Check",
+                tags: new[] {"inventories-sqlserver"});
 
 
             var partySqlServerOptions = configuration.GetOptions<SqlServerOptions>(

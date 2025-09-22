@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.CQRS.Query;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProducts;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProducts;
 
 // https://blog.codingmilitia.com/2022/01/03/getting-complex-type-as-simple-type-query-string-aspnet-core-api-controller/
 // https://benfoster.io/blog/minimal-apis-custom-model-binding-aspnet-6/

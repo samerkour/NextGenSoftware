@@ -1,6 +1,6 @@
-using NextGen.Modules.Inventorys.Products.Models;
+using NextGen.Modules.Inventories.Products.Models;
 
-namespace NextGen.Modules.Inventorys.Products.Features.UpdatingProduct;
+namespace NextGen.Modules.Inventories.Products.Features.UpdatingProduct;
 
 public record UpdateProductRequest
 {

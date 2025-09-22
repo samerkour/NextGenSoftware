@@ -2,22 +2,22 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Core.CQRS.Event.Internal;
 using BuildingBlocks.Core.Domain;
 using BuildingBlocks.Core.Exception;
-using NextGen.Modules.Inventorys.Brands;
-using NextGen.Modules.Inventorys.Categories;
-using NextGen.Modules.Inventorys.Products.Exceptions.Domain;
-using NextGen.Modules.Inventorys.Products.Features.ChangingMaxThreshold;
-using NextGen.Modules.Inventorys.Products.Features.ChangingProductBrand.Events.Domain;
-using NextGen.Modules.Inventorys.Products.Features.ChangingProductCategory.Events;
-using NextGen.Modules.Inventorys.Products.Features.ChangingProductPrice;
-using NextGen.Modules.Inventorys.Products.Features.ChangingProductSupplier.Events;
-using NextGen.Modules.Inventorys.Products.Features.ChangingRestockThreshold;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Domain;
-using NextGen.Modules.Inventorys.Products.Features.DebitingProductStock.Events.Domain;
-using NextGen.Modules.Inventorys.Products.Features.ReplenishingProductStock.Events.Domain;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Brands;
+using NextGen.Modules.Inventories.Categories;
+using NextGen.Modules.Inventories.Products.Exceptions.Domain;
+using NextGen.Modules.Inventories.Products.Features.ChangingMaxThreshold;
+using NextGen.Modules.Inventories.Products.Features.ChangingProductBrand.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.ChangingProductCategory.Events;
+using NextGen.Modules.Inventories.Products.Features.ChangingProductPrice;
+using NextGen.Modules.Inventories.Products.Features.ChangingProductSupplier.Events;
+using NextGen.Modules.Inventories.Products.Features.ChangingRestockThreshold;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.DebitingProductStock.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.ReplenishingProductStock.Events.Domain;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Suppliers;
 
-namespace NextGen.Modules.Inventorys.Products.Models;
+namespace NextGen.Modules.Inventories.Products.Models;
 
 // https://event-driven.io/en/notes_about_csharp_records_and_nullable_reference_types/
 // https://enterprisecraftsmanship.com/posts/link-to-an-aggregate-reference-or-id/

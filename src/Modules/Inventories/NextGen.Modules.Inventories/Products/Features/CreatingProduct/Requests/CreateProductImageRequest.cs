@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Requests;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct.Requests;
 
 public record CreateProductImageRequest
 {

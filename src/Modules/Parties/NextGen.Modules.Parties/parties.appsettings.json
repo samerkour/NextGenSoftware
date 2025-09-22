@@ -23,9 +23,9 @@
       "BaseApiAddress": "http://localhost:5000",
       "UsersEndpoint": "api/v1/identity/users"
     },
-    "InventorysApiClientOptions": {
+    "InventoriesApiClientOptions": {
       "BaseApiAddress": "http://localhost:5000",
-      "ProductsEndpoint": "api/v1/inventorys/products"
+      "ProductsEndpoint": "api/v1/inventories/products"
     },
     "MessagePersistenceOptions": {
       "Interval": 30

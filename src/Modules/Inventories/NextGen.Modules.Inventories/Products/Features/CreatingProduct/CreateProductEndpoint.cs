@@ -1,9 +1,9 @@
 using Ardalis.GuardClauses;
 using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Requests;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Requests;
 
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct;
 
 // POST api/v1/inventory/products
 public static class CreateProductEndpoint

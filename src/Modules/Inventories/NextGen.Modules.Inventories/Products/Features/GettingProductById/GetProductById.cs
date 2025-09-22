@@ -2,13 +2,13 @@ using Ardalis.GuardClauses;
 using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Query;
 using BuildingBlocks.Core.Exception;
-using NextGen.Modules.Inventorys.Products.Dtos;
-using NextGen.Modules.Inventorys.Products.Exceptions.Application;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Extensions;
+using NextGen.Modules.Inventories.Products.Dtos;
+using NextGen.Modules.Inventories.Products.Exceptions.Application;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Extensions;
 using FluentValidation;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProductById;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProductById;
 
 public record GetProductById(long Id) : IQuery<GetProductByIdResponse>;
 

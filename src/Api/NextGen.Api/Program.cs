@@ -21,13 +21,12 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using NextGen.Api;
 using NextGen.Api.Extensions.ApplicationBuilderExtensions;
 using NextGen.Api.Extensions.ServiceCollectionExtensions;
-using NextGen.Modules.Inventorys;
 using NextGen.Modules.Identity;
+using NextGen.Modules.Inventories;
 using NextGen.Modules.Parties;
+using NextGen.Modules.Sales;
 using Serilog;
 using Serilog.Events;
-using Spectre.Console;
-using NextGen.Modules.Sales;
 
 var builder = WebApplication.CreateBuilder(args);
 

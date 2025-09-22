@@ -22,12 +22,12 @@ public static class IdentityServerConfig
 
 
     public static IEnumerable<ApiScope> ApiScopes =>
-        new List<ApiScope> { new("NextGen-api", "NextGen.Modules.Inventorys API") };
+        new List<ApiScope> { new("NextGen-api", "NextGen.Modules.Inventories API") };
 
     public static IList<ApiResource> ApiResources =>
         new List<ApiResource>
         {
-            new ApiResource("nextgenApiResource", "NextGen.Modules.Inventorys API Resource")
+            new ApiResource("nextgenApiResource", "NextGen.Modules.Inventories API Resource")
             {
                 Scopes = { "NextGen-api" },
                 UserClaims = { JwtClaimTypes.Role, JwtClaimTypes.Name, JwtClaimTypes.Id }

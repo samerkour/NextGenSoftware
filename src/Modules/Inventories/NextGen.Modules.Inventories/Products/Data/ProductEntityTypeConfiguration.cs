@@ -1,14 +1,14 @@
 using BuildingBlocks.Core.Persistence.EfCore;
-using NextGen.Modules.Inventorys.Brands;
-using NextGen.Modules.Inventorys.Categories;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Shared.Data;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Brands;
+using NextGen.Modules.Inventories.Categories;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Shared.Data;
+using NextGen.Modules.Inventories.Suppliers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace NextGen.Modules.Inventorys.Products.Data;
+namespace NextGen.Modules.Inventories.Products.Data;
 
 public class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product>
 {

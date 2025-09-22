@@ -1,9 +1,9 @@
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Abstractions.Messaging;
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Domain;
 
-namespace NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Notification;
+namespace NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Notification;
 
 public record ProductCreatedNotification
     (ProductCreated DomainEvent) : DomainNotificationEventWrapper<ProductCreated>(DomainEvent)
@@ -28,7 +28,7 @@ internal class ProductCreatedNotificationHandler : IDomainNotificationEventHandl
     {
         // We could publish integration event to bus here
         // await _bus.PublishAsync(
-        //     new NextGen.Modules.Shared.Inventorys.Products.Events.Integration.ProductCreated(
+        //     new NextGen.Modules.Shared.Inventories.Products.Events.Integration.ProductCreated(
         //         notification.Id,
         //         notification.Name,
         //         notification.Stock,

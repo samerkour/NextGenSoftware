@@ -1,6 +1,6 @@
 using BuildingBlocks.Abstractions.Domain;
 
-namespace NextGen.Modules.Inventorys.Suppliers;
+namespace NextGen.Modules.Inventories.Suppliers;
 
 public record SupplierId : AggregateId
 {

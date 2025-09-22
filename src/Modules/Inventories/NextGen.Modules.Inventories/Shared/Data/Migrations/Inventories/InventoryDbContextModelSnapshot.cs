@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NextGen.Modules.Inventorys.Shared.Data;
+using NextGen.Modules.Inventories.Shared.Data;
 
 #nullable disable
 
-namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
+namespace NextGen.Modules.Inventories.Shared.Data.Migrations.Inventories
 {
     [DbContext(typeof(InventoryDbContext))]
     partial class InventoryDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Brands.Brand", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Brands.Brand", b =>
                 {
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
@@ -51,7 +51,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.ToTable("brands", "inventory");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Categories.Category", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Categories.Category", b =>
                 {
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
@@ -88,7 +88,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.ToTable("categories", "inventory");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Products.Models.Product", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Products.Models.Product", b =>
                 {
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
@@ -156,7 +156,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.ToTable("products", "inventory");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Products.Models.ProductImage", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Products.Models.ProductImage", b =>
                 {
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
@@ -187,7 +187,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.ToTable("product_images", "inventory");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Products.Models.ProductView", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Products.Models.ProductView", b =>
                 {
                     b.Property<long>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -228,7 +228,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.ToTable("product_views", "inventory");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Suppliers.Supplier", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Suppliers.Supplier", b =>
                 {
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
@@ -253,27 +253,27 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.ToTable("suppliers", "inventory");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Products.Models.Product", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Products.Models.Product", b =>
                 {
-                    b.HasOne("NextGen.Modules.Inventorys.Brands.Brand", "Brand")
+                    b.HasOne("NextGen.Modules.Inventories.Brands.Brand", "Brand")
                         .WithMany()
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NextGen.Modules.Inventorys.Categories.Category", "Category")
+                    b.HasOne("NextGen.Modules.Inventories.Categories.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NextGen.Modules.Inventorys.Suppliers.Supplier", "Supplier")
+                    b.HasOne("NextGen.Modules.Inventories.Suppliers.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("NextGen.Modules.Inventorys.Products.ValueObjects.Dimensions", "Dimensions", b1 =>
+                    b.OwnsOne("NextGen.Modules.Inventories.Products.ValueObjects.Dimensions", "Dimensions", b1 =>
                         {
                             b1.Property<long>("ProductId")
                                 .HasColumnType("bigint");
@@ -295,7 +295,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                                 .HasForeignKey("ProductId");
                         });
 
-                    b.OwnsOne("NextGen.Modules.Inventorys.Products.ValueObjects.Stock", "Stock", b1 =>
+                    b.OwnsOne("NextGen.Modules.Inventories.Products.ValueObjects.Stock", "Stock", b1 =>
                         {
                             b1.Property<long>("ProductId")
                                 .HasColumnType("bigint");
@@ -330,9 +330,9 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Products.Models.ProductImage", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Products.Models.ProductImage", b =>
                 {
-                    b.HasOne("NextGen.Modules.Inventorys.Products.Models.Product", "Product")
+                    b.HasOne("NextGen.Modules.Inventories.Products.Models.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -341,7 +341,7 @@ namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("NextGen.Modules.Inventorys.Products.Models.Product", b =>
+            modelBuilder.Entity("NextGen.Modules.Inventories.Products.Models.Product", b =>
                 {
                     b.Navigation("Images");
                 });

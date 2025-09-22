@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys.Products.Models;
+namespace NextGen.Modules.Inventories.Products.Models;
 
 public enum ProductStatus
 {

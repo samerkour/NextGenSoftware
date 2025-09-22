@@ -1,9 +1,9 @@
 using Bogus;
 using BuildingBlocks.Abstractions.Persistence;
-using NextGen.Modules.Inventorys.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Brands.Data;
+namespace NextGen.Modules.Inventories.Brands.Data;
 
 public class BrandDataSeeder : IDataSeeder
 {

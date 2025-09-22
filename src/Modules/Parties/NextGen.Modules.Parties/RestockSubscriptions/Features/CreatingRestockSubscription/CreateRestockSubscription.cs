@@ -10,7 +10,7 @@ using NextGen.Modules.Parties.RestockSubscriptions.Dtos;
 using NextGen.Modules.Parties.RestockSubscriptions.Features.CreatingRestockSubscription.Exceptions;
 using NextGen.Modules.Parties.RestockSubscriptions.Models.Write;
 using NextGen.Modules.Parties.RestockSubscriptions.ValueObjects;
-using NextGen.Modules.Parties.Shared.Clients.Inventorys;
+using NextGen.Modules.Parties.Shared.Clients.Inventories;
 using NextGen.Modules.Parties.Shared.Data;
 using NextGen.Modules.Parties.Shared.Extensions;
 using FluentValidation;

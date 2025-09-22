@@ -1,6 +1,6 @@
 using BuildingBlocks.Abstractions.Domain;
 
-namespace NextGen.Modules.Inventorys.Brands;
+namespace NextGen.Modules.Inventories.Brands;
 
 public record BrandId : AggregateId
 {

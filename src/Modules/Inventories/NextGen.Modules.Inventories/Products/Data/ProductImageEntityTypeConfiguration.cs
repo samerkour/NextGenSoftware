@@ -1,9 +1,9 @@
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Shared.Data;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Shared.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace NextGen.Modules.Inventorys.Products.Data;
+namespace NextGen.Modules.Inventories.Products.Data;
 
 public class ProductImageEntityTypeConfiguration : IEntityTypeConfiguration<ProductImage>
 {

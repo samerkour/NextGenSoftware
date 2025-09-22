@@ -3,7 +3,7 @@ using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Query;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProducts;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProducts;
 
 // https://www.youtube.com/watch?v=SDu0MA6TmuM
 // https://github.com/ardalis/ApiEndpoints

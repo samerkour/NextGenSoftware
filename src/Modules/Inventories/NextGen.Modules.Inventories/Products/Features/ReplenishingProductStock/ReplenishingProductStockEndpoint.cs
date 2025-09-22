@@ -2,7 +2,7 @@ using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace NextGen.Modules.Inventorys.Products.Features.ReplenishingProductStock;
+namespace NextGen.Modules.Inventories.Products.Features.ReplenishingProductStock;
 
 // POST api/v1/inventory/products/{productId}/replenish-stock
 public static class ReplenishingProductStockEndpoint

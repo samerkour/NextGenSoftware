@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Domain.Exceptions;
 
-namespace NextGen.Modules.Inventorys.Categories.Exceptions.Domain;
+namespace NextGen.Modules.Inventories.Categories.Exceptions.Domain;
 
 public class CategoryDomainException : DomainException
 {

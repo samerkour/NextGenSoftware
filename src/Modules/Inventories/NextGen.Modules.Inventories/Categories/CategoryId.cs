@@ -1,6 +1,6 @@
 using BuildingBlocks.Abstractions.Domain;
 
-namespace NextGen.Modules.Inventorys.Categories;
+namespace NextGen.Modules.Inventories.Categories;
 
 public record CategoryId : AggregateId
 {

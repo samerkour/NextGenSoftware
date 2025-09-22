@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace NextGen.Modules.Inventorys.Shared.Data.Migrations.Inventorys
+namespace NextGen.Modules.Inventories.Shared.Data.Migrations.Inventories
 {
     /// <inheritdoc />
     public partial class InitialInventoryMigration : Migration

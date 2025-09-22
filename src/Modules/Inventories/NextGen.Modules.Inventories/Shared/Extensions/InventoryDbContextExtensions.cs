@@ -1,12 +1,12 @@
-using NextGen.Modules.Inventorys.Brands;
-using NextGen.Modules.Inventorys.Categories;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Brands;
+using NextGen.Modules.Inventories.Categories;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Suppliers;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Shared.Extensions;
+namespace NextGen.Modules.Inventories.Shared.Extensions;
 
 /// <summary>
 /// Put some shared code between multiple feature here, for preventing duplicate some codes

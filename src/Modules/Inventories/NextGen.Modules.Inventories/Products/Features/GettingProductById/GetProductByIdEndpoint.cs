@@ -3,7 +3,7 @@ using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProductById;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProductById;
 
 // GET api/v1/inventory/products/{id}
 public static class GetProductByIdEndpoint

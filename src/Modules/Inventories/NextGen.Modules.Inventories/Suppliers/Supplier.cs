@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Domain;
 
-namespace NextGen.Modules.Inventorys.Suppliers;
+namespace NextGen.Modules.Inventories.Suppliers;
 
 public class Supplier : Entity<SupplierId>
 {

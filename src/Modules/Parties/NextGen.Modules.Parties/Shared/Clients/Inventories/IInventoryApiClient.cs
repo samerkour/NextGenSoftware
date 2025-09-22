@@ -1,6 +1,6 @@
-using NextGen.Modules.Parties.Shared.Clients.Inventorys.Dtos;
+using NextGen.Modules.Parties.Shared.Clients.Inventories.Dtos;
 
-namespace NextGen.Modules.Parties.Shared.Clients.Inventorys;
+namespace NextGen.Modules.Parties.Shared.Clients.Inventories;
 
 // Ref: http://www.kamilgrzybek.com/design/modular-monolith-integration-styles/
 // https://docs.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer

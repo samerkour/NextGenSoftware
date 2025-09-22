@@ -1,11 +1,11 @@
 using BuildingBlocks.Abstractions.Persistence;
 using BuildingBlocks.Persistence.EfCore.SqlServer;
 using BuildingBlocks.Persistence.Mongo;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Data;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Shared.Extensions.ServiceCollectionExtensions;
+namespace NextGen.Modules.Inventories.Shared.Extensions.ServiceCollectionExtensions;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -30,7 +30,7 @@ public static partial class ServiceCollectionExtensions
                 $"{InventoryModuleConfiguration.ModuleName}:{nameof(SqlServerOptions)}:UseInMemory"))
         {
             services.AddDbContext<InventoryDbContext>(options =>
-                options.UseInMemoryDatabase("NextGen.Modules.Inventorys"));
+                options.UseInMemoryDatabase("NextGen.Modules.Inventories"));
 
             services.AddScoped<IDbFacadeResolver>(provider => provider.GetService<InventoryDbContext>()!);
         }

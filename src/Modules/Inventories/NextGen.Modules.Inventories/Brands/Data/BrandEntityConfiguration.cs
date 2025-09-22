@@ -1,9 +1,9 @@
 using BuildingBlocks.Core.Persistence.EfCore;
-using NextGen.Modules.Inventorys.Shared.Data;
+using NextGen.Modules.Inventories.Shared.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace NextGen.Modules.Inventorys.Brands.Data;
+namespace NextGen.Modules.Inventories.Brands.Data;
 
 public class BrandEntityConfiguration : IEntityTypeConfiguration<Brand>
 {

@@ -2,11 +2,11 @@ using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Query;
 using BuildingBlocks.Abstractions.Persistence;
 using Dapper;
-using NextGen.Modules.Inventorys.Products.Models;
+using NextGen.Modules.Inventories.Products.Models;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProductsView;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProductsView;
 
 public class GetProductsView : IQuery<GetProductsViewResponse>
 {

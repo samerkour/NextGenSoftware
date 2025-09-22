@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys;
+namespace NextGen.Modules.Inventories;
 
 public class InventoryRoot
 {

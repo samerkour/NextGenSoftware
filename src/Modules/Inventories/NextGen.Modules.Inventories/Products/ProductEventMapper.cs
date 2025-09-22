@@ -1,12 +1,12 @@
 using BuildingBlocks.Abstractions.CQRS.Event;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Abstractions.Messaging;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Domain;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct.Events.Notification;
-using NextGen.Modules.Inventorys.Products.Features.DebitingProductStock.Events.Domain;
-using NextGen.Modules.Inventorys.Products.Features.ReplenishingProductStock.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct.Events.Notification;
+using NextGen.Modules.Inventories.Products.Features.DebitingProductStock.Events.Domain;
+using NextGen.Modules.Inventories.Products.Features.ReplenishingProductStock.Events.Domain;
 
-namespace NextGen.Modules.Inventorys.Products;
+namespace NextGen.Modules.Inventories.Products;
 
 public class ProductEventMapper : IEventMapper
 {

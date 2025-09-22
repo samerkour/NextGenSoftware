@@ -1,12 +1,12 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Command;
 using BuildingBlocks.Core.Exception;
-using NextGen.Modules.Inventorys.Products.Exceptions.Application;
-using NextGen.Modules.Inventorys.Shared.Contracts;
+using NextGen.Modules.Inventories.Products.Exceptions.Application;
+using NextGen.Modules.Inventories.Shared.Contracts;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Products.Features.DebitingProductStock;
+namespace NextGen.Modules.Inventories.Products.Features.DebitingProductStock;
 
 public record DebitProductStock(long ProductId, int Quantity) : ITxCommand;
 

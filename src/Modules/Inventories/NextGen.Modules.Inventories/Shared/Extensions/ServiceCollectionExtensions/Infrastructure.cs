@@ -11,7 +11,7 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.Validation;
 using BuildingBlocks.Web.Extensions.ServiceCollectionExtensions;
 
-namespace NextGen.Modules.Inventorys.Shared.Extensions.ServiceCollectionExtensions;
+namespace NextGen.Modules.Inventories.Shared.Extensions.ServiceCollectionExtensions;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -49,7 +49,6 @@ public static partial class ServiceCollectionExtensions
 
         services.AddCustomInMemoryCache(configuration)
             .AddCachingRequestPolicies(Assembly.GetExecutingAssembly());
-
 
         services.AddSingleton<ILoggerFactory>(new Serilog.Extensions.Logging.SerilogLoggerFactory());
 

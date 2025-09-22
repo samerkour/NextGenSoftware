@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Exception.Types;
 
-namespace NextGen.Modules.Inventorys.Suppliers.Exceptions.Application;
+namespace NextGen.Modules.Inventories.Suppliers.Exceptions.Application;
 
 public class SupplierNotFoundException : NotFoundException
 {

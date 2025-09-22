@@ -1,7 +1,7 @@
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Suppliers;
 
-namespace NextGen.Modules.Inventorys.Products.Features.ChangingProductSupplier.Events;
+namespace NextGen.Modules.Inventories.Products.Features.ChangingProductSupplier.Events;
 
 public record ProductSupplierChanged(SupplierId SupplierId, ProductId ProductId) : DomainEvent;

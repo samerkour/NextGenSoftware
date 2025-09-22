@@ -1,8 +1,8 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Domain;
-using NextGen.Modules.Inventorys.Categories.Exceptions.Domain;
+using NextGen.Modules.Inventories.Categories.Exceptions.Domain;
 
-namespace NextGen.Modules.Inventorys.Categories;
+namespace NextGen.Modules.Inventories.Categories;
 
 // https://stackoverflow.com/a/32354885/581476
 public class Category : Aggregate<CategoryId>

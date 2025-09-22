@@ -1,10 +1,10 @@
 using BuildingBlocks.Persistence.EfCore.SqlServer;
 
-namespace NextGen.Modules.Inventorys.Shared.Data;
+namespace NextGen.Modules.Inventories.Shared.Data;
 
 public class InventoryDbContextDesignFactory : DbContextDesignFactoryBase<InventoryDbContext>
 {
-    public InventoryDbContextDesignFactory() : base("Inventorys", "Inventorys:SqlServerOptions")
+    public InventoryDbContextDesignFactory() : base("Inventories", "Inventories:SqlServerOptions")
     {
     }
 }

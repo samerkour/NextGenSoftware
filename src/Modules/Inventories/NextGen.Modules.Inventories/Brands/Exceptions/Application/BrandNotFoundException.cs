@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Exception.Types;
 
-namespace NextGen.Modules.Inventorys.Brands.Exceptions.Application;
+namespace NextGen.Modules.Inventories.Brands.Exceptions.Application;
 
 public class BrandNotFoundException : NotFoundException
 {

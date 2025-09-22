@@ -1,9 +1,9 @@
 using Bogus;
 using BuildingBlocks.Abstractions.Persistence;
-using NextGen.Modules.Inventorys.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Suppliers.Data;
+namespace NextGen.Modules.Inventories.Suppliers.Data;
 
 public class SupplierDataSeeder : IDataSeeder
 {

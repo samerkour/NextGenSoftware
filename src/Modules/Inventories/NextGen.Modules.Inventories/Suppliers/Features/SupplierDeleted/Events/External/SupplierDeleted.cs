@@ -1,7 +1,7 @@
 using BuildingBlocks.Abstractions.CQRS.Event;
 using BuildingBlocks.Core.Messaging;
 
-namespace NextGen.Modules.Inventorys.Suppliers.Features.SupplierDeleted.Events.External;
+namespace NextGen.Modules.Inventories.Suppliers.Features.SupplierDeleted.Events.External;
 
 public record SupplierDeleted(long Id) : IntegrationEvent;
 

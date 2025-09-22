@@ -1,7 +1,7 @@
 using BuildingBlocks.Abstractions.CQRS.Event;
 using BuildingBlocks.Core.Messaging;
 
-namespace NextGen.Modules.Inventorys.Suppliers.Features.SupplierCreated.Events.External;
+namespace NextGen.Modules.Inventories.Suppliers.Features.SupplierCreated.Events.External;
 
 public record SupplierCreated(long Id, string Name) : IntegrationEvent;
 

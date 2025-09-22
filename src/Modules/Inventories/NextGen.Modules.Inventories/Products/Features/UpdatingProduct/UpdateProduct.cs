@@ -1,17 +1,17 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Command;
 using BuildingBlocks.Core.Exception;
-using NextGen.Modules.Inventorys.Brands.Exceptions.Application;
-using NextGen.Modules.Inventorys.Categories.Exceptions.Application;
-using NextGen.Modules.Inventorys.Products.Exceptions.Application;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Shared.Contracts;
-using NextGen.Modules.Inventorys.Shared.Extensions;
-using NextGen.Modules.Inventorys.Suppliers.Exceptions.Application;
+using NextGen.Modules.Inventories.Brands.Exceptions.Application;
+using NextGen.Modules.Inventories.Categories.Exceptions.Application;
+using NextGen.Modules.Inventories.Products.Exceptions.Application;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Shared.Contracts;
+using NextGen.Modules.Inventories.Shared.Extensions;
+using NextGen.Modules.Inventories.Suppliers.Exceptions.Application;
 using FluentValidation;
 
-namespace NextGen.Modules.Inventorys.Products.Features.UpdatingProduct;
+namespace NextGen.Modules.Inventories.Products.Features.UpdatingProduct;
 
 public record UpdateProduct(
     long Id,

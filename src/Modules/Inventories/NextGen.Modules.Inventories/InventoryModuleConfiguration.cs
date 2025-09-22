@@ -5,19 +5,19 @@ using BuildingBlocks.Core;
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Core.Messaging.Extensions;
 using BuildingBlocks.Web.Extensions;
-using NextGen.Modules.Inventorys.Brands;
-using NextGen.Modules.Inventorys.Categories;
-using NextGen.Modules.Inventorys.Products;
-using NextGen.Modules.Inventorys.Shared.Extensions.ApplicationBuilderExtensions;
-using NextGen.Modules.Inventorys.Shared.Extensions.ServiceCollectionExtensions;
-using NextGen.Modules.Inventorys.Suppliers;
+using NextGen.Modules.Inventories.Brands;
+using NextGen.Modules.Inventories.Categories;
+using NextGen.Modules.Inventories.Products;
+using NextGen.Modules.Inventories.Shared.Extensions.ApplicationBuilderExtensions;
+using NextGen.Modules.Inventories.Shared.Extensions.ServiceCollectionExtensions;
+using NextGen.Modules.Inventories.Suppliers;
 
-namespace NextGen.Modules.Inventorys;
+namespace NextGen.Modules.Inventories;
 
 public class InventoryModuleConfiguration : IModuleDefinition
 {
-    public const string InventoryModulePrefixUri = "api/v{version:apiVersion}/inventorys";
-    public const string ModuleName = "Inventorys";
+    public const string InventoryModulePrefixUri = "api/v{version:apiVersion}/inventories";
+    public const string ModuleName = "Inventories";
     public void AddModuleServices(
         IServiceCollection services,
         IConfiguration configuration,
@@ -60,13 +60,13 @@ public class InventoryModuleConfiguration : IModuleDefinition
         // Add Sub Modules Endpoints
         endpoints.MapProductsEndpoints();
 
-        endpoints.MapGet("inventorys", (HttpContext context) =>
+        endpoints.MapGet("inventories", (HttpContext context) =>
         {
             var requestId = context.Request.Headers.TryGetValue("X-Request-Id", out var requestIdHeader)
                 ? requestIdHeader.FirstOrDefault()
                 : string.Empty;
 
-            return $"Inventorys Service Apis, RequestId: {requestId}";
+            return $"Inventories Service Apis, RequestId: {requestId}";
         }).ExcludeFromDescription();
     }
 }

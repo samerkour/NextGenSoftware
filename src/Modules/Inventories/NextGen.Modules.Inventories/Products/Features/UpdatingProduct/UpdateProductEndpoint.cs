@@ -3,7 +3,7 @@ using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace NextGen.Modules.Inventorys.Products.Features.UpdatingProduct;
+namespace NextGen.Modules.Inventories.Products.Features.UpdatingProduct;
 
 // PUT api/v1/inventory/products/{id}
 public static class UpdateProductEndpoint

@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
-using NextGen.Modules.Inventorys.Suppliers.Exceptions.Application;
+using NextGen.Modules.Inventories.Suppliers.Exceptions.Application;
 
-namespace NextGen.Modules.Inventorys.Suppliers;
+namespace NextGen.Modules.Inventories.Suppliers;
 
 public static class GuardExtensions
 {

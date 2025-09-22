@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Shared\Data\Migrations\Inventorys\" />
+        <Folder Include="Shared\Data\Migrations\Inventories\" />
         <Folder Include="Suppliers\Features\SupplierCreated\Events" />
         <Folder Include="Suppliers\Features\SupplierDeleted\Events" />
         <Folder Include="Suppliers\Features\SupplierUpdated\Events" />
@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="BuildingBlocks.Core.IntegrationTests" />
-    <InternalsVisibleTo Include="NextGen.Modules.Inventorys.IntegrationTests" />
+    <InternalsVisibleTo Include="NextGen.Modules.Inventories.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>

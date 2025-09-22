@@ -1,7 +1,7 @@
 using BuildingBlocks.Abstractions.Persistence;
-using NextGen.Modules.Inventorys.Brands.Data;
+using NextGen.Modules.Inventories.Brands.Data;
 
-namespace NextGen.Modules.Inventorys.Brands;
+namespace NextGen.Modules.Inventories.Brands;
 
 internal static class Configs
 {

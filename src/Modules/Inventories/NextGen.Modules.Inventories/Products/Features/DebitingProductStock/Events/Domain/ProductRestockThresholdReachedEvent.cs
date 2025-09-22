@@ -1,10 +1,10 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Abstractions.CQRS.Event.Internal;
 using BuildingBlocks.Core.CQRS.Event.Internal;
-using NextGen.Modules.Inventorys.Products.ValueObjects;
-using NextGen.Modules.Inventorys.Shared.Contracts;
+using NextGen.Modules.Inventories.Products.ValueObjects;
+using NextGen.Modules.Inventories.Shared.Contracts;
 
-namespace NextGen.Modules.Inventorys.Products.Features.DebitingProductStock.Events.Domain;
+namespace NextGen.Modules.Inventories.Products.Features.DebitingProductStock.Events.Domain;
 
 public record ProductRestockThresholdReachedEvent(ProductId ProductId, Stock Stock, int Quantity) : DomainEvent;
 

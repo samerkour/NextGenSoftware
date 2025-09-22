@@ -1,6 +1,6 @@
 using BuildingBlocks.Core.Exception.Types;
 
-namespace NextGen.Modules.Inventorys.Categories.Exceptions.Application;
+namespace NextGen.Modules.Inventories.Categories.Exceptions.Application;
 
 public class CategoryNotFoundException : NotFoundException
 {

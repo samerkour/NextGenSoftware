@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys.Products.Dtos;
+namespace NextGen.Modules.Inventories.Products.Dtos;
 
 public record ProductImageDto
 {

@@ -1,14 +1,14 @@
 using Asp.Versioning.Builder;
 using BuildingBlocks.Abstractions.CQRS.Event;
 using BuildingBlocks.Abstractions.Persistence;
-using NextGen.Modules.Inventorys.Products.Data;
-using NextGen.Modules.Inventorys.Products.Features.CreatingProduct;
-using NextGen.Modules.Inventorys.Products.Features.DebitingProductStock;
-using NextGen.Modules.Inventorys.Products.Features.GettingProductById;
-using NextGen.Modules.Inventorys.Products.Features.GettingProductsView;
-using NextGen.Modules.Inventorys.Products.Features.ReplenishingProductStock;
+using NextGen.Modules.Inventories.Products.Data;
+using NextGen.Modules.Inventories.Products.Features.CreatingProduct;
+using NextGen.Modules.Inventories.Products.Features.DebitingProductStock;
+using NextGen.Modules.Inventories.Products.Features.GettingProductById;
+using NextGen.Modules.Inventories.Products.Features.GettingProductsView;
+using NextGen.Modules.Inventories.Products.Features.ReplenishingProductStock;
 
-namespace NextGen.Modules.Inventorys.Products;
+namespace NextGen.Modules.Inventories.Products;
 
 internal static class ProductsConfigs
 {

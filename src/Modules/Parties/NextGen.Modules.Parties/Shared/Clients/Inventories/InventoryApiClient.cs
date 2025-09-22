@@ -1,18 +1,18 @@
 using System.Net.Http.Json;
 using Ardalis.GuardClauses;
-using NextGen.Modules.Parties.Shared.Clients.Inventorys.Dtos;
+using NextGen.Modules.Parties.Shared.Clients.Inventories.Dtos;
 using Microsoft.Extensions.Options;
 
-namespace NextGen.Modules.Parties.Shared.Clients.Inventorys;
+namespace NextGen.Modules.Parties.Shared.Clients.Inventories;
 
 // Ref: http://www.kamilgrzybek.com/design/modular-monolith-integration-styles/
 // https://docs.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer
 public class InventoryApiClient : IInventoryApiClient
 {
     private readonly HttpClient _httpClient;
-    private readonly InventorysApiClientOptions _options;
+    private readonly InventoriesApiClientOptions _options;
 
-    public InventoryApiClient(HttpClient httpClient, IOptions<InventorysApiClientOptions> options)
+    public InventoryApiClient(HttpClient httpClient, IOptions<InventoriesApiClientOptions> options)
     {
         _httpClient = Guard.Against.Null(httpClient, nameof(httpClient));
         _options = Guard.Against.Null(options.Value, nameof(options));

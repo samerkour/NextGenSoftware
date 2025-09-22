@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProductsView;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProductsView;
 
 public class GetProductsViewRequest
 {

@@ -1,8 +1,8 @@
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Domain;
-using NextGen.Modules.Inventorys.Brands.Exceptions.Domain;
+using NextGen.Modules.Inventories.Brands.Exceptions.Domain;
 
-namespace NextGen.Modules.Inventorys.Brands;
+namespace NextGen.Modules.Inventories.Brands;
 
 public class Brand : Aggregate<BrandId>
 {

@@ -3,13 +3,13 @@ using BuildingBlocks.Abstractions.CQRS.Query;
 using BuildingBlocks.Core.CQRS.Query;
 using BuildingBlocks.Core.Persistence.EfCore;
 using BuildingBlocks.Core.Types;
-using NextGen.Modules.Inventorys.Products.Dtos;
-using NextGen.Modules.Inventorys.Products.Models;
-using NextGen.Modules.Inventorys.Shared.Contracts;
+using NextGen.Modules.Inventories.Products.Dtos;
+using NextGen.Modules.Inventories.Products.Models;
+using NextGen.Modules.Inventories.Shared.Contracts;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Inventorys.Products.Features.GettingProducts;
+namespace NextGen.Modules.Inventories.Products.Features.GettingProducts;
 
 public record GetProducts : ListQuery<GetProductsResponse>;
 
