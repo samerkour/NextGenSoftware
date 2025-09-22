@@ -8,6 +8,7 @@ using NextGen.Modules.Identity.Users.Features.UpdatingUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUserLockout;
 using NextGen.Modules.Identity.Users.Features.DeleteUser;
 using NextGen.Modules.Identity.Users.Features.ChangeUserPassword;
+using NextGen.Modules.Identity.Identity.Features.ForgotPassword;
 
 namespace NextGen.Modules.Identity.Users;
 
@@ -33,6 +34,7 @@ internal static class UsersConfigs
         endpoints.MapGetUserByEmailEndpoint();
         endpoints.MapUploadProfilePictureEndpoint();
         endpoints.MapRegisterNewUserEndpoint();
+        endpoints.MapForgotPasswordEndpoint();
         endpoints.MapUpdateUserEndpoint();
         endpoints.MapUpdateUserStateEndpoint();
         endpoints.MapChangeUserPasswordEndpoint();
