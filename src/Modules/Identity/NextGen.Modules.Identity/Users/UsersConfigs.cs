@@ -1,4 +1,8 @@
 using Asp.Versioning.Builder;
+using NextGen.Modules.Identity.Identity.Features.ForgotPassword;
+using NextGen.Modules.Identity.Identity.Features.ResetPassword;
+using NextGen.Modules.Identity.Users.Features.ChangeUserPassword;
+using NextGen.Modules.Identity.Users.Features.DeleteUser;
 using NextGen.Modules.Identity.Users.Features.GettingUerByEmail;
 using NextGen.Modules.Identity.Users.Features.GettingUserById;
 using NextGen.Modules.Identity.Users.Features.GettingUsers;
@@ -6,9 +10,6 @@ using NextGen.Modules.Identity.Users.Features.ProfilePicture;
 using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUserLockout;
-using NextGen.Modules.Identity.Users.Features.DeleteUser;
-using NextGen.Modules.Identity.Users.Features.ChangeUserPassword;
-using NextGen.Modules.Identity.Identity.Features.ForgotPassword;
 
 namespace NextGen.Modules.Identity.Users;
 
@@ -36,9 +37,11 @@ internal static class UsersConfigs
         endpoints.MapRegisterNewUserEndpoint();
         endpoints.MapForgotPasswordEndpoint();
         endpoints.MapUpdateUserEndpoint();
-        endpoints.MapUpdateUserStateEndpoint();
+        endpoints.MapUpdateUserLockoutEndpoint();
+        endpoints.MapResetPasswordEndpoint();
         endpoints.MapChangeUserPasswordEndpoint();
         endpoints.MapDeleteUserEndpoint();
+
 
         return endpoints;
     }

@@ -6,9 +6,9 @@ namespace NextGen.Modules.Identity.Users.Features.UpdatingUserLockout;
 
 public static class UpdateUserLockoutEndpoint
 {
-    internal static IEndpointRouteBuilder MapUpdateUserStateEndpoint(this IEndpointRouteBuilder endpoints)
+    internal static IEndpointRouteBuilder MapUpdateUserLockoutEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/{{userId:guid}}/lockout", UpdateUserState)
+        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/{{userId:guid}}/lockout", UpdateUserLockout)
             .WithTags(UsersConfigs.Tag)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
@@ -21,7 +21,7 @@ public static class UpdateUserLockoutEndpoint
         return endpoints;
     }
 
-    private static Task<IResult> UpdateUserState(
+    private static Task<IResult> UpdateUserLockout(
         Guid userId,
         UpdateUserLockoutRequest request,
         IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
