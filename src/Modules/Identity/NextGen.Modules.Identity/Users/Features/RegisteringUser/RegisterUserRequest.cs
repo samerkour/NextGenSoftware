@@ -15,7 +15,8 @@ public record RegisterUserRequest(
     string? City = null,
     string? State = null,
     string? Address = null,
-    string? PostalCode = null
+    string? PostalCode = null,
+    DateTime? DeletedOn = null
 )
 {
     public IEnumerable<string> Roles { get; init; } = new List<string> { Constants.Role.User };

@@ -2,20 +2,19 @@ using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
 using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 
-namespace NextGen.Modules.Identity.Users.Features.UpdatingUserState;
+namespace NextGen.Modules.Identity.Users.Features.UpdatingUserLockout;
 
-public static class UpdateUserStateEndpoint
+public static class UpdateUserLockoutEndpoint
 {
     internal static IEndpointRouteBuilder MapUpdateUserStateEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/{{userId:guid}}/state", UpdateUserState)
-            .AllowAnonymous()
+        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/{{userId:guid}}/lockout", UpdateUserState)
             .WithTags(UsersConfigs.Tag)
-            .Produces<RegisterUserResponse>(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
-            .WithName("UpdateUserState")
-            .WithDisplayName("Update User State.")
+            .WithName("UpdateUserLockout")
+            .WithDisplayName("Update User Lockout.")
             .WithApiVersionSet(UsersConfigs.VersionSet)
             .HasApiVersion(1.0);
 
@@ -24,16 +23,14 @@ public static class UpdateUserStateEndpoint
 
     private static Task<IResult> UpdateUserState(
         Guid userId,
-        UpdateUserStateRequest request,
+        UpdateUserLockoutRequest request,
         IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
         CancellationToken cancellationToken)
     {
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
-            var command = new UpdateUserStateCommand(userId, request.UserState);
-
+            var command = new UpdateUserLockoutCommand(userId, request.LockoutEnd);
             await commandProcessor.SendAsync(command, cancellationToken);
-
             return Results.NoContent();
         });
     }

@@ -44,6 +44,7 @@ public static class RegisterUserEndpoint
                 request.State,
                 request.Address,
                 request.PostalCode,
+                request.DeletedOn,
                 request.Roles?.ToList()
             );
 

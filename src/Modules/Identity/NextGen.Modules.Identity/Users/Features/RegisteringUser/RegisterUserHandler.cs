@@ -42,7 +42,7 @@ internal class RegisterUserHandler : ICommandHandler<RegisterUserCommand, Regist
             State = request.State,
             Address = request.Address,
             PostalCode = request.PostalCode,
-            UserState = UserState.Active,
+            DeletedOn = request.DeletedOn,
             CreatedAt = request.CreatedAt,
             PasswordLastChangedOn = DateTime.UtcNow
         };
@@ -79,7 +79,7 @@ internal class RegisterUserHandler : ICommandHandler<RegisterUserCommand, Regist
             Roles = request.Roles ?? new List<string> { Constants.Role.User },
             RefreshTokens = applicationUser?.RefreshTokens?.Select(x => x.Token),
             CreatedAt = request.CreatedAt,
-            UserState = UserState.Active,
+            DeletedOn = request.DeletedOn,
             MiddleName = applicationUser?.MiddleName,
             DateOfBirth = applicationUser?.DateOfBirth,
             PlaceOfBirth = applicationUser?.PlaceOfBirth,

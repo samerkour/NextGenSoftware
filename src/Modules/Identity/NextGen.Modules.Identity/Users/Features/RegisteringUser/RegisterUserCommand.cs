@@ -18,6 +18,7 @@ public record RegisterUserCommand(
     string? State = null,
     string? Address = null,
     string? PostalCode = null,
+    DateTime? DeletedOn = null, 
     IList<string>? Roles = null
 ) : ITxCreateCommand<RegisterUserResponse>
 {

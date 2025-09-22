@@ -5,7 +5,7 @@ using NextGen.Modules.Identity.Users.Features.GettingUsers;
 using NextGen.Modules.Identity.Users.Features.ProfilePicture;
 using NextGen.Modules.Identity.Users.Features.RegisteringUser;
 using NextGen.Modules.Identity.Users.Features.UpdatingUser;
-using NextGen.Modules.Identity.Users.Features.UpdatingUserState;
+using NextGen.Modules.Identity.Users.Features.UpdatingUserLockout;
 
 namespace NextGen.Modules.Identity.Users;
 

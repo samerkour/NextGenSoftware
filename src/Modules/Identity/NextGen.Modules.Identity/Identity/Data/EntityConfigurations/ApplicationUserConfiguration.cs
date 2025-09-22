@@ -35,11 +35,7 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
         builder.Property(x => x.PasswordLastChangedOn).IsRequired();
         builder.Property(x => x.TwoFactorEnabledOn).IsRequired(false);
         builder.Property(x => x.LockoutEnabledOn).IsRequired(false);
-
-        // UserState enum
-        builder.Property(x => x.UserState)
-            .HasDefaultValue(UserState.Active)
-            .HasConversion(x => x.ToString(), x => (UserState)Enum.Parse(typeof(UserState), x));
+        builder.Property(x => x.DeletedOn).IsRequired(false);
 
         // Indexes
         builder.HasIndex(x => x.Email).IsUnique();
@@ -58,4 +54,3 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
             .IsRequired();
     }
 }
-

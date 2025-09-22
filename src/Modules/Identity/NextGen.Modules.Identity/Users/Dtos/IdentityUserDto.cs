@@ -28,6 +28,6 @@ public record IdentityUserDto
 
     public IEnumerable<string>? RefreshTokens { get; init; }
     public IEnumerable<string>? Roles { get; init; }
-    public UserState UserState { get; init; }
+    public DateTime? DeletedOn { get; init; } 
     public DateTime CreatedAt { get; init; }
 }

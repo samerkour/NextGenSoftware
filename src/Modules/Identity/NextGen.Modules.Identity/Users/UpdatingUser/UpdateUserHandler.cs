@@ -58,7 +58,7 @@ internal class UpdateUserHandler : ICommandHandler<UpdateUserCommand, UpdateUser
             Roles = request.Roles ?? new List<string>(),
             RefreshTokens = user.RefreshTokens?.Where(x => !x.IsRevoked).Select(x => x.Token),
             CreatedAt = user.CreatedAt,
-            UserState = user.UserState,
+            DeletedOn = user.DeletedOn,
             MiddleName = user.MiddleName,
             DateOfBirth = user.DateOfBirth,
             PlaceOfBirth = user.PlaceOfBirth,
