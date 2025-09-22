@@ -15,8 +15,8 @@ namespace NextGen.Modules.Identity.Users;
 
 internal static class UsersConfigs
 {
-    public const string Tag = "Users";
-    public const string UsersPrefixUri = $"{IdentityModuleConfiguration.IdentityModulePrefixUri}/users";
+    public const string Tag = "users";
+    public const string UsersPrefixUri = $"{IdentityModuleConfiguration.IdentityModulePrefixUri}/{Tag}";
     public static ApiVersionSet VersionSet { get; private set; } = default!;
 
     internal static IServiceCollection AddUsersServices(
@@ -35,13 +35,10 @@ internal static class UsersConfigs
         endpoints.MapGetUserByEmailEndpoint();
         endpoints.MapUploadProfilePictureEndpoint();
         endpoints.MapRegisterNewUserEndpoint();
-        endpoints.MapForgotPasswordEndpoint();
         endpoints.MapUpdateUserEndpoint();
         endpoints.MapUpdateUserLockoutEndpoint();
-        endpoints.MapResetPasswordEndpoint();
         endpoints.MapChangeUserPasswordEndpoint();
         endpoints.MapDeleteUserEndpoint();
-
 
         return endpoints;
     }

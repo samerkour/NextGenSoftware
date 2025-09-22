@@ -11,15 +11,15 @@ public static class ResetPasswordEndpoint
 {
     internal static IEndpointRouteBuilder MapResetPasswordEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/reset-password/{{userId:guid}}", ResetPassword)
+        endpoints.MapPut($"{IdentityConfigs.IdentityPrefixUri}/reset-password/{{userId:guid}}", ResetPassword)
             .AllowAnonymous()
-            .WithTags(UsersConfigs.Tag)
+            .WithTags(IdentityConfigs.Tag)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .WithName("ResetPassword")
             .WithDisplayName("Reset User Password.")
-            .WithApiVersionSet(UsersConfigs.VersionSet)
+            .WithApiVersionSet(IdentityConfigs.VersionSet)
             .HasApiVersion(1.0);
 
         return endpoints;

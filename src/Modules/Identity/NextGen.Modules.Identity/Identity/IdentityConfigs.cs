@@ -3,11 +3,13 @@ using BuildingBlocks.Abstractions.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using NextGen.Modules.Identity.Identity.Data;
+using NextGen.Modules.Identity.Identity.Features.ForgotPassword;
 using NextGen.Modules.Identity.Identity.Features.GenerateCaptcha;
 using NextGen.Modules.Identity.Identity.Features.GetClaims;
 using NextGen.Modules.Identity.Identity.Features.Login;
 using NextGen.Modules.Identity.Identity.Features.Logout;
 using NextGen.Modules.Identity.Identity.Features.RefreshingToken;
+using NextGen.Modules.Identity.Identity.Features.ResetPassword;
 using NextGen.Modules.Identity.Identity.Features.RevokeRefreshToken;
 using NextGen.Modules.Identity.Identity.Features.SendEmailVerificationCode;
 using NextGen.Modules.Identity.Identity.Features.VerifyEmail;
@@ -16,8 +18,8 @@ using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
 namespace NextGen.Modules.Identity.Identity;
 internal static class IdentityConfigs
 {
-    public const string Tag = "Identity";
-    public const string IdentityPrefixUri = $"{IdentityModuleConfiguration.IdentityModulePrefixUri}";
+    public const string Tag = "authentication";
+    public const string IdentityPrefixUri = $"{IdentityModuleConfiguration.IdentityModulePrefixUri}/{Tag}";
     public static ApiVersionSet VersionSet { get; private set; } = default!;
 
     internal static IServiceCollection AddIdentityServices(
@@ -58,6 +60,8 @@ internal static class IdentityConfigs
         endpoints.MapGenerateCaptchaEndpoint();
         endpoints.MapLoginUserEndpoint();
         endpoints.MapLogoutEndpoint();
+        endpoints.MapResetPasswordEndpoint();
+        endpoints.MapForgotPasswordEndpoint();
         endpoints.MapSendEmailVerificationCodeEndpoint();
         endpoints.MapSendVerifyEmailEndpoint();
         endpoints.MapRefreshTokenEndpoint();

@@ -13,15 +13,15 @@ public static class ForgotPasswordEndpoint
 {
     internal static IEndpointRouteBuilder MapForgotPasswordEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost($"{UsersConfigs.UsersPrefixUri}/forgot-password", ForgotPassword)
+        endpoints.MapPost($"{IdentityConfigs.IdentityPrefixUri}/forgot-password", ForgotPassword)
             .AllowAnonymous()
-            .WithTags(UsersConfigs.Tag)
+            .WithTags(IdentityConfigs.Tag)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .WithName("ForgotPassword")
             .WithDisplayName("Forgot Password.")
-            .WithApiVersionSet(UsersConfigs.VersionSet)
+            .WithApiVersionSet(IdentityConfigs.VersionSet)
             .HasApiVersion(1.0);
 
         return endpoints;

@@ -13,7 +13,7 @@ public static class UpdateUserEndpoint
 {
     internal static IEndpointRouteBuilder MapUpdateUserEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/{{id:guid}}", UpdateUser)
+        endpoints.MapPut($"{UsersConfigs.UsersPrefixUri}/{{userId:guid}}", UpdateUser)
             .WithTags(UsersConfigs.Tag)
             .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
@@ -28,7 +28,7 @@ public static class UpdateUserEndpoint
     }
 
     private static Task<IResult> UpdateUser(
-        Guid id,
+        Guid userId,
         [FromBody] UpdateUserRequest request,
         IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
         CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ public static class UpdateUserEndpoint
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
             var command = new UpdateUserCommand(
-                id,
+                userId,
                 request.FirstName,
                 request.LastName,
                 request.UserName,

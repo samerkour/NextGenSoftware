@@ -12,7 +12,7 @@ namespace NextGen.Modules.Identity;
 
 public class IdentityModuleConfiguration : IModuleDefinition
 {
-    public const string IdentityModulePrefixUri = "api/v{version:apiVersion}/identity";
+    public const string IdentityModulePrefixUri = "api/v{version:apiVersion}";
     public const string ModuleName = "Identity";
     public static ApiVersionSet VersionSet { get; private set; } = default!;
 
