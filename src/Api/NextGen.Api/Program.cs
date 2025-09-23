@@ -40,19 +40,6 @@ await app.RunAsync();
 
 static void RegisterServices(WebApplicationBuilder builder)
 {
-    // Register AmazonS3Client for MinIO
-    builder.Services.AddSingleton<IAmazonS3>(_ =>
-        new AmazonS3Client(
-            "minioadmin", // access key
-            "minioadmin", // secret key
-            new AmazonS3Config
-            {
-                ServiceURL = "http://localhost:9000", // MinIO endpoint
-                ForcePathStyle = true // required for MinIO
-            }
-        )
-    );
-
     builder.Host.UseDefaultServiceProvider((env, c) =>
     {
         // Handling Captive Dependency Problem
@@ -74,6 +61,28 @@ static void RegisterServices(WebApplicationBuilder builder)
     // https://www.michaco.net/blog/EnvironmentVariablesAndConfigurationInASPNETCoreApps#environment-variables-and-configuration
     // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0#non-prefixed-environment-variables
     builder.Configuration.AddEnvironmentVariables("NextGen_env_");
+
+    // Register AmazonS3Client for MinIO/S3 using configuration
+    builder.Services.AddSingleton<IAmazonS3>(sp =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        var s3Section = configuration.GetSection("S3");
+
+        var accessKey = s3Section.GetValue<string>("AccessKey");
+        var secretKey = s3Section.GetValue<string>("SecretKey");
+        var serviceUrl = s3Section.GetValue<string>("BaseUrl");
+        var region = s3Section.GetValue<string>("Region");
+
+        return new AmazonS3Client(
+            accessKey,
+            secretKey,
+            new AmazonS3Config
+            {
+                ServiceURL = serviceUrl,     // MinIO / S3 endpoint
+                //RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
+                ForcePathStyle = true  // required for MinIO, safe for AWS S3
+            });
+    });
 
     // https://github.com/tonerdo/dotnet-env
     DotNetEnv.Env.TraversePath().Load();
