@@ -28,7 +28,6 @@ public static class UploadProfilePictureEndpoint
 
     private static Task<IResult> UploadProfilePicture(
     IFormFile file,
-    Guid userId,
     IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
     CancellationToken cancellationToken)
     {
@@ -36,7 +35,7 @@ public static class UploadProfilePictureEndpoint
         {
             // Send the command to the handler
             var result = await commandProcessor.SendAsync(
-                new UploadProfilePictureCommand(userId, file),
+                new UploadProfilePictureCommand(file),
                 cancellationToken);
 
             return Results.Ok(new { imagePath = result.ImagePath });

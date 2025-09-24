@@ -29,10 +29,6 @@ internal class UploadProfilePictureHandler : ICommandHandler<UploadProfilePictur
     {
         Guard.Against.Null(request.File, nameof(request.File));
 
-        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-        if (user == null)
-            throw new KeyNotFoundException($"User with Id {request.UserId} not found.");
-
         // Generate unique file name
         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(request.File.FileName)}";
 
@@ -71,12 +67,7 @@ internal class UploadProfilePictureHandler : ICommandHandler<UploadProfilePictur
 
         // Save the S3 URL in user profile
         var fileUrl = $"{baseUrl}{bucketName}/{fileName}";
-        user.ProfileImagePath = fileUrl;
 
-        var result = await _userManager.UpdateAsync(user);
-        if (!result.Succeeded)
-            throw new InvalidOperationException("Failed to update user's profile image.");
-
-        return new UploadProfilePictureResponse(user.ProfileImagePath);
+        return new UploadProfilePictureResponse(fileUrl);
     }
 }
