@@ -1,0 +1,13 @@
+namespace NextGen.Modules.Parties.RestockSubscriptions.Dtos;
+
+public class RestockSubscriptionDto
+{
+    public long Id { get; init; }
+    public long PartyId { get; init; }
+    public string Email { get; init; }
+    public long ProductId { get; init; }
+    public string ProductName { get; init; }
+    public DateTime Created { get; init; }
+    public bool Processed { get; init; }
+    public DateTime? ProcessedTime { get; init; }
+}

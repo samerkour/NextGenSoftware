@@ -1,0 +1,35 @@
+{
+  "Parties": {
+    "SqlServerOptions": {
+      "ConnectionString": "Server=192.168.117.224;Database=NextGenDb;User Id=sa;Password=Admin@123;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true;",
+      "UseInMemory": false
+    },
+    "MongoOptions": {
+      "ConnectionString": "mongodb://localhost:27017",
+      "DatabaseName": "NextGen"
+    },
+    "EmailOptions": {
+      "From": "info@nextgen.modular-monolith.com",
+      "Enable": true,
+      "DisplayName": "Next Gen Application Mail",
+      "MimeKitOptions": {
+        "Host": "smtp.ethereal.email",
+        "Port": 587,
+        "UserName": "",
+        "Password": ""
+      }
+    },
+    "IdentityApiClientOptions": {
+      "BaseApiAddress": "http://localhost:5000",
+      "UsersEndpoint": "api/v1/identity/users"
+    },
+    "InventoriesApiClientOptions": {
+      "BaseApiAddress": "http://localhost:5000",
+      "ProductsEndpoint": "api/v1/inventories/products"
+    },
+    "MessagePersistenceOptions": {
+      "Interval": 30
+    }
+  }
+}
+
