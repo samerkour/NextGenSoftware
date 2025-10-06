@@ -6,7 +6,7 @@ using NextGen.Modules.Identity.Shared.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace NextGen.Modules.Identity.Identity.Features.RevokeRefreshToken;
+namespace NextGen.Modules.Identity.Identity.Features.Logout;
 
 public record RevokeRefreshToken(string RefreshToken) : ICommand;
 

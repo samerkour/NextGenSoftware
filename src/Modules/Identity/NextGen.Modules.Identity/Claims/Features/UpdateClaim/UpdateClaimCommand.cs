@@ -6,5 +6,5 @@ public record UpdateClaimCommand(
     Guid Id,
     string Type,
     string Value,
-    Guid? ClaimGroupId
+    Guid ClaimGroupId
 ) : ICommand<UpdateClaimResponse>;

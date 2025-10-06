@@ -17,7 +17,6 @@ namespace NextGen.Modules.Identity.Claims
 
         public static ApiVersionSet VersionSet { get; private set; } = default!;
 
-
         internal static IServiceCollection AddClaimsServices(
             this IServiceCollection services,
             IConfiguration configuration)

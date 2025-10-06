@@ -1,3 +1,4 @@
+using FluentValidation;
 using BuildingBlocks.Abstractions.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,11 @@ namespace NextGen.Modules.Identity.Claims.Features.UpdateClaim
         public static IEndpointConventionBuilder MapUpdateClaimEndpoint(this IEndpointRouteBuilder endpoints)
         {
             return endpoints.MapPut($"{ClaimConfigs.ClaimsPrefixUri}/{{id:guid}}", UpdateClaim)
-
                 .AllowAnonymous()
                 .WithTags(ClaimConfigs.Tag)
                 .Produces<UpdateClaimResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest) // برای ولیدیشن
                 .Produces(StatusCodes.Status404NotFound)
-                .Produces(StatusCodes.Status400BadRequest)
                 .WithName("UpdateClaim")
                 .WithDisplayName("Update an existing Claim")
                 .WithApiVersionSet(ClaimConfigs.VersionSet)
@@ -37,6 +37,19 @@ namespace NextGen.Modules.Identity.Claims.Features.UpdateClaim
                 request.ClaimGroupId
             );
 
+            // --- اجرای Validator ---
+            var validator = new UpdateClaimValidator();
+            var validationResult = await validator.ValidateAsync(command, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                // Return structured 422 response for validation errors
+                return Results.ValidationProblem(
+                    validationResult.ToDictionary(),
+                    statusCode: StatusCodes.Status422UnprocessableEntity
+                );
+            }
+
+            // اجرای دستور Update از طریق Gateway
             var result = await gatewayProcessor.ExecuteCommand(async processor =>
                 await processor.SendAsync<UpdateClaimResponse>(command, cancellationToken));
 

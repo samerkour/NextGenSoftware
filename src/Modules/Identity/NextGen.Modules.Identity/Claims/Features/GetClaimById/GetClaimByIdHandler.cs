@@ -1,28 +1,28 @@
+using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Query;
 using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Identity.Claims.Features.GetClaimById;
 using NextGen.Modules.Identity.Shared.Data;
 
-namespace NextGen.Modules.Identity.Claims.Features.GetClaimById
+internal sealed class GetClaimByIdHandler : IQueryHandler<GetClaimByIdQuery, GetClaimByIdResponse>
 {
-    internal sealed class GetClaimByIdHandler : IQueryHandler<GetClaimByIdQuery, GetClaimByIdResponse>
+    private readonly IdentityContext _db;
+    private readonly IMapper _mapper;
+
+    public GetClaimByIdHandler(IdentityContext db, IMapper mapper)
     {
-        private readonly IdentityContext _db;
+        _db = db;
+        _mapper = mapper;
+    }
 
-        public GetClaimByIdHandler(IdentityContext db) => _db = db;
+    public async Task<GetClaimByIdResponse> Handle(GetClaimByIdQuery request, CancellationToken cancellationToken)
+    {
+        var claim = await _db.Claims
+            .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
-        public async Task<GetClaimByIdResponse> Handle(GetClaimByIdQuery request, CancellationToken cancellationToken)
-        {
-            return await _db.Claims
-                .Where(c => c.Id == request.Id)
-                .Select(c => new GetClaimByIdResponse
-                {
-                    Id = c.Id,
-                    Type = c.Type,
-                    Value = c.Value,
-                    ClaimGroupId = c.ClaimGroupId,
-                    CreatedAt = c.CreatedAt
-                })
-                .FirstOrDefaultAsync(cancellationToken);
-        }
+        if (claim == null)
+            return null!; 
+
+        return _mapper.Map<GetClaimByIdResponse>(claim);
     }
 }

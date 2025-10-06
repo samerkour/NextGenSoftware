@@ -1,4 +1,4 @@
-namespace NextGen.Modules.Identity.Identity.Features.RevokeRefreshToken;
+namespace NextGen.Modules.Identity.Identity.Features.Logout;
 
 public class RevokeRefreshTokenRequest
 {

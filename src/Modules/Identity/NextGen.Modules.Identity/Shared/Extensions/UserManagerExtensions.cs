@@ -2,9 +2,10 @@ using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Query;
 using BuildingBlocks.Core.CQRS.Query;
 using BuildingBlocks.Core.Persistence.EfCore;
-using NextGen.Modules.Identity.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Identity.Shared.Data;
+using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Shared.Extensions;
 
@@ -34,6 +35,27 @@ public static class UserManagerExtensions
             .ApplyFilter(request.Filters)
             .AsNoTracking()
             .ApplyPagingAsync<ApplicationUser, TResult>(
+                mapper.ConfigurationProvider,
+                request.Page,
+                request.PageSize,
+                cancellationToken: cancellationToken);
+    }
+
+    public static async Task<ListResultModel<TResult>> FindAllClaimsByPageAsync<TResult>( 
+    this IdentityContext userManager,
+    IMapper mapper,
+    IPageRequest request,
+    CancellationToken cancellationToken)
+    where TResult : notnull
+    {
+        // https://benjii.me/2018/01/expression-projection-magic-entity-framework-core/
+        // we don't use include for loading nested navigation because with mapping we load them explicitly
+        return await userManager.Claims
+            .OrderByDescending(x => x.CreatedAt)
+            .ApplyIncludeList(request.Includes)
+            .ApplyFilter(request.Filters)
+            .AsNoTracking()
+            .ApplyPagingAsync<ApplicationClaim, TResult>(
                 mapper.ConfigurationProvider,
                 request.Page,
                 request.PageSize,

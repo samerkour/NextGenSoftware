@@ -1,11 +1,8 @@
 using Asp.Versioning.Builder;
-using NextGen.Modules.Identity.Identity.Features.ForgotPassword;
-using NextGen.Modules.Identity.Identity.Features.ResetPassword;
 using NextGen.Modules.Identity.Identity.Features.SendTOTP;
 using NextGen.Modules.Identity.Identity.Features.VerifyTotp;
 using NextGen.Modules.Identity.Users.Features.ChangeUserPassword;
 using NextGen.Modules.Identity.Users.Features.DeleteUser;
-using NextGen.Modules.Identity.Users.Features.GettingUerByEmail;
 using NextGen.Modules.Identity.Users.Features.GettingUserById;
 using NextGen.Modules.Identity.Users.Features.GettingUsers;
 using NextGen.Modules.Identity.Users.Features.ProfilePicture;
@@ -36,7 +33,6 @@ internal static class UsersConfigs
 
         endpoints.MapGetUsersEndpoint();
         endpoints.MapGetUserByIdEndpoint();
-        endpoints.MapGetUserByEmailEndpoint();
         endpoints.MapUploadProfilePictureEndpoint();
         endpoints.MapRegisterNewUserEndpoint();
         endpoints.MapSendTotpEndpoint();

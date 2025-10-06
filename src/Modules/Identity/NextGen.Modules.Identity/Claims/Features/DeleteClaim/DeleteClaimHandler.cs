@@ -1,12 +1,11 @@
+// DeleteClaimHandler.cs
 using BuildingBlocks.Abstractions.CQRS.Command;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NextGen.Modules.Identity.Identity.Data;
 using NextGen.Modules.Identity.Shared.Data;
 
 namespace NextGen.Modules.Identity.Claims.Features.DeleteClaim;
 
-public class DeleteClaimHandler : ICommandHandler<DeleteClaimCommand, DeleteClaimResponse>
+public class DeleteClaimHandler : ICommandHandler<DeleteClaimCommand, bool>
 {
     private readonly IdentityContext _context;
 
@@ -15,27 +14,24 @@ public class DeleteClaimHandler : ICommandHandler<DeleteClaimCommand, DeleteClai
         _context = context;
     }
 
-    public async Task<DeleteClaimResponse> Handle(DeleteClaimCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(DeleteClaimCommand request, CancellationToken cancellationToken)
     {
         var claim = await _context.Claims
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
-        if (claim is null)
+        if (claim == null)
+            return false;
+
+        if (request.IsDeleted)
         {
-            return new DeleteClaimResponse
-            {
-                Id = request.Id,
-                IsDeleted = false
-            };
+            claim.DeletedOn = DateTime.UtcNow;
+        }
+        else
+        {
+            claim.DeletedOn = null;
         }
 
-        _context.Claims.Remove(claim);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return new DeleteClaimResponse
-        {
-            Id = claim.Id,
-            IsDeleted = true
-        };
+        var result = await _context.SaveChangesAsync(cancellationToken);
+        return result > 0;
     }
 }

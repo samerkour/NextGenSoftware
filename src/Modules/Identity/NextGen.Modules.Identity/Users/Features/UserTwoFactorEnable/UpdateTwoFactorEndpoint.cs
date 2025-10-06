@@ -39,6 +39,7 @@ public static class UpdateTwoFactorEndpoint
             var validationResult = await validator.ValidateAsync(command, cancellationToken);
             if (!validationResult.IsValid)
             {
+                // Return structured 422 response for validation errors
                 return Results.ValidationProblem(
                     validationResult.ToDictionary(),
                     statusCode: StatusCodes.Status422UnprocessableEntity

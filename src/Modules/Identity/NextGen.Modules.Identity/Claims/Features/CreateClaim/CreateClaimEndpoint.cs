@@ -1,8 +1,8 @@
-using BuildingBlocks.Abstractions.Web;
-using Microsoft.AspNetCore.Builder;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NextGen.Modules.Identity.Users;
+using NextGen.Modules.Identity.Claims.Features.CreateClaim;
+using BuildingBlocks.Abstractions.Web;
 
 namespace NextGen.Modules.Identity.Claims.Features.CreateClaim
 {
@@ -10,7 +10,7 @@ namespace NextGen.Modules.Identity.Claims.Features.CreateClaim
     {
         public static IEndpointConventionBuilder MapCreateClaimEndpoint(this IEndpointRouteBuilder endpoints)
         {
-           return endpoints.MapPost($"{ClaimConfigs.ClaimsPrefixUri}", CreateClaim)
+            return endpoints.MapPost($"{ClaimConfigs.ClaimsPrefixUri}", CreateClaim)
                 .AllowAnonymous()
                 .WithTags(ClaimConfigs.Tag)
                 .Produces<CreateClaimResponse>(StatusCodes.Status201Created)
@@ -26,15 +26,25 @@ namespace NextGen.Modules.Identity.Claims.Features.CreateClaim
             [FromServices] IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
             CancellationToken cancellationToken)
         {
-            if (request == null)
-                return Results.BadRequest("Request cannot be null.");
-
             var command = new CreateClaimCommand(
                 request.Type,
                 request.Value,
                 request.ClaimGroupId
             );
 
+            // --- Validator ---
+            var validator = new CreateClaimValidator();
+            var validationResult = await validator.ValidateAsync(command, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                // Return structured 422 response for validation errors
+                return Results.ValidationProblem(
+                    validationResult.ToDictionary(),
+                    statusCode: StatusCodes.Status422UnprocessableEntity
+                );
+            }
+
+            // Command to Gateway
             var result = await gatewayProcessor.ExecuteCommand(async processor =>
                 await processor.SendAsync<CreateClaimResponse>(command, cancellationToken));
 

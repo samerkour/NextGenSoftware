@@ -1,27 +1,31 @@
+using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Query;
+using BuildingBlocks.Core.CQRS.Query;
 using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Identity.Claims.Dtos;
 using NextGen.Modules.Identity.Shared.Data;
+using NextGen.Modules.Identity.Shared.Extensions;
+using NextGen.Modules.Identity.Users.Dtos;
+using NextGen.Modules.Identity.Users.Features.GettingUsers;
 
 namespace NextGen.Modules.Identity.Claims.Features.GetClaims
 {
-    internal sealed class Handler : IQueryHandler<GetClaimsQuery, List<Response>>
+    internal sealed class Handler : IQueryHandler<GetClaimsQuery, GetClaimResponse>
     {
         private readonly IdentityContext _db;
+        private readonly IMapper _mapper;
 
-        public Handler(IdentityContext db) => _db = db;
-
-        public async Task<List<Response>> Handle(GetClaimsQuery request, CancellationToken cancellationToken)
+        public Handler(IdentityContext db, IMapper mapper)
         {
-            return await _db.Claims
-                .Select(c => new Response
-                {
-                    Id = c.Id,
-                    Type = c.Type,
-                    Value = c.Value,
-                    ClaimGroupId = c.ClaimGroupId,
-                    CreatedAt = c.CreatedAt
-                })
-                .ToListAsync(cancellationToken);
+            _db = db;
+            _mapper = mapper;
+        }
+
+        public async Task<GetClaimResponse> Handle(GetClaimsQuery request, CancellationToken cancellationToken)
+        {
+            ListResultModel<ClaimDto> claims = await _db.FindAllClaimsByPageAsync<ClaimDto>(_mapper, request, cancellationToken);
+
+            return new GetClaimResponse(claims);
         }
     }
 }

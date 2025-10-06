@@ -33,10 +33,22 @@ public static class UploadProfilePictureEndpoint
     {
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
+            var command = new UploadProfilePictureCommand(file);
+
+            // 1. Validate
+            var validator = new UploadProfilePictureCommandValidator();
+            var validationResult = await validator.ValidateAsync(command, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                // Return structured 422 response for validation errors
+                return Results.ValidationProblem(
+                    validationResult.ToDictionary(),
+                    statusCode: StatusCodes.Status422UnprocessableEntity
+                );
+            }
+
             // Send the command to the handler
-            var result = await commandProcessor.SendAsync(
-                new UploadProfilePictureCommand(file),
-                cancellationToken);
+            var result = await commandProcessor.SendAsync(command, cancellationToken);
 
             return Results.Ok(new { imagePath = result.ImagePath });
         });

@@ -1,7 +1,7 @@
-namespace NextGen.Modules.Identity.Claims.Features.GetClaims
+using BuildingBlocks.Core.CQRS.Query;
+
+namespace NextGen.Modules.Identity.Claims.Features.GetClaims;
+public record GetClaimRequest : PageRequest
 {
-    public class Request
-    {
-        // Get all claims هیچ فیلدی ندارد
-    }
+    // Get all claims
 }

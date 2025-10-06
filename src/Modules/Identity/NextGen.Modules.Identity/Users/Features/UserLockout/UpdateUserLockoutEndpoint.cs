@@ -37,7 +37,11 @@ public static class UpdateUserLockoutEndpoint
             var validationResult = await validator.ValidateAsync(command, cancellationToken);
             if (!validationResult.IsValid)
             {
-                return Results.ValidationProblem(validationResult.ToDictionary());
+                // Return structured 422 response for validation errors
+                return Results.ValidationProblem(
+                    validationResult.ToDictionary(),
+                    statusCode: StatusCodes.Status422UnprocessableEntity
+                );
             }
 
             // 2. Execute command if valid

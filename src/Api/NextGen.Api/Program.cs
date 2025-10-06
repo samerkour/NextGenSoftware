@@ -396,7 +396,38 @@ namespace NextGen.Api
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(responseContent);
 
-                        // Validation error format (ModelState errors)
+                        //// 🟡 Handle FluentValidation or ASP.NET Validation format:
+                        //// Example: {"Email":["'Email' is not a valid email address."]}
+                        //if (context.Response.StatusCode == StatusCodes.Status422UnprocessableEntity ||
+                        //    (errorObj.ValueKind == JsonValueKind.Object && errorObj.EnumerateObject().Any(p => p.Value.ValueKind == JsonValueKind.Array)))
+                        //{
+                        //    var validationErrors = new List<ValidationError>();
+
+                        //    foreach (var prop in errorObj.EnumerateObject())
+                        //    {
+                        //        if (prop.Value.ValueKind == JsonValueKind.Array)
+                        //        {
+                        //            foreach (var msg in prop.Value.EnumerateArray())
+                        //            {
+                        //                validationErrors.Add(new ValidationError(prop.Name, msg.GetString() ?? "Invalid value"));
+                        //            }
+                        //        }
+                        //    }
+
+                        //    errorPayload = new
+                        //    {
+                        //        message = "Validation Failed.",
+                        //        errors = validationErrors
+                        //            .GroupBy(e => e.Field ?? "General")
+                        //            .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray())
+                        //    };
+
+                        //    //// ✅ Ensure correct status code
+                        //    //context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+                        //}
+
+                        // 🟢 Handle ASP.NET ModelState error format (with "errors" object)
+                        // else
                         if (errorObj.TryGetProperty("errors", out var errorsProp) && errorsProp.ValueKind == JsonValueKind.Object)
                         {
                             var validationErrors = new List<ValidationError>();
@@ -416,9 +447,12 @@ namespace NextGen.Api
                                     .GroupBy(e => e.Field ?? "General")
                                     .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray())
                             };
+
+                            //// ✅ Set 422 explicitly for validation problems
+                            //context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
                         }
 
-                        // Generic error response (problem details, etc.)
+                        // 🟠 Generic error response (ProblemDetails, etc.)
                         else if (errorObj.TryGetProperty("title", out var titleProp))
                         {
                             errorPayload = new { message = titleProp.GetString() ?? "Bad request." };
@@ -435,12 +469,14 @@ namespace NextGen.Api
                 }
                 catch
                 {
-                    // keep default errorPayload
+                    // Keep default errorPayload if parsing fails
                 }
 
+                // 🧩 Build and write unified API error response
                 var apiErrorResponse = new ApiErrorResponse(context.Response.StatusCode, errorPayload, apiVersion);
-
                 await WriteJsonResponse(context, apiErrorResponse, originalBodyStream);
+
+
             }
         }
 

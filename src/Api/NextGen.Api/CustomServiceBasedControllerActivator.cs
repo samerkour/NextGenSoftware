@@ -14,8 +14,7 @@ public class CustomServiceBasedControllerActivator : IControllerActivator
 
     public object Create(ControllerContext context)
     {
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         var controllerAssembly = context.ActionDescriptor.ControllerTypeInfo.Assembly;
 

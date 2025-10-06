@@ -23,14 +23,32 @@ public static class GetUserByIdEndpoint
     }
 
     private static Task<IResult> GetUserById(
-        Guid userId,
-        IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
-        CancellationToken cancellationToken)
+     Guid userId,
+     IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
+     CancellationToken cancellationToken)
     {
         return gatewayProcessor.ExecuteQuery(async queryProcessor =>
         {
-            var result = await queryProcessor.SendAsync(new GetUserByIdQuery(userId), cancellationToken);
+            // 1️⃣ Create the query
+            var query = new GetUserByIdQuery(userId);
 
+            // 2️⃣ Validate using FluentValidation
+            var validator = new GetUserByIdValidator();
+            var validationResult = await validator.ValidateAsync(query, cancellationToken);
+
+            if (!validationResult.IsValid)
+            {
+                // Return structured 422 response for validation errors
+                return Results.ValidationProblem(
+                    validationResult.ToDictionary(),
+                    statusCode: StatusCodes.Status422UnprocessableEntity
+                );
+            }
+
+            // 3️⃣ Execute the query if valid
+            var result = await queryProcessor.SendAsync(query, cancellationToken);
+
+            // 4️⃣ Return the result
             return Results.Ok(result);
         });
     }

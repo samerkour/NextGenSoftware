@@ -1,13 +1,13 @@
 using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
 
-namespace NextGen.Modules.Identity.Identity.Features.RevokeRefreshToken;
+namespace NextGen.Modules.Identity.Identity.Features.Logout;
 
 public static class RevokeRefreshTokenEndpoint
 {
     internal static IEndpointRouteBuilder MapRevokeTokenEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost($"{IdentityConfigs.IdentityPrefixUri}/revoke-refresh-token", RevokeToken)
+        endpoints.MapPost($"{IdentityConfigs.IdentityPrefixUri}/logout", RevokeToken)
             .WithTags(IdentityConfigs.Tag)
             .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)

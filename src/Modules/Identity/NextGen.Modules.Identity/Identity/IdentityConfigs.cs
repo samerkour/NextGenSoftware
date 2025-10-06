@@ -10,7 +10,7 @@ using NextGen.Modules.Identity.Identity.Features.Login;
 using NextGen.Modules.Identity.Identity.Features.Logout;
 using NextGen.Modules.Identity.Identity.Features.RefreshingToken;
 using NextGen.Modules.Identity.Identity.Features.ResetPassword;
-using NextGen.Modules.Identity.Identity.Features.RevokeRefreshToken;
+using NextGen.Modules.Identity.Identity.Features.Logout;
 using NextGen.Modules.Identity.Identity.Features.SendEmailVerificationCode;
 using NextGen.Modules.Identity.Identity.Features.VerifyEmail;
 using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
@@ -59,7 +59,6 @@ internal static class IdentityConfigs
 
         endpoints.MapGenerateCaptchaEndpoint();
         endpoints.MapLoginUserEndpoint();
-        endpoints.MapLogoutEndpoint();
         endpoints.MapResetPasswordEndpoint();
         endpoints.MapForgotPasswordEndpoint();
         endpoints.MapSendEmailVerificationCodeEndpoint();

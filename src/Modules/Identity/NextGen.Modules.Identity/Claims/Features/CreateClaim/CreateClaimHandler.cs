@@ -7,7 +7,7 @@ using NextGen.Modules.Identity.Shared.Models;
 
 internal sealed class CreateClaimHandler : ICommandHandler<CreateClaimCommand, CreateClaimResponse>
 {
-    private readonly IdentityContext _db; // ✅ DbContext
+    private readonly IdentityContext _db;
     private readonly IMapper _mapper;
 
     public CreateClaimHandler(IdentityContext db, IMapper mapper)

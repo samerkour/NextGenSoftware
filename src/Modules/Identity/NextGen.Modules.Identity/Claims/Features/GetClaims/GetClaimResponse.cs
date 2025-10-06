@@ -1,11 +1,7 @@
-namespace NextGen.Modules.Identity.Claims.Features.GetClaims
-{
-    public class Response
-    {
-        public Guid Id { get; set; }
-        public string Type { get; set; } = default!;
-        public string Value { get; set; } = default!;
-        public Guid? ClaimGroupId { get; set; }
-        public DateTime CreatedAt { get; set; }
-    }
-}
+using BuildingBlocks.Core.CQRS.Query;
+using NextGen.Modules.Identity.Claims.Dtos;
+using NextGen.Modules.Identity.Users.Dtos;
+
+namespace NextGen.Modules.Identity.Claims.Features.GetClaims;
+
+public record GetClaimResponse (ListResultModel<ClaimDto> Claims);
