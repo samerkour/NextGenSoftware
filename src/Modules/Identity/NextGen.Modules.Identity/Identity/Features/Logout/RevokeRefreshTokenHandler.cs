@@ -3,14 +3,11 @@ using BuildingBlocks.Abstractions.CQRS.Command;
 using NextGen.Modules.Identity.Identity.Exceptions;
 using NextGen.Modules.Identity.Identity.Features.RefreshingToken;
 using NextGen.Modules.Identity.Shared.Data;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace NextGen.Modules.Identity.Identity.Features.Logout;
 
-public record RevokeRefreshToken(string RefreshToken) : ICommand;
-
-internal class RevokeRefreshTokenHandler : ICommandHandler<RevokeRefreshToken>
+internal class RevokeRefreshTokenHandler : ICommandHandler<RevokeRefreshTokenCommand>
 {
     private readonly IdentityContext _context;
 
@@ -20,12 +17,12 @@ internal class RevokeRefreshTokenHandler : ICommandHandler<RevokeRefreshToken>
     }
 
     public async Task<Unit> Handle(
-        RevokeRefreshToken request,
+        RevokeRefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
-        Guard.Against.Null(request, nameof(RevokeRefreshToken));
+        Guard.Against.Null(request, nameof(RevokeRefreshTokenCommand));
 
-        var refreshToken = await _context.Set<global::NextGen.Modules.Identity.Shared.Models.RefreshToken>()
+        var refreshToken = await _context.Set<Shared.Models.RefreshToken>()
             .FirstOrDefaultAsync(x => x.Token == request.RefreshToken, cancellationToken: cancellationToken);
 
         if (refreshToken == null)

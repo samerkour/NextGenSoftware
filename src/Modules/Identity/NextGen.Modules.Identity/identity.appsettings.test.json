@@ -2,7 +2,7 @@
   "Identity": {
     "SqlServerOptions": {
       "ConnectionString": "Server=192.168.117.224;Database=NextGenDb_test;User Id=sa;Password=Admin@123;MultipleActiveResultSets=True;Encrypt=true;TrustServerCertificate=true;",
-        "UseInMemory": false
+      "UseInMemory": false
     },
     "MongoOptions": {
       "ConnectionString": "mongodb://localhost:27017",
@@ -25,6 +25,13 @@
       "Issuer": "NextGen-identity",
       "TokenLifeTimeSecond": 3600
     },
+
+    "RefreshToken": {
+      "LifetimeDays": 30,
+      "SoftRevoke": true,
+      "MaxActiveTokensPerUser": 5
+    },
+
     "MessagePersistenceOptions": {
       "Interval": 5
     }

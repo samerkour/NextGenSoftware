@@ -5,12 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using NextGen.Modules.Identity.Identity.Data;
 using NextGen.Modules.Identity.Identity.Features.ForgotPassword;
 using NextGen.Modules.Identity.Identity.Features.GenerateCaptcha;
-using NextGen.Modules.Identity.Identity.Features.GetClaims;
 using NextGen.Modules.Identity.Identity.Features.Login;
 using NextGen.Modules.Identity.Identity.Features.Logout;
 using NextGen.Modules.Identity.Identity.Features.RefreshingToken;
 using NextGen.Modules.Identity.Identity.Features.ResetPassword;
-using NextGen.Modules.Identity.Identity.Features.Logout;
 using NextGen.Modules.Identity.Identity.Features.SendEmailVerificationCode;
 using NextGen.Modules.Identity.Identity.Features.VerifyEmail;
 using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
@@ -65,7 +63,6 @@ internal static class IdentityConfigs
         endpoints.MapSendVerifyEmailEndpoint();
         endpoints.MapRefreshTokenEndpoint();
         endpoints.MapRevokeTokenEndpoint();
-        endpoints.MapGetClaimsEndpoint();
 
         return endpoints;
     }

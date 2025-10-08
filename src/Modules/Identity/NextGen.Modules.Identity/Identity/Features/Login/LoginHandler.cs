@@ -26,7 +26,6 @@ internal class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
         UserManager<ApplicationUser> userManager,
         ICommandProcessor commandProcessor,
         IQueryProcessor queryProcessor,
-        IJwtService jwtService,
         IOptions<JwtOptions> jwtOptions,
         SignInManager<ApplicationUser> signInManager,
         IMemoryCache cache,
@@ -35,7 +34,6 @@ internal class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
         _userManager = userManager;
         _commandProcessor = commandProcessor;
         _queryProcessor = queryProcessor;
-        _jwtService = jwtService;
         _signInManager = signInManager;
         _cache = cache;
         _jwtOptions = jwtOptions.Value;

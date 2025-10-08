@@ -16,9 +16,9 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
         IdentityUserLogin<Guid>,
         IdentityRoleClaim<Guid>,
         IdentityUserToken<Guid>>,
-    IDbFacadeResolver,
-    IDomainEventContext,
-    ITxDbContextExecution
+        IDbFacadeResolver,
+        IDomainEventContext,
+        ITxDbContextExecution
 {
     public IdentityContext(DbContextOptions options) : base(options)
     {

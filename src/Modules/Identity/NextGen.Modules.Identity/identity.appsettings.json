@@ -25,6 +25,13 @@
       "Issuer": "NextGen-identity",
       "TokenLifeTimeSecond": 3600
     },
+
+    "RefreshToken": {
+      "LifetimeDays": 30,
+      "SoftRevoke": true,
+      "MaxActiveTokensPerUser": 5
+    },
+
     "MessagePersistenceOptions": {
       "Interval": 30
     }

@@ -32,14 +32,14 @@ public class GenerateRefreshTokenCommandHandler : ICommandHandler<GenerateJwtTok
         var identityUser = request.User;
 
         // authentication successful so generate jwt and refresh tokens
-        var allClaims = await GetClaimsAsync(request.User.UserName);
+        var allClaims = await GetClaimsAsync(request.User.Id);
         var fullName = $"{identityUser.FirstName} {identityUser.LastName}";
 
         var accessToken = _jwtService.GenerateJwtToken(
+            identityUser.Id,
             identityUser.UserName,
             identityUser.Email,
-            identityUser.Id.ToString(),
-            identityUser.EmailConfirmed || identityUser.PhoneNumberConfirmed,
+            true,
             fullName,
             request.RefreshToken,
             allClaims.UserClaims.ToImmutableList(),
@@ -51,9 +51,9 @@ public class GenerateRefreshTokenCommandHandler : ICommandHandler<GenerateJwtTok
         return accessToken;
     }
 
-    public async Task<(IList<Claim> UserClaims, IList<string> Roles, IList<string> PermissionClaims)> GetClaimsAsync(string userName)
+    public async Task<(IList<Claim> UserClaims, IList<string> Roles, IList<string> PermissionClaims)> GetClaimsAsync(Guid Id)
     {
-        var appUser = await _userManager.FindByNameAsync(userName);
+        var appUser = await _userManager.FindByIdAsync(Id.ToString());
         var userClaims =
             (await _userManager.GetClaimsAsync(appUser)).Where(x => x.Type != CustomClaimTypes.Permission).ToList();
         var roles = await _userManager.GetRolesAsync(appUser);

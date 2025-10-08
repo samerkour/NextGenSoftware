@@ -1,130 +1,167 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Utils;
+using BuildingBlocks.Security.Jwt;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace BuildingBlocks.Security.Jwt;
-
-public class JwtService : IJwtService
+namespace NextGen.Modules.Identity.Shared.Services
 {
-    private readonly JwtOptions _jwtOptions;
-
-    public JwtService(IOptions<JwtOptions> jwtOptions)
+    public class JwtService : IJwtService
     {
-        _jwtOptions = jwtOptions.Value;
-    }
+        private readonly JwtOptions _jwtOptions;
 
-    public string GenerateJwtToken(
-        string userName,
-        string email,
-        string userId,
-        bool? isVerified = null,
-        string? fullName = null,
-        string? refreshToken = null,
-        IReadOnlyList<Claim>? usersClaims = null,
-        IReadOnlyList<string>? rolesClaims = null,
-        IReadOnlyList<string>? permissionsClaims = null)
-    {
-        if (string.IsNullOrWhiteSpace(userName))
-            throw new ArgumentException("User ID claim (subject) cannot be empty.", nameof(userName));
-
-        var now = DateTime.Now;
-        var ipAddress = IpUtilities.GetIpAddress();
-
-        // https://leastprivilege.com/2017/11/15/missing-claims-in-the-asp-net-core-2-openid-connect-handler/
-        // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/blob/a301921ff5904b2fe084c38e41c969f4b2166bcb/src/System.IdentityModel.Tokens.Jwt/ClaimTypeMapping.cs#L45-L125
-        // https://stackoverflow.com/a/50012477/581476
-        var jwtClaims = new List<Claim>
+        public JwtService(IOptions<JwtOptions> jwtOptions)
         {
-            new(JwtRegisteredClaimNames.NameId, userId),
-            new(JwtRegisteredClaimNames.Name, fullName ?? ""),
-            new(JwtRegisteredClaimNames.Sub, userId),
-            new(JwtRegisteredClaimNames.Sid, userId),
-            new(JwtRegisteredClaimNames.UniqueName, userName),
-            new(JwtRegisteredClaimNames.Email, email),
-            new(JwtRegisteredClaimNames.GivenName, fullName ?? ""),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(
-                JwtRegisteredClaimNames.Iat,
-                DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)),
-            new(CustomClaimTypes.RefreshToken, refreshToken ?? ""),
-            new(CustomClaimTypes.IpAddress, ipAddress),
-        };
-
-        if (rolesClaims?.Any() is true)
-        {
-            foreach (var role in rolesClaims)
-                jwtClaims.Add(new Claim(ClaimTypes.Role, role.ToLower(CultureInfo.InvariantCulture)));
+            _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         }
 
-        if (!string.IsNullOrWhiteSpace(_jwtOptions.Audience))
-            jwtClaims.Add(new Claim(JwtRegisteredClaimNames.Aud, _jwtOptions.Audience));
-
-        if (permissionsClaims?.Any() is true)
+        /// <summary>
+        /// Generate a JWT access token.
+        /// - userId is Guid because DB stores user id as uniqueidentifier.
+        /// - rolesClaims & permissionsClaims are expected to be loaded from DB by caller
+        ///   (join asp_net_user_roles -> asp_net_roles and asp_net_role_claims / asp_net_user_claims).
+        /// </summary>
+        public string GenerateJwtToken(
+            Guid userId,
+            string userName,
+            string email,
+            bool? isVerified = null,
+            string? fullName = null,
+            string? refreshToken = null,
+            IReadOnlyList<Claim>? usersClaims = null,
+            IReadOnlyList<string>? rolesClaims = null,
+            IReadOnlyList<string>? permissionsClaims = null)
         {
-            foreach (var permissionsClaim in permissionsClaims)
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new ArgumentException("UserName (unique name) cannot be empty.", nameof(userName));
+
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentException("Email cannot be empty.", nameof(email));
+
+            Guard.Against.NullOrEmpty(_jwtOptions.SecretKey, nameof(_jwtOptions.SecretKey));
+
+            var now = DateTime.UtcNow;
+            var ipAddress = IpUtilities.GetIpAddress() ?? string.Empty;
+
+            // Base claims
+            var jwtClaims = new List<Claim>
             {
-                jwtClaims.Add(new Claim(
-                    CustomClaimTypes.Permission,
-                    permissionsClaim.ToLower(CultureInfo.InvariantCulture)));
+                // Map subject and identifiers to GUID string (DB uses uniqueidentifier)
+                new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new(JwtRegisteredClaimNames.Sid, userId.ToString()),
+                new(JwtRegisteredClaimNames.NameId, userId.ToString()),
+                new(JwtRegisteredClaimNames.UniqueName, userName),
+                new(JwtRegisteredClaimNames.Email, email),
+                new(JwtRegisteredClaimNames.Name, fullName ?? string.Empty),
+                // issued at as epoch seconds (per JWT best practices)
+                new(JwtRegisteredClaimNames.Iat,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                ClaimValueTypes.Integer64),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(CustomClaimTypes.RefreshToken, refreshToken ?? string.Empty),
+                new(CustomClaimTypes.IpAddress, ipAddress)
+            };
+
+            if (isVerified.HasValue)
+            {
+                // Optional flag: store as custom claim
+                jwtClaims.Add(new Claim(CustomClaimTypes.IsVerified, isVerified.Value ? "true" : "false"));
+            }
+
+            // Add roles (as ClaimTypes.Role)
+            if (rolesClaims?.Any() == true)
+            {
+                foreach (var role in rolesClaims.Where(r => !string.IsNullOrWhiteSpace(r)))
+                {
+                    jwtClaims.Add(new Claim(ClaimTypes.Role, role!.ToLower(CultureInfo.InvariantCulture)));
+                }
+            }
+
+            // Add permission claims (custom)
+            if (permissionsClaims?.Any() == true)
+            {
+                foreach (var permission in permissionsClaims.Where(p => !string.IsNullOrWhiteSpace(p)))
+                {
+                    jwtClaims.Add(new Claim(CustomClaimTypes.Permission, permission!.ToLower(CultureInfo.InvariantCulture)));
+                }
+            }
+
+            // Add any extra user claims already shaped as Claim objects
+            if (usersClaims?.Any() == true)
+            {
+                // Avoid duplicating standard claims - but keep caller's claims
+                jwtClaims.AddRange(usersClaims);
+            }
+
+            // Optional audience
+            if (!string.IsNullOrWhiteSpace(_jwtOptions.Audience))
+            {
+                jwtClaims.Add(new Claim(JwtRegisteredClaimNames.Aud, _jwtOptions.Audience));
+            }
+
+            var secret = Encoding.UTF8.GetBytes(_jwtOptions.SecretKey);
+            var signingKey = new SymmetricSecurityKey(secret);
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenLifetimeSeconds = _jwtOptions.TokenLifeTimeSecond <= 0 ? 36000 : _jwtOptions.TokenLifeTimeSecond;
+
+            var jwt = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,
+                audience: string.IsNullOrWhiteSpace(_jwtOptions.Audience) ? null : _jwtOptions.Audience,
+                claims: jwtClaims,
+                notBefore: now,
+                expires: now.AddSeconds(tokenLifetimeSeconds),
+                signingCredentials: signingCredentials);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+            return token;
+        }
+
+        /// <summary>
+        /// Validate and get ClaimsPrincipal from token.
+        /// Set validateLifetime=true when you need to validate expiry (normal access token validation).
+        /// Set validateLifetime=false if you want to extract claims from an expired token (refresh token flow).
+        /// </summary>
+        public ClaimsPrincipal? GetPrincipalFromToken(string token, bool validateLifetime = false)
+        {
+            Guard.Against.NullOrEmpty(token, nameof(token));
+            Guard.Against.NullOrEmpty(_jwtOptions.SecretKey, nameof(_jwtOptions.SecretKey));
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = !string.IsNullOrWhiteSpace(_jwtOptions.Issuer),
+                ValidIssuer = _jwtOptions.Issuer,
+                ValidateAudience = !string.IsNullOrWhiteSpace(_jwtOptions.Audience),
+                ValidAudience = _jwtOptions.Audience,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
+                ValidateLifetime = validateLifetime,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
+
+                if (validatedToken is not JwtSecurityToken)
+                    throw new SecurityTokenException("Invalid token");
+
+                return principal;
+            }
+            catch (SecurityTokenException)
+            {
+                // rethrow to caller or return null depending on your policy
+                throw;
             }
         }
-
-        if (usersClaims?.Any() is true)
-            jwtClaims = jwtClaims.Union(usersClaims).ToList();
-
-        Guard.Against.NullOrEmpty(_jwtOptions.SecretKey, nameof(_jwtOptions.SecretKey));
-
-        SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
-        SigningCredentials signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-
-        var jwt = new JwtSecurityToken(
-            _jwtOptions.Issuer,
-            _jwtOptions.Audience,
-            notBefore: now,
-            claims: jwtClaims,
-            expires: now.AddSeconds(_jwtOptions.TokenLifeTimeSecond == 0 ? 36000 : _jwtOptions.TokenLifeTimeSecond),
-            signingCredentials: signingCredentials);
-
-        var token = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-        return token;
-    }
-
-    public ClaimsPrincipal? GetPrincipalFromToken(string token)
-    {
-        Guard.Against.NullOrEmpty(token, nameof(token));
-        Guard.Against.NullOrEmpty(_jwtOptions.SecretKey, nameof(_jwtOptions.SecretKey));
-
-        TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
-            ValidateLifetime = false,
-            ClockSkew = TimeSpan.Zero,
-        };
-
-        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-
-        ClaimsPrincipal principal = tokenHandler.ValidateToken(
-            token,
-            tokenValidationParameters,
-            out SecurityToken securityToken);
-
-        JwtSecurityToken? jwtSecurityToken = securityToken as JwtSecurityToken;
-
-        if (jwtSecurityToken == null)
-        {
-            throw new SecurityTokenException("Invalid access token.");
-        }
-
-        return principal;
     }
 }

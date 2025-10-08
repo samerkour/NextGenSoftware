@@ -9,7 +9,14 @@ public static class RevokeRefreshTokenEndpoint
     {
         endpoints.MapPost($"{IdentityConfigs.IdentityPrefixUri}/logout", RevokeToken)
             .WithTags(IdentityConfigs.Tag)
-            .RequireAuthorization()
+            // 🔒 Require authentication
+            .RequireAuthorization(policyNames: new[]
+            {
+                Constants.Role.SecurityAdmin, // Role policy
+                Constants.Role.Admin,         // Role policy
+                Constants.Role.User, // Role policy
+                //Constants.Claim.TokenRevoke   // Claim policy (if defined)
+            })
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
@@ -28,7 +35,7 @@ public static class RevokeRefreshTokenEndpoint
     {
        return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
-            var command = new RevokeRefreshToken(request.RefreshToken);
+            var command = new RevokeRefreshTokenCommand(request.RefreshToken);
 
             await commandProcessor.SendAsync(command, cancellationToken);
 
