@@ -10,13 +10,7 @@ public static class RevokeRefreshTokenEndpoint
         endpoints.MapPost($"{IdentityConfigs.IdentityPrefixUri}/logout", RevokeToken)
             .WithTags(IdentityConfigs.Tag)
             // 🔒 Require authentication
-            .RequireAuthorization(policyNames: new[]
-            {
-                Constants.Role.SecurityAdmin, // Role policy
-                Constants.Role.Admin,         // Role policy
-                Constants.Role.User, // Role policy
-                //Constants.Claim.TokenRevoke   // Claim policy (if defined)
-            })
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)

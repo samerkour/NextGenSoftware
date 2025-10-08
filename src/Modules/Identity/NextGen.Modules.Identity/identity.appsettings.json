@@ -19,6 +19,11 @@
         "Password": ""
       }
     },
+    "AccountLockout": {
+      "MaxFailedAccessAttempts": 3,
+      "LockoutDurationMinutes": 15,
+      "ResetFailedCountOnSuccess": true
+    },
     "JwtOptions": {
       "SecretKey": "7b9e4f8c2a1d3b5e7f9a0c1b2d3e4f5g6h7i8j9k0l1m2n3o4p5",
       "Audience": "NextGen-api",

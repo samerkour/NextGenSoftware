@@ -41,6 +41,11 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
         builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.NormalizedEmail).IsUnique();
 
+        //// In ApplicationUserConfiguration.Configure(...)
+        //builder.Property(u => u.AccessFailedCount)
+        //       .HasColumnName("access_failed_count")
+        //       .IsRequired();
+
         // Navigation: UserRoles
         builder.HasMany(e => e.UserRoles)
             .WithOne(e => e.User)
