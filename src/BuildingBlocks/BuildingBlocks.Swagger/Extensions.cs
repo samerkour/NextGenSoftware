@@ -14,7 +14,6 @@ public static class Extensions
     public static WebApplicationBuilder AddCustomSwagger(this WebApplicationBuilder builder, Assembly[] assemblies)
     {
         builder.Services.AddCustomSwagger(builder.Configuration, assemblies);
-
         return builder;
     }
 
@@ -23,75 +22,72 @@ public static class Extensions
         IConfiguration configuration,
         Assembly[] assemblies)
     {
-        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/openapi
         services.AddEndpointsApiExplorer();
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         services.AddOptions<SwaggerOptions>().Bind(configuration.GetSection(nameof(SwaggerOptions)))
             .ValidateDataAnnotations();
 
-        services.AddSwaggerGen(
-            options =>
+        services.AddSwaggerGen(options =>
+        {
+            options.OperationFilter<SwaggerDefaultValues>();
+            options.OperationFilter<ApiVersionOperationFilter>();
+
+            // ✅ Step 2: Add Accept-Language header to all operations
+            options.OperationFilter<AcceptLanguageHeaderOperationFilter>();
+
+            foreach (var assembly in assemblies)
             {
-                options.OperationFilter<SwaggerDefaultValues>();
-                options.OperationFilter<ApiVersionOperationFilter>();
+                var xmlFile = XmlCommentsFilePath(assembly);
+                if (File.Exists(xmlFile))
+                    options.IncludeXmlComments(xmlFile);
+            }
 
-                foreach (var assembly in assemblies)
+            // Security definitions (JWT + API Key)
+            var bearerScheme = new OpenApiSecurityScheme()
+            {
+                Type = SecuritySchemeType.Http,
+                Name = JwtBearerDefaults.AuthenticationScheme,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Reference = new()
                 {
-                    var xmlFile = XmlCommentsFilePath(assembly);
-                    if (File.Exists(xmlFile)) options.IncludeXmlComments(xmlFile);
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme
                 }
+            };
 
-                // https://github.com/domaindrivendev/Swashbuckle.AspNetCore#add-security-definitions-and-requirements
-                // https://swagger.io/docs/specification/authentication/
-                // https://medium.com/@niteshsinghal85/assign-specific-authorization-scheme-to-endpoint-in-swagger-ui-in-net-core-cd84d2a2ebd7
-                var bearerScheme = new OpenApiSecurityScheme()
+            var apiKeyScheme = new OpenApiSecurityScheme
+            {
+                Description = "Api key needed to access the endpoints. X-Api-Key: My_API_Key",
+                In = ParameterLocation.Header,
+                Name = Constants.ApiKeyConstants.HeaderName,
+                Scheme = Constants.ApiKeyConstants.DefaultScheme,
+                Type = SecuritySchemeType.ApiKey,
+                Reference = new()
                 {
-                    Type = SecuritySchemeType.Http,
-                    Name = JwtBearerDefaults.AuthenticationScheme,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    Reference = new()
-                    {
-                        Type = ReferenceType.SecurityScheme, Id = JwtBearerDefaults.AuthenticationScheme
-                    }
-                };
+                    Type = ReferenceType.SecurityScheme,
+                    Id = Constants.ApiKeyConstants.HeaderName
+                }
+            };
 
-                var apiKeyScheme = new OpenApiSecurityScheme
-                {
-                    Description = "Api key needed to access the endpoints. X-Api-Key: My_API_Key",
-                    In = ParameterLocation.Header,
-                    Name = Constants.ApiKeyConstants.HeaderName,
-                    Scheme = Constants.ApiKeyConstants.DefaultScheme,
-                    Type = SecuritySchemeType.ApiKey,
-                    Reference = new()
-                    {
-                        Type = ReferenceType.SecurityScheme, Id = Constants.ApiKeyConstants.HeaderName
-                    }
-                };
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, bearerScheme);
+            options.AddSecurityDefinition(Constants.ApiKeyConstants.HeaderName, apiKeyScheme);
 
-                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, bearerScheme);
-                options.AddSecurityDefinition(Constants.ApiKeyConstants.HeaderName, apiKeyScheme);
-
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {bearerScheme, Array.Empty<string>()}, {apiKeyScheme, Array.Empty<string>()}
-                });
-
-                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-
-                ////https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/467
-                // options.OperationFilter<TagByApiExplorerSettingsOperationFilter>();
-                // options.OperationFilter<TagBySwaggerOperationFilter>();
-
-                // Enables Swagger annotations (SwaggerOperationAttribute, SwaggerParameterAttribute etc.)
-                options.EnableAnnotations();
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                { bearerScheme, Array.Empty<string>() },
+                { apiKeyScheme, Array.Empty<string>() }
             });
+
+            options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+            options.EnableAnnotations();
+        });
 
         static string XmlCommentsFilePath(Assembly assembly)
         {
             var basePath = Path.GetDirectoryName(assembly.Location);
             var fileName = assembly.GetName().Name + ".xml";
-            return Path.Combine(basePath, fileName);
+            return Path.Combine(basePath!, fileName);
         }
 
         return services;
@@ -100,20 +96,38 @@ public static class Extensions
     public static IApplicationBuilder UseCustomSwagger(this WebApplication app)
     {
         app.UseSwagger();
-        app.UseSwaggerUI(
-            options =>
-            {
-                var descriptions = app.DescribeApiVersions();
+        app.UseSwaggerUI(options =>
+        {
+            var descriptions = app.DescribeApiVersions();
 
-                // build a swagger endpoint for each discovered API version
-                foreach (var description in descriptions)
-                {
-                    var url = $"/swagger/{description.GroupName}/swagger.json";
-                    var name = description.GroupName.ToUpperInvariant();
-                    options.SwaggerEndpoint(url, name);
-                }
-            });
+            // 🔹 Build a Swagger endpoint for each discovered API version (v1, v2, etc.)
+            foreach (var description in descriptions)
+            {
+                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var name = description.GroupName.ToUpperInvariant();
+                options.SwaggerEndpoint(url, $"{name} API");
+            }
+
+            // 🔹 Automatically inject "Accept-Language" header (default = en)
+            options.UseRequestInterceptor(
+                "function(request) { " +
+                "if (!request.headers['Accept-Language']) { " +
+                "request.headers['Accept-Language'] = 'en'; " +
+                "} " +
+                "return request; " +
+                "}"
+            );
+
+            // Optional: Improve appearance and default Swagger page
+            options.DocumentTitle = "NextGen API Documentation";
+            options.DisplayRequestDuration();
+            options.DefaultModelExpandDepth(2);
+            options.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
+            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+            options.EnableDeepLinking();
+        });
 
         return app;
     }
+
 }

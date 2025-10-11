@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
@@ -18,9 +19,12 @@ using BuildingBlocks.Web.Extensions;
 using BuildingBlocks.Web.Extensions.ServiceCollectionExtensions;
 using BuildingBlocks.Web.Module;
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using NextGen.Api;
 using NextGen.Api.Extensions.ApplicationBuilderExtensions;
 using NextGen.Api.Extensions.ServiceCollectionExtensions;
@@ -45,10 +49,6 @@ static void RegisterServices(WebApplicationBuilder builder)
 {
     builder.Host.UseDefaultServiceProvider((env, c) =>
     {
-        // Handling Captive Dependency Problem
-        // https://ankitvijay.net/2020/03/17/net-core-and-di-beware-of-captive-dependency/
-        // https://levelup.gitconnected.com/top-misconceptions-about-dependency-injection-in-asp-net-core-c6a7afd14eb4
-        // https://blog.ploeh.dk/2014/06/02/captive-dependency/
         if (env.HostingEnvironment.IsDevelopment()
             || env.HostingEnvironment.IsEnvironment("test")
             || env.HostingEnvironment.IsStaging())
@@ -61,11 +61,34 @@ static void RegisterServices(WebApplicationBuilder builder)
         builder.Environment.ContentRootPath,
         builder.Environment.EnvironmentName);
 
-    // https://www.michaco.net/blog/EnvironmentVariablesAndConfigurationInASPNETCoreApps#environment-variables-and-configuration
-    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0#non-prefixed-environment-variables
     builder.Configuration.AddEnvironmentVariables("NextGen_env_");
 
-    // Register AmazonS3Client for MinIO/S3 using configuration
+    builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+    {
+        var supportedCultures = new[]
+        {
+            new CultureInfo("en"),
+            new CultureInfo("fa-IR"),
+            new CultureInfo("ar-SA")
+        };
+
+        options.DefaultRequestCulture = new RequestCulture("en");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+
+        // 🔹 Accept-Language support
+        options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
+
+        // 🔹 Optional fallback (fa → fa-IR)
+        options.FallBackToParentCultures = true;
+        options.FallBackToParentUICultures = true;
+    });
+
+    // -------------------------------------------------------
+
+    // S3 registration
     builder.Services.AddSingleton<IAmazonS3>(sp =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
@@ -81,13 +104,11 @@ static void RegisterServices(WebApplicationBuilder builder)
             secretKey,
             new AmazonS3Config
             {
-                ServiceURL = serviceUrl,     // MinIO / S3 endpoint
-                //RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region),
-                ForcePathStyle = true  // required for MinIO, safe for AWS S3
+                ServiceURL = serviceUrl,
+                ForcePathStyle = true
             });
     });
 
-    // https://github.com/tonerdo/dotnet-env
     DotNetEnv.Env.TraversePath().Load();
 
     builder.Services.AddHttpContextAccessor();
@@ -116,21 +137,15 @@ static void RegisterServices(WebApplicationBuilder builder)
     /*----------------- Module Services Setup ------------------*/
     builder.AddModulesServices(builder.Environment, useCompositionRootForModules: true);
 
-    // https://andrewlock.net/controller-activation-and-dependency-injection-in-asp-net-core-mvc/
-    // Configure MVC to use custom response format
     builder.Services.AddControllers(options =>
     {
         options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
-        // Add custom filter for response formatting
         options.Filters.Add<ApiResponseFilter>();
-    }).AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-        .ConfigureApiBehaviorOptions(options =>
-        {
-            // Suppress default ProblemDetails for model validation errors
-            options.SuppressMapClientErrors = true;
-            options.SuppressModelStateInvalidFilter = true;
-        });
+    })
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+    // Enable DataAnnotation localization
+    .AddDataAnnotationsLocalization();
 
     builder.Services.ReplaceTransient<IControllerActivator, CustomServiceBasedControllerActivator>();
 
@@ -153,23 +168,23 @@ static void RegisterServices(WebApplicationBuilder builder)
             new(ApiConstants.Role.User, new List<string> {ApiConstants.Role.User})
         });
 
-    // Add rate limiting services
-    builder.Services.AddMemoryCache(); // Required for in-memory rate limiting
-    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>(); // Added for rate limiting
-    builder.Services.AddInMemoryRateLimiting(); // Use in-memory store for simplicity
+    // Rate limiting
+    builder.Services.AddMemoryCache();
+    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+    builder.Services.AddInMemoryRateLimiting();
     builder.Services.Configure<IpRateLimitOptions>(options =>
     {
         options.GeneralRules = new List<RateLimitRule>
         {
             new RateLimitRule
             {
-                Endpoint = "POST:/api/v1/identity/login", // Target login endpoint (v1)
-                Limit = 5, // 5 requests
-                Period = "1m" // per minute
+                Endpoint = "POST:/api/v1/identity/login",
+                Limit = 5,
+                Period = "1m"
             },
             new RateLimitRule
             {
-                Endpoint = "POST:/api/v2/identity/login", // Target login endpoint (v2)
+                Endpoint = "POST:/api/v2/identity/login",
                 Limit = 5,
                 Period = "1m"
             }
@@ -178,13 +193,12 @@ static void RegisterServices(WebApplicationBuilder builder)
         {
             ContentType = "application/json",
             Content = "{\"error\": \"Rate limit exceeded. Try again later.\"}",
-            StatusCode = 429 // Too Many Requests
+            StatusCode = 429
         };
     });
     builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
     builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
-    // Register custom response service
     builder.Services.AddTransient<IApiResponseService, ApiResponseService>();
 }
 
@@ -193,38 +207,34 @@ static async Task ConfigureApplication(WebApplication app)
     var environment = app.Environment;
 
     app.UseProblemDetails();
-
     app.UseSerilogRequestLogging();
 
-    // Add rate limiting middleware before routing
-    app.UseIpRateLimiting(); // Added for rate limiting
+    app.UseIpRateLimiting();
+
+    // ---------- Step 2: Use Localization Middleware ----------
+    var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+    app.UseRequestLocalization(locOptions);
+    // ---------------------------------------------------------
 
     app.UseRouting();
     app.UseAppCors();
 
-    // Add custom response formatting middleware
     app.UseMiddleware<ApiResponseMiddleware>();
-  
 
     app.UseAuthentication();
     app.UseAuthorization();
 
-    /*----------------- Module Middleware Setup ------------------*/
     await app.ConfigureModules();
 
     app.MapControllers();
-
-    /*----------------- Module Routes Setup ------------------*/
     app.MapModulesEndpoints();
 
-    // automatic discover minimal endpoints
     app.MapEndpoints(typeof(ApiRoot).Assembly);
 
     app.MapGet("/", (HttpContext _) => "Next Gen Modular Monolith Api.").ExcludeFromDescription();
 
     if (environment.IsDevelopment() || environment.IsEnvironment("docker"))
     {
-        // swagger middleware should register after register endpoints to discover all endpoints and its versions correctly
         app.UseCustomSwagger();
     }
 
@@ -254,8 +264,7 @@ namespace NextGen.Api
             => env.IsDevelopment() ? loggerOptions.DevelopmentLogPath : loggerOptions.ProductionLogPath;
     }
 
-    // Custom response classes
-
+    // --------------------- ApiResponse Classes ---------------------
     public class ApiResponse
     {
         public bool Success { get; set; }
@@ -273,7 +282,7 @@ namespace NextGen.Api
             ApiVersion = apiVersion ?? "1.0";
         }
 
-        public static ApiResponse SuccessResponse(object? data = null, string? message = "Request successful.", int statusCode = 200, string? apiVersion = null)
+        public static ApiResponse SuccessResponse(object? data = null, string? message = null, int statusCode = 200, string? apiVersion = null)
             => new(success: true, data, message, statusCode, apiVersion);
     }
 
@@ -295,23 +304,22 @@ namespace NextGen.Api
     public class ErrorDetails
     {
         public string Message { get; set; }
-
-        public ErrorDetails(string message)
-        {
-            Message = message;
-        }
+        public ErrorDetails(string message) => Message = message;
     }
 
-    // Middleware for response formatting
+    // --------------------- Middleware for Localization + Formatting ---------------------
+
     public class ApiResponseMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ApiResponseMiddleware> _logger;
+        private readonly IStringLocalizer<SharedResource> _localizer;
 
-        public ApiResponseMiddleware(RequestDelegate next, ILogger<ApiResponseMiddleware> logger)
+        public ApiResponseMiddleware(RequestDelegate next, ILogger<ApiResponseMiddleware> logger, IStringLocalizer<SharedResource> localizer)
         {
             _next = next;
             _logger = logger;
+            _localizer = localizer;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -350,7 +358,6 @@ namespace NextGen.Api
             responseBody.Seek(0, SeekOrigin.Begin);
             var responseContent = await new StreamReader(responseBody).ReadToEndAsync();
 
-            // If already wrapped, forward as-is
             if (!string.IsNullOrEmpty(responseContent) &&
                 responseContent.Contains("\"success\":") && responseContent.Contains("\"apiVersion\":"))
             {
@@ -358,13 +365,12 @@ namespace NextGen.Api
                 return;
             }
 
-            var success = context.Response.StatusCode >= 200 && context.Response.StatusCode < 300;
+            var success = context.Response.StatusCode is >= 200 and < 300;
             var apiVersion = GetApiVersionFromRequest(context);
 
             if (success)
             {
                 object? data = null;
-
                 try
                 {
                     if (!string.IsNullOrEmpty(responseContent))
@@ -375,21 +381,23 @@ namespace NextGen.Api
                     data = responseContent;
                 }
 
+                // 🟢 Localized messages for success codes
                 var message = context.Response.StatusCode switch
                 {
-                    200 => "Request successful.",
-                    201 => "Resource created successfully.",
-                    204 => "No content.",
-                    _ => "Request successful."
+                    200 => _localizer["RequestSuccessful"],
+                    201 => _localizer["ResourceCreated"],
+                    204 => _localizer["NoContent"],
+                    _ => _localizer["RequestSuccessful"]
                 };
 
                 var apiResponse = ApiResponse.SuccessResponse(data, message, context.Response.StatusCode, apiVersion);
-
                 await WriteJsonResponse(context, apiResponse, originalBodyStream);
             }
             else
             {
-                object errorPayload = new { message = "An error occurred." };
+                // 🔴 Localized fallback for error messages
+                var message = _localizer["GenericError"];
+                object errorPayload = new { message };
 
                 try
                 {
@@ -397,87 +405,22 @@ namespace NextGen.Api
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(responseContent);
 
-                        //// 🟡 Handle FluentValidation or ASP.NET Validation format:
-                        //// Example: {"Email":["'Email' is not a valid email address."]}
-                        //if (context.Response.StatusCode == StatusCodes.Status422UnprocessableEntity ||
-                        //    (errorObj.ValueKind == JsonValueKind.Object && errorObj.EnumerateObject().Any(p => p.Value.ValueKind == JsonValueKind.Array)))
-                        //{
-                        //    var validationErrors = new List<ValidationError>();
+                        if (errorObj.TryGetProperty("title", out var title))
+                            message = new LocalizedString(nameof(title), title.GetString() ?? message.Value);
+                        else if (errorObj.TryGetProperty("detail", out var detail))
+                            message = new LocalizedString(nameof(detail), detail.GetString() ?? message.Value);
 
-                        //    foreach (var prop in errorObj.EnumerateObject())
-                        //    {
-                        //        if (prop.Value.ValueKind == JsonValueKind.Array)
-                        //        {
-                        //            foreach (var msg in prop.Value.EnumerateArray())
-                        //            {
-                        //                validationErrors.Add(new ValidationError(prop.Name, msg.GetString() ?? "Invalid value"));
-                        //            }
-                        //        }
-                        //    }
-
-                        //    errorPayload = new
-                        //    {
-                        //        message = "Validation Failed.",
-                        //        errors = validationErrors
-                        //            .GroupBy(e => e.Field ?? "General")
-                        //            .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray())
-                        //    };
-
-                        //    //// ✅ Ensure correct status code
-                        //    //context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
-                        //}
-
-                        // 🟢 Handle ASP.NET ModelState error format (with "errors" object)
-                        // else
-                        if (errorObj.TryGetProperty("errors", out var errorsProp) && errorsProp.ValueKind == JsonValueKind.Object)
-                        {
-                            var validationErrors = new List<ValidationError>();
-
-                            foreach (var prop in errorsProp.EnumerateObject())
-                            {
-                                foreach (var msg in prop.Value.EnumerateArray())
-                                {
-                                    validationErrors.Add(new ValidationError(prop.Name, msg.GetString() ?? "Invalid value"));
-                                }
-                            }
-
-                            errorPayload = new
-                            {
-                                message = "Validation Failed.",
-                                errors = validationErrors
-                                    .GroupBy(e => e.Field ?? "General")
-                                    .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray())
-                            };
-
-                            //// ✅ Set 422 explicitly for validation problems
-                            //context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
-                        }
-
-                        // 🟠 Generic error response (ProblemDetails, etc.)
-                        else if (errorObj.TryGetProperty("title", out var titleProp))
-                        {
-                            errorPayload = new { message = titleProp.GetString() ?? "Bad request." };
-                        }
-                        else if (errorObj.TryGetProperty("detail", out var detailProp))
-                        {
-                            errorPayload = new { message = detailProp.GetString() ?? "An error occurred." };
-                        }
-                        else if (errorObj.ValueKind == JsonValueKind.String)
-                        {
-                            errorPayload = new { message = errorObj.GetString() };
-                        }
+                        errorPayload = new { message = message.Value };
                     }
+
                 }
                 catch
                 {
-                    // Keep default errorPayload if parsing fails
+                    // fallback
                 }
 
-                // 🧩 Build and write unified API error response
                 var apiErrorResponse = new ApiErrorResponse(context.Response.StatusCode, errorPayload, apiVersion);
                 await WriteJsonResponse(context, apiErrorResponse, originalBodyStream);
-
-
             }
         }
 
@@ -488,38 +431,16 @@ namespace NextGen.Api
 
             var apiVersion = GetApiVersionFromRequest(context);
 
-            // Handle ValidationException
-            if (exception is ValidationException validationException)
+            var localizedMessage = exception switch
             {
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-                var errorResponse = new ApiErrorResponse(
-                    context.Response.StatusCode,
-                    new
-                    {
-                        message = validationException.ValidationResult.Message,
-                        errors = validationException.ValidationResult.Errors
-                            ?.GroupBy(e => e.Field ?? "General")
-                            .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray())
-                    },
-                    apiVersion
-                );
-
-                await WriteJsonResponse(context, errorResponse, originalBodyStream);
-                return;
-            }
-
-            // Map other exceptions
-            context.Response.StatusCode = exception switch
-            {
-                UnauthorizedAccessException => 401,
-                KeyNotFoundException => 404,
-                _ => 500
+                UnauthorizedAccessException => _localizer["Unauthorized"],
+                KeyNotFoundException => _localizer["NotFound"],
+                _ => _localizer["InternalServerError"]
             };
 
             var apiError = new ApiErrorResponse(
-                context.Response.StatusCode,
-                new { message = exception.Message },
+                context.Response.StatusCode == 0 ? 500 : context.Response.StatusCode,
+                new { message = localizedMessage },
                 apiVersion
             );
 
@@ -531,22 +452,18 @@ namespace NextGen.Api
             context.Response.Body = originalBodyStream;
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = 200;
-
-            context.Response.Headers.ContentLength = null;
             context.Response.Headers.Remove("Content-Length");
 
-            var jsonResponse = JsonSerializer.Serialize(
-                response,
-                new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = context.RequestServices.GetService<IWebHostEnvironment>().IsDevelopment()
-                });
+            var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = context.RequestServices.GetService<IWebHostEnvironment>()?.IsDevelopment() == true
+            });
 
             await context.Response.WriteAsync(jsonResponse);
         }
 
-        private string GetApiVersionFromRequest(HttpContext context)
+        private static string GetApiVersionFromRequest(HttpContext context)
         {
             var path = context.Request.Path.Value ?? "";
             if (path.Contains("/api/v"))
@@ -574,7 +491,8 @@ namespace NextGen.Api
         }
     }
 
-    // Action filter for controller responses
+    // --------------------- Action Filter ---------------------
+
     public class ApiResponseFilter : IActionFilter, IResultFilter
     {
         private readonly IApiResponseService _responseService;
@@ -598,7 +516,8 @@ namespace NextGen.Api
         public void OnResultExecuted(ResultExecutedContext context) { }
     }
 
-    // Service for response formatting
+    // --------------------- Response Service ---------------------
+
     public interface IApiResponseService
     {
         IActionResult FormatResponse(object? data, ActionContext context);
@@ -606,6 +525,13 @@ namespace NextGen.Api
 
     public class ApiResponseService : IApiResponseService
     {
+        private readonly IStringLocalizer<SharedResource> _localizer;
+
+        public ApiResponseService(IStringLocalizer<SharedResource> localizer)
+        {
+            _localizer = localizer;
+        }
+
         public IActionResult FormatResponse(object? data, ActionContext context)
         {
             var statusCode = context.HttpContext.Response.StatusCode;
@@ -613,19 +539,19 @@ namespace NextGen.Api
             var apiVersion = GetApiVersionFromRequest(context.HttpContext);
 
             if (success)
-                return new ObjectResult(ApiResponse.SuccessResponse(data, null, statusCode, apiVersion)) { StatusCode = 200 };
+                return new ObjectResult(ApiResponse.SuccessResponse(data, _localizer["RequestSuccessful"], statusCode, apiVersion)) { StatusCode = 200 };
 
-            var errorMessage = statusCode switch
+            var errorKey = statusCode switch
             {
-                400 => "Bad request",
+                400 => "BadRequest",
                 401 => "Unauthorized",
                 403 => "Forbidden",
-                404 => "Not found",
-                500 => "Internal server error",
-                _ => "An error occurred"
+                404 => "NotFound",
+                500 => "InternalServerError",
+                _ => "GenericError"
             };
 
-            return new ObjectResult(new ApiErrorResponse(statusCode, new { message = errorMessage }, apiVersion)) { StatusCode = 200 };
+            return new ObjectResult(new ApiErrorResponse(statusCode, new { message = _localizer[errorKey] }, apiVersion)) { StatusCode = 200 };
         }
 
         private string GetApiVersionFromRequest(HttpContext context)
@@ -648,5 +574,4 @@ namespace NextGen.Api
             return "1.0";
         }
     }
-
 }
