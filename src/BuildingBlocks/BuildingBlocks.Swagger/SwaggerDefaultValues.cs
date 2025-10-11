@@ -81,7 +81,8 @@ public class SwaggerDefaultValues : IOperationFilter
                     {
                         new OpenApiString("en"),
                         new OpenApiString("fa-IR"),
-                        new OpenApiString("ar-SA")
+                        new OpenApiString("ar-SA"),
+                        new OpenApiString("zh-CN")
                     }
                 }
             });

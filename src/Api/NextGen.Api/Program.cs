@@ -71,7 +71,8 @@ static void RegisterServices(WebApplicationBuilder builder)
         {
             new CultureInfo("en"),
             new CultureInfo("fa-IR"),
-            new CultureInfo("ar-SA")
+            new CultureInfo("ar-SA"),
+            new CultureInfo("zh-CN")
         };
 
         options.DefaultRequestCulture = new RequestCulture("en");
@@ -320,7 +321,7 @@ namespace NextGen.Api
             _next = next;
             _logger = logger;
             _localizer = localizer;
-        }
+       }
 
         public async Task InvokeAsync(HttpContext context)
         {

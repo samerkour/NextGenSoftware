@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BadRequest" xml:space="preserve">
-    <value>درخواست نامعتبر است.</value>
+    <value>错误的请求。</value>
   </data>
   <data name="Forbidden" xml:space="preserve">
-    <value>دسترسی ممنوع است.</value>
+    <value>禁止访问。</value>
   </data>
   <data name="GenericError" xml:space="preserve">
-    <value>خطایی رخ داده است.</value>
+    <value>发生错误。</value>
   </data>
   <data name="InternalServerError" xml:space="preserve">
-    <value>خطای داخلی سرور.</value>
+    <value>内部服务器错误。</value>
   </data>
   <data name="NoContent" xml:space="preserve">
-    <value>بدون محتوا.</value>
+    <value>无内容。</value>
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>منبع یافت نشد.</value>
+    <value>资源未找到。</value>
   </data>
   <data name="RequestSuccessful" xml:space="preserve">
-    <value>درخواست با موفقیت انجام شد.</value>
+    <value>请求成功。</value>
   </data>
   <data name="ResourceCreated" xml:space="preserve">
-    <value>منبع با موفقیت ایجاد شد.</value>
+    <value>资源创建成功。</value>
   </data>
   <data name="Unauthorized" xml:space="preserve">
-    <value>دسترسی غیرمجاز.</value>
+    <value>未经授权的访问。</value>
   </data>
   <data name="ValidationFailed" xml:space="preserve">
-    <value>اعتبار سنجی ناموفق.</value>
+    <value>验证失败。</value>
   </data>
 </root>

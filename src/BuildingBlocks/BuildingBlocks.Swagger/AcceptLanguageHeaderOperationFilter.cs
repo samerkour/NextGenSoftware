@@ -22,7 +22,7 @@ public class AcceptLanguageHeaderOperationFilter : IOperationFilter
             {
                 Name = "Accept-Language",
                 In = ParameterLocation.Header,
-                Description = "Language for localization (e.g., en-US, fa-IR, ar-SA)",
+                Description = "Language for localization (e.g., en-US, fa-IR, ar-SA, zh-CN)",
                 Required = false,
                 Schema = new OpenApiSchema
                 {
