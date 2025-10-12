@@ -4,6 +4,7 @@ namespace NextGen.Modules.Identity.Shared.Models;
 
 public class RefreshToken
 {
+    public Guid Id { get; set; } // PK
     public Guid UserId { get; set; }
     public string Token { get; set; }
     public DateTime CreatedAt { get; set; }

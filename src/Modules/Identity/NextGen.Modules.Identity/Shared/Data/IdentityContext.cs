@@ -64,6 +64,19 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
                 fk.SetConstraintName(fk.GetConstraintName()?.Underscore());
         }
 
+        // RefreshToken mapping
+        builder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(rt => rt.Id); // Primary key
+            entity.Property(rt => rt.Token).IsRequired();
+            entity.HasOne(rt => rt.ApplicationUser)
+                  .WithMany(u => u.RefreshTokens)
+                  .HasForeignKey(rt => rt.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.ToTable("RefreshTokens");
+        });
+
         // ----------------------------
         // Relationships
         // ----------------------------
