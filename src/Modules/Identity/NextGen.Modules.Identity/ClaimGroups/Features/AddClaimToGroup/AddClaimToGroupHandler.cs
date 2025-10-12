@@ -1,0 +1,52 @@
+using AutoMapper;
+using BuildingBlocks.Abstractions.CQRS.Command;
+using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Identity.Shared.Data;
+using NextGen.Modules.Identity.Shared.Models;
+
+namespace NextGen.Modules.Identity.ClaimGroups.Features.AddClaimToGroup
+{
+    public class AddClaimToGroupHandler
+        : ICommandHandler<AddClaimToGroupCommand, AddClaimToGroupResponse>
+    {
+        private readonly IdentityContext _db;
+        private readonly IMapper _mapper;
+
+        public AddClaimToGroupHandler(IdentityContext db, IMapper mapper)
+        {
+            _db = db;
+            _mapper = mapper;
+        }
+
+        public async Task<AddClaimToGroupResponse> Handle(AddClaimToGroupCommand request, CancellationToken cancellationToken)
+        {
+            var claimGroup = await _db.ClaimGroups
+                .Include(g => g.Claims)
+                .FirstOrDefaultAsync(g => g.Id == request.GroupId, cancellationToken);
+
+            if (claimGroup == null)
+                throw new KeyNotFoundException("Claim group not found.");
+
+            var claim = await _db.Claims
+                .FirstOrDefaultAsync(c => c.Id == request.ClaimId, cancellationToken);
+
+            if (claim == null)
+                throw new KeyNotFoundException("Claim not found.");
+
+            if (claimGroup.Claims.Any(c => c.Id == request.ClaimId))
+                throw new InvalidOperationException("Claim already assigned to this group.");
+
+            claim.ClaimGroupId = claimGroup.Id;
+            _db.Claims.Update(claim);
+
+            await _db.SaveChangesAsync(cancellationToken);
+
+            return new AddClaimToGroupResponse
+            {
+                GroupId = claimGroup.Id,
+                ClaimId = claim.Id,
+                Message = "Claim added to group successfully"
+            };
+        }
+    }
+}

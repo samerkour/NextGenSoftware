@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Identity.Data.EntityConfigurations;
 internal class ClaimGroupConfiguration : IEntityTypeConfiguration<ClaimGroup>
@@ -15,9 +16,9 @@ internal class ClaimGroupConfiguration : IEntityTypeConfiguration<ClaimGroup>
         builder.HasKey(cg => cg.Id);
         builder.Property(cg => cg.Name).HasMaxLength(200).IsRequired();
 
-        // many-to-many Role <-> ClaimGroup
-        builder.HasMany(cg => cg.Roles)
-               .WithMany(r => r.ClaimGroups)
-               .UsingEntity(j => j.ToTable("RoleClaimGroups"));
+        //// many-to-many Role <-> ClaimGroup
+        //builder.HasMany(cg => cg.Roles)
+        //       .WithMany(r => r.ClaimGroups)
+        //       .UsingEntity(j => j.ToTable("RoleClaimGroups"));
     }
 }

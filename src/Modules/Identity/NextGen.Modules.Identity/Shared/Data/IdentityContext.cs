@@ -16,22 +16,28 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
         IdentityUserLogin<Guid>,
         IdentityRoleClaim<Guid>,
         IdentityUserToken<Guid>>,
-        IDbFacadeResolver,
-        IDomainEventContext,
-        ITxDbContextExecution
+    IDbFacadeResolver,
+    IDomainEventContext,
+    ITxDbContextExecution
 {
     public IdentityContext(DbContextOptions options) : base(options)
     {
     }
 
     // ----------------------------
-    // New DbSets for Modules, RoleGroups, ClaimGroups, Claims
+    // DbSets
     // ----------------------------
-    public DbSet<NextGen.Modules.Identity.Shared.Models.ApplicationModule> Modules { get; set; } = default!;
+    public DbSet<ApplicationModule> Modules { get; set; } = default!;
     public DbSet<RoleGroup> RoleGroups { get; set; } = default!;
     public DbSet<ClaimGroup> ClaimGroups { get; set; } = default!;
     public DbSet<ApplicationClaim> Claims { get; set; } = default!;
+    public DbSet<ClaimGroupClaim> ClaimGroupClaims { get; set; } = default!;
+    public DbSet<RoleClaimGroup> RoleClaimGroups { get; set; } = default!;
+    public DbSet<RoleClaim> RoleClaims { get; set; } = default!;
 
+    // ----------------------------
+    // Model Configuration
+    // ----------------------------
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -49,19 +55,13 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
                 StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
 
             foreach (var property in entity.GetProperties())
-            {
                 property.SetColumnName(property.GetColumnName(objectIdentifier)?.Underscore());
-            }
 
             foreach (var key in entity.GetKeys())
-            {
                 key.SetName(key.GetName()?.Underscore());
-            }
 
             foreach (var fk in entity.GetForeignKeys())
-            {
                 fk.SetConstraintName(fk.GetConstraintName()?.Underscore());
-            }
         }
 
         // ----------------------------
@@ -89,6 +89,63 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
             .HasForeignKey(c => c.ClaimGroupId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // ClaimGroupClaim (Many-to-Many)
+        builder.Entity<ClaimGroupClaim>(entity =>
+        {
+            entity.HasKey(x => new { x.ClaimGroupId, x.ClaimId });
+
+            entity.HasOne(x => x.ClaimGroup)
+                  .WithMany()
+                  .HasForeignKey(x => x.ClaimGroupId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Claim)
+                  .WithMany()
+                  .HasForeignKey(x => x.ClaimId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.ToTable("ClaimGroupClaims");
+        });
+
+        // Role ClaimGroup (many-to-many via RoleClaimGroup)
+        builder.Entity<RoleClaimGroup>(entity =>
+        {
+            entity.ToTable("RoleClaimGroups");
+
+            entity.HasKey(rcg => new { rcg.RoleId, rcg.ClaimGroupId });
+
+            entity.HasOne(rcg => rcg.Role)
+                .WithMany(r => r.RoleClaimGroups)
+                .HasForeignKey(rcg => rcg.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(rcg => rcg.ClaimGroup)
+                .WithMany(cg => cg.RoleClaimGroups)
+                .HasForeignKey(rcg => rcg.ClaimGroupId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // ----------------------------
+        // RoleClaims
+        // ----------------------------
+        builder.Entity<RoleClaim>(entity =>
+        {
+            entity.ToTable("RoleClaims");
+            entity.HasKey(x => new { x.RoleId, x.ClaimId });
+
+            entity.Property(x => x.RoleId).IsRequired();
+            entity.Property(x => x.ClaimId).IsRequired();
+
+            entity.HasOne(x => x.Role)
+                  .WithMany()
+                  .HasForeignKey(x => x.RoleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Claim)
+                  .WithMany()
+                  .HasForeignKey(x => x.ClaimId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
     }
 
     // ----------------------------
@@ -136,12 +193,12 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
     }
 
     // ----------------------------
-    // Domain events (no-op for now)
+    // Domain events
     // ----------------------------
     public IReadOnlyList<IDomainEvent> GetAllUncommittedEvents() => new List<IDomainEvent>();
 
     public void MarkUncommittedDomainEventAsCommitted()
     {
-        // Method intentionally left empty.
+        // intentionally left empty
     }
 }

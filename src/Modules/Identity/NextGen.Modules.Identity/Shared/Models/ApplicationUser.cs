@@ -23,12 +23,12 @@ public class ApplicationUser : IdentityUser<Guid>
     public DateTime? TwoFactorEnabledOn { get; set; }
     public DateTime? LockoutEnabledOn { get; set; }
 
-
     // Identity navigations
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = default!;
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = default!;
 
+    public DateTime CreatedAt { get; set; }
+
     // Soft delete marker
     public DateTime? DeletedOn { get; set; }
-    public DateTime CreatedAt { get; set; }
 }

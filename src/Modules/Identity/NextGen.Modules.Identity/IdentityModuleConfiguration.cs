@@ -3,6 +3,7 @@ using Asp.Versioning.Builder;
 using BuildingBlocks.Abstractions.Web.Module;
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Core.Messaging.Extensions;
+using NextGen.Modules.Identity.ClaimGroups;
 using NextGen.Modules.Identity.Claims;
 using NextGen.Modules.Identity.Identity;
 using NextGen.Modules.Identity.Shared.Extensions.ApplicationBuilderExtensions;
@@ -28,6 +29,7 @@ public class IdentityModuleConfiguration : IModuleDefinition
         services.AddIdentityServices(configuration, environment);
         services.AddUsersServices(configuration);
         services.AddClaimsServices(configuration);
+        services.AddClaimGroupServices(configuration);
     }
 
     public async Task ConfigureModule(
@@ -76,5 +78,6 @@ public class IdentityModuleConfiguration : IModuleDefinition
         endpoints.MapIdentityEndpoints();
         endpoints.MapUsersEndpoints();
         endpoints.MapClaimEndpoints();
+        endpoints.MapClaimGroupEndpoints();
     }
 }

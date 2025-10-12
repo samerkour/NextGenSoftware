@@ -8,14 +8,19 @@ public class ApplicationRole : IdentityRole<Guid>
     public Guid? RoleGroupId { get; set; }
     public virtual RoleGroup? RoleGroup { get; set; }
 
-    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = default!;
-    public virtual ICollection<ClaimGroup> ClaimGroups { get; set; } = new HashSet<ClaimGroup>();
+    // User assignments
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new HashSet<ApplicationUserRole>();
 
+    // Removed direct ClaimGroups navigation — use RoleClaimGroups instead
+    public virtual ICollection<RoleClaimGroup> RoleClaimGroups { get; set; } = new HashSet<RoleClaimGroup>();
+
+    // Factory roles
     public static ApplicationRole SecurityAdmin => new()
     {
         Name = Constants.Role.SecurityAdmin,
         NormalizedName = nameof(SecurityAdmin).ToUpper(CultureInfo.InvariantCulture)
     };
+
     public static ApplicationRole Admin => new()
     {
         Name = Constants.Role.Admin,
@@ -25,6 +30,6 @@ public class ApplicationRole : IdentityRole<Guid>
     public static ApplicationRole User => new()
     {
         Name = Constants.Role.User,
-        NormalizedName = nameof(User).ToUpper(CultureInfo.InvariantCulture),
+        NormalizedName = nameof(User).ToUpper(CultureInfo.InvariantCulture)
     };
 }
