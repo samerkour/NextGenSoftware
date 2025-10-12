@@ -15,6 +15,7 @@ public record LoginResponse
         RefreshToken = refreshToken;
         TokenType = tokenType;
         ExpiresIn = expiresIn;
+        ProfileImagePath = user.ProfileImagePath;
     }
 
     public Guid UserId { get; }
@@ -25,4 +26,5 @@ public record LoginResponse
     public string RefreshToken { get; }
     public string TokenType { get; }
     public double ExpiresIn { get; }
+    public string? ProfileImagePath { get;}
 }

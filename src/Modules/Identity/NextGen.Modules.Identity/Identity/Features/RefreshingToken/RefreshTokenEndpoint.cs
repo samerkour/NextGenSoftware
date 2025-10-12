@@ -28,7 +28,7 @@ public static class RefreshTokenEndpoint
     {
         return gatewayProcessor.ExecuteCommand(async commandProcessor =>
         {
-            var command = new RefreshToken(request.AccessToken, request.RefreshToken);
+            var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);
 
             var result = await commandProcessor.SendAsync(command, cancellationToken);
 

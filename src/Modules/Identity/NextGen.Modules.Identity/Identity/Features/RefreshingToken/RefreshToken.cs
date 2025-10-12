@@ -13,21 +13,7 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 
 namespace NextGen.Modules.Identity.Identity.Features.RefreshingToken;
 
-public record RefreshToken(string AccessTokenData, string RefreshTokenData) : ICommand<RefreshTokenResponse>;
-
-internal class RefreshTokenValidator : AbstractValidator<RefreshToken>
-{
-    public RefreshTokenValidator()
-    {
-        RuleFor(v => v.AccessTokenData)
-            .NotEmpty();
-
-        RuleFor(v => v.RefreshTokenData)
-            .NotEmpty();
-    }
-}
-
-internal class RefreshTokenHandler : ICommandHandler<RefreshToken, RefreshTokenResponse>
+internal class RefreshTokenHandler : ICommandHandler<RefreshTokenCommand, RefreshTokenResponse>
 {
     private readonly ICommandProcessor _commandProcessor;
     private readonly IJwtService _jwtService;
@@ -43,9 +29,9 @@ internal class RefreshTokenHandler : ICommandHandler<RefreshToken, RefreshTokenR
         _commandProcessor = commandProcessor;
     }
 
-    public async Task<RefreshTokenResponse> Handle(RefreshToken request, CancellationToken cancellationToken)
+    public async Task<RefreshTokenResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        Guard.Against.Null(request, nameof(RefreshToken));
+        Guard.Against.Null(request, nameof(RefreshTokenCommand));
 
         // invalid token/signing key was passed and we can't extract user claims
         var userClaimsPrincipal = _jwtService.GetPrincipalFromToken(request.AccessTokenData);
