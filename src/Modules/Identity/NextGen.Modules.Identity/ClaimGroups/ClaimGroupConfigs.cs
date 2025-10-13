@@ -34,6 +34,8 @@ namespace NextGen.Modules.Identity.ClaimGroups
             endpoints.MapRemoveClaimFromGroupEndpoint();
             endpoints.MapAssignClaimGroupToRoleEndpoint();
             endpoints.MapUnassignClaimGroupFromRoleEndpoint();
+            endpoints.MapDeleteClaimGroupEndpoint();
+            endpoints.MapAddClaimToGroupEndpoint();
 
             return endpoints;
         }

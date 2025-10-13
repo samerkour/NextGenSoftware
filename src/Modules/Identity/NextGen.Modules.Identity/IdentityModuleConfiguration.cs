@@ -6,6 +6,7 @@ using BuildingBlocks.Core.Messaging.Extensions;
 using NextGen.Modules.Identity.ClaimGroups;
 using NextGen.Modules.Identity.Claims;
 using NextGen.Modules.Identity.Identity;
+using NextGen.Modules.Identity.RoleClaims;
 using NextGen.Modules.Identity.Shared.Extensions.ApplicationBuilderExtensions;
 using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
 using NextGen.Modules.Identity.Users;
@@ -30,6 +31,7 @@ public class IdentityModuleConfiguration : IModuleDefinition
         services.AddUsersServices(configuration);
         services.AddClaimsServices(configuration);
         services.AddClaimGroupServices(configuration);
+        services.AddRoleClaimsServices(configuration);
     }
 
     public async Task ConfigureModule(
@@ -79,5 +81,6 @@ public class IdentityModuleConfiguration : IModuleDefinition
         endpoints.MapUsersEndpoints();
         endpoints.MapClaimEndpoints();
         endpoints.MapClaimGroupEndpoints();
+        endpoints.MapRoleClaimEndpoints();
     }
 }
