@@ -11,6 +11,8 @@ public record ClaimDto
     public Guid Id { get; init; }
     public string Type { get; init; } = default!;
     public string Value { get; init; } = default!;
+    public string Name { get; set; } = default!;
+    public string? Description { get; set; }
     public Guid? ClaimGroupId { get; init; }
     public DateTime CreatedAt { get; init; }
     public DateTime? UpdatedOn { get; init; }

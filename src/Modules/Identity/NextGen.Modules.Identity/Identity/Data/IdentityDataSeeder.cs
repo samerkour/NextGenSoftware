@@ -111,12 +111,30 @@ public class IdentityDataSeeder : IDataSeeder
     {
         if (!_db.ClaimGroups.Any())
         {
-            var groups = new[]
+            var groups = new List<ClaimGroup>
+        {
+            new ClaimGroup
             {
-                new ClaimGroup { Id = Guid.NewGuid(), Name = "Security Claims" },
-                new ClaimGroup { Id = Guid.NewGuid(), Name = "Admin Claims" },
-                new ClaimGroup { Id = Guid.NewGuid(), Name = "User Claims" }
-            };
+                Id = Guid.NewGuid(),
+                Name = "Security Claims",
+                Description = "Claims related to system security, roles, and user management",
+                CreatedAt = DateTime.UtcNow
+            },
+            new ClaimGroup
+            {
+                Id = Guid.NewGuid(),
+                Name = "Admin Claims",
+                Description = "Claims for administrative operations across ERP modules",
+                CreatedAt = DateTime.UtcNow
+            },
+            new ClaimGroup
+            {
+                Id = Guid.NewGuid(),
+                Name = "User Claims",
+                Description = "Claims available to general users for regular ERP operations",
+                CreatedAt = DateTime.UtcNow
+            }
+        };
 
             _db.ClaimGroups.AddRange(groups);
             await _db.SaveChangesAsync();
@@ -130,24 +148,144 @@ public class IdentityDataSeeder : IDataSeeder
     {
         if (!_db.Claims.Any())
         {
+            var now = DateTime.UtcNow;
+
+            // Claim Groups
             var securityGroup = _db.ClaimGroups.First(cg => cg.Name == "Security Claims");
             var adminGroup = _db.ClaimGroups.First(cg => cg.Name == "Admin Claims");
             var userGroup = _db.ClaimGroups.First(cg => cg.Name == "User Claims");
 
-            var claims = new List<ApplicationClaim>
+            // ERP Modules/Entities with Claim Groups
+            var claimDefinitions = new List<(string Module, string Entity, string Group)>
             {
-                // Security
-                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageUsers" },
-                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageRoles" },
+                ("Finance", "Invoice", "Admin Claims"),
+                ("Finance", "Payment", "Admin Claims"),
+                ("Finance", "Ledger", "Admin Claims"),
+                ("Finance", "Report", "Admin Claims"),
 
-                // Administration
-                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewDashboard" },
-                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageSettings" },
+                ("HR", "Employee", "Admin Claims"),
+                ("HR", "Payroll", "Admin Claims"),
+                ("HR", "Attendance", "Admin Claims"),
+                ("HR", "LeaveRequest", "Admin Claims"),
 
-                // User
-                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewProfile" },
-                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "EditProfile" }
+                ("CRM", "Customer", "User Claims"),
+                ("CRM", "Opportunity", "User Claims"),
+                ("CRM", "Lead", "User Claims"),
+                ("CRM", "Task", "User Claims"),
+
+                ("Inventory", "Product", "Admin Claims"),
+                ("Inventory", "Warehouse", "Admin Claims"),
+                ("Inventory", "StockEntry", "Admin Claims"),
+                ("Inventory", "StockTransfer", "Admin Claims"),
+
+                ("Sales", "Order", "Admin Claims"),
+                ("Sales", "Invoice", "Admin Claims"),
+                ("Sales", "Shipment", "Admin Claims"),
+                ("Sales", "Return", "Admin Claims"),
+
+                ("Procurement", "PurchaseOrder", "Admin Claims"),
+                ("Procurement", "Supplier", "Admin Claims"),
+                ("Procurement", "GoodsReceipt", "Admin Claims"),
+
+                ("Production", "WorkOrder", "Admin Claims"),
+                ("Production", "BillOfMaterials", "Admin Claims"),
+                ("Production", "Routing", "Admin Claims"),
+
+                ("Security", "User", "Security Claims"),
+                ("Security", "Role", "Security Claims"),
+                ("Security", "Permission", "Security Claims")
             };
+
+            var standardActions = new[]
+              {
+                // Core CRUD
+                "View",
+                "Create",
+                "Edit",
+                "Delete",
+
+                // Approval & workflow
+                "Approve",
+                "Reject",
+                "Submit",
+                "Cancel",
+                "Release",
+                "Post",
+                "Unpost",
+
+                // Export / Print / Reports
+                "Export",
+                "Print",
+                "GenerateReport",
+                "Download",
+                "Preview",
+
+                // Management / Configuration
+                "Manage",
+                "Assign",
+                "Unassign",
+                "Activate",
+                "Deactivate",
+                "Enable",
+                "Disable",
+                "Configure",
+                "SetPermissions",
+                "Archive",
+
+                // Advanced operations
+                "Import",
+                "Sync",
+                "Validate",
+                "Calculate",
+                "Recalculate",
+                "Audit",
+                "Reopen",
+                "Close",
+                "Lock",
+                "Unlock",
+                "Send",
+                "Receive",
+                "Issue",
+                "ReceiveReturn",
+                "Adjust",
+                "Revert",
+                "Transfer",
+                "Confirm",
+                "Reconcile",
+                "Backup",
+                "Restore"
+            };
+
+            var claims = new List<ApplicationClaim>();
+
+            foreach (var (module, entity, groupName) in claimDefinitions)
+            {
+                var group = groupName switch
+                {
+                    "Security Claims" => securityGroup,
+                    "Admin Claims" => adminGroup,
+                    "User Claims" => userGroup,
+                    _ => userGroup
+                };
+
+                foreach (var action in standardActions)
+                {
+                    claims.Add(new ApplicationClaim
+                    {
+                        Id = Guid.NewGuid(),
+                        Type = "Permission",
+                        Value = $"{module}.{entity}.{action}", // structured claim value
+                        Name = $"{module} {entity} {action}",
+                        Description = $"Allows {action.ToLower()} operation on {module} {entity}",
+                        CreatedAt = now,
+                        UpdatedOn = now,
+                        ClaimGroupClaims = new List<ClaimGroupClaim>
+                    {
+                        new ClaimGroupClaim { ClaimGroupId = group.Id }
+                    }
+                    });
+                }
+            }
 
             _db.Claims.AddRange(claims);
             await _db.SaveChangesAsync();

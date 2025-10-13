@@ -34,6 +34,8 @@ namespace NextGen.Modules.Identity.Claims.Features.UpdateClaim
                 id,
                 request.Type,
                 request.Value,
+                request.Name,
+                request.Description,
                 request.ClaimGroupId
             );
 

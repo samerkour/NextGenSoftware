@@ -1,6 +1,7 @@
 using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Query;
 using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Identity.Claims.Dtos;
 using NextGen.Modules.Identity.Claims.Features.GetClaimById;
 using NextGen.Modules.Identity.Shared.Data;
 
@@ -21,8 +22,10 @@ internal sealed class GetClaimByIdHandler : IQueryHandler<GetClaimByIdQuery, Get
             .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
         if (claim == null)
-            return null!; 
+            return null!;
 
-        return _mapper.Map<GetClaimByIdResponse>(claim);
+        var claimDto = _mapper.Map<ClaimDto>(claim);
+
+        return new GetClaimByIdResponse(claimDto);
     }
 }

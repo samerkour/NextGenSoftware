@@ -29,6 +29,8 @@ namespace NextGen.Modules.Identity.Claims.Features.CreateClaim
             var command = new CreateClaimCommand(
                 request.Type,
                 request.Value,
+                request.Name,
+                request.Description,
                 request.ClaimGroupId
             );
 
@@ -51,7 +53,7 @@ namespace NextGen.Modules.Identity.Claims.Features.CreateClaim
             if (result == null)
                 return Results.BadRequest("Failed to create claim.");
 
-            return Results.Created($"{ClaimConfigs.ClaimsPrefixUri}/{result.Id}", result);
+            return Results.Created($"{ClaimConfigs.ClaimsPrefixUri}/{result.Claim.Id}", result);
         }
     }
 }

@@ -15,10 +15,10 @@ public class ClaimsMapping : Profile
     public ClaimsMapping()
     {
         // Entity → DTOs
+        CreateMap<ApplicationClaim, ClaimDto>();
+
         CreateMap<ApplicationClaim, CreateClaimResponse>().ReverseMap();
         CreateMap<ApplicationClaim, UpdateClaimResponse>().ReverseMap();
-        CreateMap<ApplicationClaim, GetClaimByIdResponse>().ReverseMap();
-        CreateMap<ApplicationClaim, ClaimDto>().ReverseMap();
 
         // Request → Entity
         CreateMap<CreateClaimRequest, ApplicationClaim>()
@@ -33,4 +33,5 @@ public class ClaimsMapping : Profile
             .ForMember(dest => dest.UpdatedOn, opt => opt.MapFrom(_ => DateTime.UtcNow))
             .ForMember(dest => dest.DeletedOn, opt => opt.Ignore());
     }
+
 }

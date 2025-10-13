@@ -1,7 +1,10 @@
+using System.Security.Claims;
 using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Command;
 using Microsoft.EntityFrameworkCore;
+using NextGen.Modules.Identity.Claims.Dtos;
 using NextGen.Modules.Identity.Claims.Features.CreateClaim;
+using NextGen.Modules.Identity.Claims.Features.GetClaimById;
 using NextGen.Modules.Identity.Shared.Data;
 using NextGen.Modules.Identity.Shared.Models;
 
@@ -24,18 +27,22 @@ internal sealed class CreateClaimHandler : ICommandHandler<CreateClaimCommand, C
         if (!claimGroupExists)
             throw new Exception($"ClaimGroup with Id {request.ClaimGroupId} does not exist.");
 
-        var entity = new ApplicationClaim
+        var claim = new ApplicationClaim
         {
             Id = Guid.NewGuid(),
             Type = request.Type,
             Value = request.Value,
+            Name = request.Name,
+            Description = request.Description,
             CreatedAt = DateTime.UtcNow
         };
 
-        _db.Claims.Add(entity);
+        _db.Claims.Add(claim);
         await _db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<CreateClaimResponse>(entity);
+        var claimDto = _mapper.Map<ClaimDto>(claim);
+
+        return new CreateClaimResponse(claimDto);
     }
 
 }
