@@ -14,5 +14,5 @@ public class RoleClaim
     public Guid ClaimId { get; set; }
 
     public Role Role { get; set; } = default!;
-    public Claim Claim { get; set; } = default!;
+    public ApplicationClaim Claim { get; set; } = default!;
 }

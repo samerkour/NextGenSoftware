@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Identity.Data.EntityConfigurations;
-internal class ApplicationClaimConfiguration : IEntityTypeConfiguration<Claim>
+internal class ApplicationClaimConfiguration : IEntityTypeConfiguration<ApplicationClaim>
 {
-    public void Configure(EntityTypeBuilder<Claim> builder)
+    public void Configure(EntityTypeBuilder<ApplicationClaim> builder)
     {
         builder.ToTable("Claims");
         builder.HasKey(c => c.Id);

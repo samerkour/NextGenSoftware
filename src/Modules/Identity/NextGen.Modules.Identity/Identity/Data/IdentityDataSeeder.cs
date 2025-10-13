@@ -134,19 +134,19 @@ public class IdentityDataSeeder : IDataSeeder
             var adminGroup = _db.ClaimGroups.First(cg => cg.Name == "Admin Claims");
             var userGroup = _db.ClaimGroups.First(cg => cg.Name == "User Claims");
 
-            var claims = new List<Claim>
+            var claims = new List<ApplicationClaim>
             {
                 // Security
-                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageUsers" },
-                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageRoles" },
+                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageUsers" },
+                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageRoles" },
 
                 // Administration
-                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewDashboard" },
-                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageSettings" },
+                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewDashboard" },
+                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageSettings" },
 
                 // User
-                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewProfile" },
-                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "EditProfile" }
+                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewProfile" },
+                new ApplicationClaim { Id = Guid.NewGuid(), Type = "Permission", Value = "EditProfile" }
             };
 
             _db.Claims.AddRange(claims);

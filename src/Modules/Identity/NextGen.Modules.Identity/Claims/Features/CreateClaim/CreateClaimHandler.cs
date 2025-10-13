@@ -24,7 +24,7 @@ internal sealed class CreateClaimHandler : ICommandHandler<CreateClaimCommand, C
         if (!claimGroupExists)
             throw new Exception($"ClaimGroup with Id {request.ClaimGroupId} does not exist.");
 
-        var entity = new Claim
+        var entity = new ApplicationClaim
         {
             Id = Guid.NewGuid(),
             Type = request.Type,

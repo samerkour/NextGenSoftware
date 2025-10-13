@@ -30,7 +30,7 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, Role, Guid,
     public DbSet<ApplicationModule> Modules { get; set; } = default!;
     public DbSet<RoleGroup> RoleGroups { get; set; } = default!;
     public DbSet<ClaimGroup> ClaimGroups { get; set; } = default!;
-    public DbSet<Claim> Claims { get; set; } = default!;
+    public DbSet<ApplicationClaim> Claims { get; set; } = default!;
     public DbSet<ClaimGroupClaim> ClaimGroupClaims { get; set; } = default!;
     public DbSet<RoleClaimGroup> RoleClaimGroups { get; set; } = default!;
     public DbSet<RoleClaim> RoleClaims { get; set; } = default!;

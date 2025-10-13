@@ -6,5 +6,5 @@ public class ClaimGroupClaim
     public ClaimGroup ClaimGroup { get; set; } = null!;
 
     public Guid ClaimId { get; set; }
-    public Claim Claim { get; set; } = null!;
+    public ApplicationClaim Claim { get; set; } = null!;
 }

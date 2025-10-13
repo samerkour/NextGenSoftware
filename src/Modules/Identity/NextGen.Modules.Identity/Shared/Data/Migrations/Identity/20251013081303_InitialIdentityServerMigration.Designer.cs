@@ -12,7 +12,7 @@ using NextGen.Modules.Identity.Shared.Data;
 namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20251013074822_InitialIdentityServerMigration")]
+    [Migration("20251013081303_InitialIdentityServerMigration")]
     partial class InitialIdentityServerMigration
     {
         /// <inheritdoc />
@@ -102,6 +102,41 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.ApplicationClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Claims");
                 });
 
             modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.ApplicationModule", b =>
@@ -254,34 +289,6 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.Claim", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Claims");
                 });
 
             modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.ClaimGroup", b =>
@@ -438,7 +445,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NextGen.Modules.Identity.Shared.Models.Claim", "Claim")
+                    b.HasOne("NextGen.Modules.Identity.Shared.Models.ApplicationClaim", "Claim")
                         .WithMany("ClaimGroupClaims")
                         .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -518,7 +525,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
 
             modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.RoleClaim", b =>
                 {
-                    b.HasOne("NextGen.Modules.Identity.Shared.Models.Claim", "Claim")
+                    b.HasOne("NextGen.Modules.Identity.Shared.Models.ApplicationClaim", "Claim")
                         .WithMany("RoleClaims")
                         .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -565,6 +572,13 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.Navigation("Module");
                 });
 
+            modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.ApplicationClaim", b =>
+                {
+                    b.Navigation("ClaimGroupClaims");
+
+                    b.Navigation("RoleClaims");
+                });
+
             modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.ApplicationModule", b =>
                 {
                     b.Navigation("RoleGroups");
@@ -575,13 +589,6 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.Claim", b =>
-                {
-                    b.Navigation("ClaimGroupClaims");
-
-                    b.Navigation("RoleClaims");
                 });
 
             modelBuilder.Entity("NextGen.Modules.Identity.Shared.Models.ClaimGroup", b =>
