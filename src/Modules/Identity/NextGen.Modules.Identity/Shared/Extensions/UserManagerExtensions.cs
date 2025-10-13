@@ -55,7 +55,7 @@ public static class UserManagerExtensions
             .ApplyIncludeList(request.Includes)
             .ApplyFilter(request.Filters)
             .AsNoTracking()
-            .ApplyPagingAsync<ApplicationClaim, TResult>(
+            .ApplyPagingAsync<Claim, TResult>(
                 mapper.ConfigurationProvider,
                 request.Page,
                 request.PageSize,

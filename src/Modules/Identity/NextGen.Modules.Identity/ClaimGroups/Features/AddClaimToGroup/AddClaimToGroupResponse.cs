@@ -4,6 +4,5 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.AddClaimToGroup
     {
         public Guid GroupId { get; set; }
         public Guid ClaimId { get; set; }
-        public string Message { get; set; } = string.Empty;
     }
 }

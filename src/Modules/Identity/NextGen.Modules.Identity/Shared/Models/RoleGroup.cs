@@ -15,5 +15,5 @@ public class RoleGroup
     public virtual ApplicationModule Module { get; set; } = default!;
 
     // Navigation
-    public virtual ICollection<ApplicationRole> Roles { get; set; } = new HashSet<ApplicationRole>();
+    public virtual ICollection<Role> Roles { get; set; } = new HashSet<Role>();
 }

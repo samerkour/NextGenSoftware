@@ -27,7 +27,6 @@ public class UpdateClaimHandler : ICommandHandler<UpdateClaimCommand, UpdateClai
         // --- به روزرسانی مقادیر ---
         claim.Type = command.Type;
         claim.Value = command.Value;
-        claim.ClaimGroupId = command.ClaimGroupId;
 
         claim.UpdatedOn = DateTime.UtcNow;
 

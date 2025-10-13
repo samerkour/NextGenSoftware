@@ -13,6 +13,6 @@ public class RoleClaim
     public Guid RoleId { get; set; }
     public Guid ClaimId { get; set; }
 
-    public ApplicationRole Role { get; set; } = default!;
-    public ApplicationClaim Claim { get; set; } = default!;
+    public Role Role { get; set; } = default!;
+    public Claim Claim { get; set; } = default!;
 }

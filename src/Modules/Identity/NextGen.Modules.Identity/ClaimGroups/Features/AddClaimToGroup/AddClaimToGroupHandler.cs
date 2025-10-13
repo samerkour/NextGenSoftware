@@ -21,7 +21,7 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.AddClaimToGroup
         public async Task<AddClaimToGroupResponse> Handle(AddClaimToGroupCommand request, CancellationToken cancellationToken)
         {
             var claimGroup = await _db.ClaimGroups
-                .Include(g => g.Claims)
+                .Include(g => g.ClaimGroupClaims)
                 .FirstOrDefaultAsync(g => g.Id == request.GroupId, cancellationToken);
 
             if (claimGroup == null)
@@ -33,19 +33,17 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.AddClaimToGroup
             if (claim == null)
                 throw new KeyNotFoundException("Claim not found.");
 
-            if (claimGroup.Claims.Any(c => c.Id == request.ClaimId))
+            if (claimGroup.ClaimGroupClaims.Any(c => c.ClaimId == request.ClaimId))
                 throw new InvalidOperationException("Claim already assigned to this group.");
 
-            claim.ClaimGroupId = claimGroup.Id;
-            _db.Claims.Update(claim);
+            _db.ClaimGroupClaims.Add(new ClaimGroupClaim() { ClaimGroupId = request.GroupId, ClaimId=request.ClaimId });
 
             await _db.SaveChangesAsync(cancellationToken);
 
             return new AddClaimToGroupResponse
             {
                 GroupId = claimGroup.Id,
-                ClaimId = claim.Id,
-                Message = "Claim added to group successfully"
+                ClaimId = claim.Id
             };
         }
     }

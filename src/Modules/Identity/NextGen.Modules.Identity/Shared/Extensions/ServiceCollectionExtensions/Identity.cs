@@ -48,7 +48,7 @@ public static partial class ServiceCollectionExtensions
 
         // https://github.com/IdentityServer/IdentityServer4/issues/1525
         // some dependencies will add here if not registered before
-        services.AddIdentity<ApplicationUser, ApplicationRole>(
+        services.AddIdentity<ApplicationUser, Role>(
                 options =>
                 {
                     // Password settings.

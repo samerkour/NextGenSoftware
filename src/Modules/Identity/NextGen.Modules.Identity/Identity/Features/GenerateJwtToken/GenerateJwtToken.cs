@@ -51,7 +51,7 @@ public class GenerateRefreshTokenCommandHandler : ICommandHandler<GenerateJwtTok
         return accessToken;
     }
 
-    public async Task<(IList<Claim> UserClaims, IList<string> Roles, IList<string> PermissionClaims)> GetClaimsAsync(Guid Id)
+    public async Task<(IList<System.Security.Claims.Claim> UserClaims, IList<string> Roles, IList<string> PermissionClaims)> GetClaimsAsync(Guid Id)
     {
         var appUser = await _userManager.FindByIdAsync(Id.ToString());
         var userClaims =

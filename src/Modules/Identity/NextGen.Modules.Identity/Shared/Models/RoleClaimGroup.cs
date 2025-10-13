@@ -12,6 +12,6 @@ public class RoleClaimGroup
     public Guid RoleId { get; set; }
     public Guid ClaimGroupId { get; set; }
 
-    public virtual ApplicationRole Role { get; set; } = default!;
+    public virtual Role Role { get; set; } = default!;
     public virtual ClaimGroup ClaimGroup { get; set; } = default!;
 }

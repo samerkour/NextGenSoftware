@@ -7,13 +7,13 @@ namespace NextGen.Modules.Identity.Identity.Data;
 
 public class IdentityDataSeeder : IDataSeeder
 {
-    private readonly RoleManager<ApplicationRole> _roleManager;
+    private readonly RoleManager<Role> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IdentityContext _db;
 
     public IdentityDataSeeder(
         UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager,
+        RoleManager<Role> roleManager,
         IdentityContext db)
     {
         _userManager = userManager;
@@ -82,23 +82,23 @@ public class IdentityDataSeeder : IDataSeeder
         var adminGroup = _db.RoleGroups.First(rg => rg.Name == "Admin Group");
         var userGroup = _db.RoleGroups.First(rg => rg.Name == "User Group");
 
-        if (!await _roleManager.RoleExistsAsync(ApplicationRole.SecurityAdmin.Name))
+        if (!await _roleManager.RoleExistsAsync(Role.SecurityAdmin.Name))
         {
-            var role = ApplicationRole.SecurityAdmin;
+            var role = Role.SecurityAdmin;
             role.RoleGroupId = securityGroup.Id;
             await _roleManager.CreateAsync(role);
         }
 
-        if (!await _roleManager.RoleExistsAsync(ApplicationRole.Admin.Name))
+        if (!await _roleManager.RoleExistsAsync(Role.Admin.Name))
         {
-            var role = ApplicationRole.Admin;
+            var role = Role.Admin;
             role.RoleGroupId = adminGroup.Id;
             await _roleManager.CreateAsync(role);
         }
 
-        if (!await _roleManager.RoleExistsAsync(ApplicationRole.User.Name))
+        if (!await _roleManager.RoleExistsAsync(Role.User.Name))
         {
-            var role = ApplicationRole.User;
+            var role = Role.User;
             role.RoleGroupId = userGroup.Id;
             await _roleManager.CreateAsync(role);
         }
@@ -134,19 +134,19 @@ public class IdentityDataSeeder : IDataSeeder
             var adminGroup = _db.ClaimGroups.First(cg => cg.Name == "Admin Claims");
             var userGroup = _db.ClaimGroups.First(cg => cg.Name == "User Claims");
 
-            var claims = new List<ApplicationClaim>
+            var claims = new List<Claim>
             {
                 // Security
-                new ApplicationClaim { Id = Guid.NewGuid(), ClaimGroupId = securityGroup.Id, Type = "Permission", Value = "ManageUsers" },
-                new ApplicationClaim { Id = Guid.NewGuid(), ClaimGroupId = securityGroup.Id, Type = "Permission", Value = "ManageRoles" },
+                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageUsers" },
+                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageRoles" },
 
                 // Administration
-                new ApplicationClaim { Id = Guid.NewGuid(), ClaimGroupId = adminGroup.Id, Type = "Permission", Value = "ViewDashboard" },
-                new ApplicationClaim { Id = Guid.NewGuid(), ClaimGroupId = adminGroup.Id, Type = "Permission", Value = "ManageSettings" },
+                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewDashboard" },
+                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ManageSettings" },
 
                 // User
-                new ApplicationClaim { Id = Guid.NewGuid(), ClaimGroupId = userGroup.Id, Type = "Permission", Value = "ViewProfile" },
-                new ApplicationClaim { Id = Guid.NewGuid(), ClaimGroupId = userGroup.Id, Type = "Permission", Value = "EditProfile" }
+                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "ViewProfile" },
+                new Claim { Id = Guid.NewGuid(), Type = "Permission", Value = "EditProfile" }
             };
 
             _db.Claims.AddRange(claims);
@@ -171,7 +171,7 @@ public class IdentityDataSeeder : IDataSeeder
 
             var result = await _userManager.CreateAsync(user, "SecurityAdmin@123456");
             if (result.Succeeded)
-                await _userManager.AddToRoleAsync(user, ApplicationRole.SecurityAdmin.Name);
+                await _userManager.AddToRoleAsync(user, Role.SecurityAdmin.Name);
         }
 
         if (await _userManager.FindByEmailAsync("admin@test.com") == null)
@@ -186,7 +186,7 @@ public class IdentityDataSeeder : IDataSeeder
 
             var result = await _userManager.CreateAsync(user, "Admin@123456");
             if (result.Succeeded)
-                await _userManager.AddToRoleAsync(user, ApplicationRole.Admin.Name);
+                await _userManager.AddToRoleAsync(user, Role.Admin.Name);
         }
 
         if (await _userManager.FindByEmailAsync("user@test.com") == null)
@@ -201,7 +201,7 @@ public class IdentityDataSeeder : IDataSeeder
 
             var result = await _userManager.CreateAsync(user, "User@123456");
             if (result.Succeeded)
-                await _userManager.AddToRoleAsync(user, ApplicationRole.User.Name);
+                await _userManager.AddToRoleAsync(user, Role.User.Name);
         }
     }
 }

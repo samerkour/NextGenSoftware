@@ -19,13 +19,13 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.GetClaimsByGroup
 
         public async Task<List<GetClaimsByGroupResponse>> Handle(GetClaimsByGroupQuery request, CancellationToken cancellationToken)
         {
-            var claims = await _db.Claims
-                .Where(c => c.ClaimGroupId == request.GroupId && c.DeletedOn == null)
-                .Select(c => new GetClaimsByGroupResponse
+            var claims = await _db.Claims.SelectMany(cg => cg.ClaimGroupClaims)
+                .Where(cg => cg.ClaimGroupId == request.GroupId && cg.ClaimGroup.DeletedOn == null)
+                .Select(cg => new GetClaimsByGroupResponse
                 {
-                    ClaimId = c.Id,
-                    Type = c.Type,
-                    Value = c.Value
+                    ClaimId = cg.ClaimGroup.Id,
+                    Type = cg.Claim.Type,
+                    Value = cg.Claim.Value
                 })
                 .ToListAsync(cancellationToken);
 

@@ -32,11 +32,11 @@ public class IdentityProfileService : IProfileService
         var claims = principal.Claims.ToList();
         claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
 
-        claims.Add(new Claim(JwtClaimTypes.Id, user.Id.ToString()));
-        claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
-        claims.Add(new Claim(JwtClaimTypes.Email, user.Email));
+        claims.Add(new System.Security.Claims.Claim(JwtClaimTypes.Id, user.Id.ToString()));
+        claims.Add(new System.Security.Claims.Claim(JwtClaimTypes.Name, user.UserName));
+        claims.Add(new System.Security.Claims.Claim(JwtClaimTypes.Email, user.Email));
 
-        claims.Add(isAdmin ? new Claim(JwtClaimTypes.Role, "admin") : new Claim(JwtClaimTypes.Role, "user"));
+        claims.Add(isAdmin ? new System.Security.Claims.Claim(JwtClaimTypes.Role, "admin") : new System.Security.Claims.Claim(JwtClaimTypes.Role, "user"));
 
         context.IssuedClaims = claims;
     }

@@ -13,9 +13,6 @@ public class ClaimGroup
     public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedOn { get; set; }
 
-    // Claims inside this group
-    public virtual ICollection<ApplicationClaim> Claims { get; set; } = new HashSet<ApplicationClaim>();
-
-    // ✅ Removed direct Roles navigation — use RoleClaimGroups instead
+    public virtual ICollection<ClaimGroupClaim> ClaimGroupClaims { get; set; } = new HashSet<ClaimGroupClaim>();
     public virtual ICollection<RoleClaimGroup> RoleClaimGroups { get; set; } = new HashSet<RoleClaimGroup>();
 }

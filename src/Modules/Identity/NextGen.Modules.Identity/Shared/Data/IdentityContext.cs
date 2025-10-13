@@ -10,7 +10,7 @@ using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.Shared.Data;
 
-public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid,
+public class IdentityContext : IdentityDbContext<ApplicationUser, Role, Guid,
         IdentityUserClaim<Guid>,
         ApplicationUserRole,
         IdentityUserLogin<Guid>,
@@ -30,10 +30,11 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
     public DbSet<ApplicationModule> Modules { get; set; } = default!;
     public DbSet<RoleGroup> RoleGroups { get; set; } = default!;
     public DbSet<ClaimGroup> ClaimGroups { get; set; } = default!;
-    public DbSet<ApplicationClaim> Claims { get; set; } = default!;
+    public DbSet<Claim> Claims { get; set; } = default!;
     public DbSet<ClaimGroupClaim> ClaimGroupClaims { get; set; } = default!;
     public DbSet<RoleClaimGroup> RoleClaimGroups { get; set; } = default!;
     public DbSet<RoleClaim> RoleClaims { get; set; } = default!;
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = default!;
 
     // ----------------------------
     // Model Configuration
@@ -42,32 +43,42 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-
-        // ----------------------------
-        // Naming convention: underscore_case
-        // ----------------------------
-        foreach (var entity in builder.Model.GetEntityTypes())
+        // Remove AspNetRoleClaims
+        var roleClaimEntity = builder.Model.FindEntityType(typeof(IdentityRoleClaim<Guid>));
+        if (roleClaimEntity != null)
         {
-            entity.SetTableName(entity.GetTableName()?.Underscore());
-
-            var objectIdentifier =
-                StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
-
-            foreach (var property in entity.GetProperties())
-                property.SetColumnName(property.GetColumnName(objectIdentifier)?.Underscore());
-
-            foreach (var key in entity.GetKeys())
-                key.SetName(key.GetName()?.Underscore());
-
-            foreach (var fk in entity.GetForeignKeys())
-                fk.SetConstraintName(fk.GetConstraintName()?.Underscore());
+            builder.Model.RemoveEntityType(roleClaimEntity);
         }
+
+        //builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+        //// ----------------------------
+        //// Naming convention: underscore_case
+        //// ----------------------------
+        //foreach (var entity in builder.Model.GetEntityTypes())
+        //{
+        //    entity.SetTableName(entity.GetTableName()?.Underscore());
+
+        //    var objectIdentifier =
+        //        StoreObjectIdentifier.Table(entity.GetTableName()?.Underscore()!, entity.GetSchema());
+
+        //    foreach (var property in entity.GetProperties())
+        //        property.SetColumnName(property.GetColumnName(objectIdentifier)?.Underscore());
+
+        //    foreach (var key in entity.GetKeys())
+        //        key.SetName(key.GetName()?.Underscore());
+
+        //    foreach (var fk in entity.GetForeignKeys())
+        //        fk.SetConstraintName(fk.GetConstraintName()?.Underscore());
+        //}
+
+        // ----------------------------
+        // Relationships
+        // ----------------------------
 
         // RefreshToken mapping
         builder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(rt => rt.Id); // Primary key
+            entity.HasKey(rt => rt.Id);
             entity.Property(rt => rt.Token).IsRequired();
             entity.HasOne(rt => rt.ApplicationUser)
                   .WithMany(u => u.RefreshTokens)
@@ -77,9 +88,24 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
             entity.ToTable("RefreshTokens");
         });
 
-        // ----------------------------
-        // Relationships
-        // ----------------------------
+        builder.Entity<ApplicationUserRole>(entity =>
+        {
+            entity.ToTable("UserRoles");
+
+            entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            entity.HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // Module → RoleGroups
         builder.Entity<RoleGroup>()
@@ -89,35 +115,27 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
             .OnDelete(DeleteBehavior.Cascade);
 
         // RoleGroup → Roles
-        builder.Entity<ApplicationRole>()
+        builder.Entity<Role>()
             .HasOne(r => r.RoleGroup)
             .WithMany(rg => rg.Roles)
             .HasForeignKey(r => r.RoleGroupId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // ClaimGroup → Claims
-        builder.Entity<ApplicationClaim>()
-            .HasOne(c => c.ClaimGroup)
-            .WithMany(cg => cg.Claims)
-            .HasForeignKey(c => c.ClaimGroupId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         // ClaimGroupClaim (Many-to-Many)
         builder.Entity<ClaimGroupClaim>(entity =>
         {
+            entity.ToTable("ClaimGroupClaims");
             entity.HasKey(x => new { x.ClaimGroupId, x.ClaimId });
 
             entity.HasOne(x => x.ClaimGroup)
-                  .WithMany()
-                  .HasForeignKey(x => x.ClaimGroupId)
-                  .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(x => x.ClaimGroupClaims)
+                .HasForeignKey(x => x.ClaimGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(x => x.Claim)
-                  .WithMany()
-                  .HasForeignKey(x => x.ClaimId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.ToTable("ClaimGroupClaims");
+                .WithMany(x => x.ClaimGroupClaims)
+                .HasForeignKey(x => x.ClaimId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Role ClaimGroup (many-to-many via RoleClaimGroup)
@@ -146,18 +164,15 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRol
             entity.ToTable("RoleClaims");
             entity.HasKey(x => new { x.RoleId, x.ClaimId });
 
-            entity.Property(x => x.RoleId).IsRequired();
-            entity.Property(x => x.ClaimId).IsRequired();
-
             entity.HasOne(x => x.Role)
-                  .WithMany()
-                  .HasForeignKey(x => x.RoleId)
-                  .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(r => r.RoleClaims)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(x => x.Claim)
-                  .WithMany()
-                  .HasForeignKey(x => x.ClaimId)
-                  .OnDelete(DeleteBehavior.NoAction);
+                .WithMany(c => c.RoleClaims)
+                .HasForeignKey(x => x.ClaimId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
     }
 
