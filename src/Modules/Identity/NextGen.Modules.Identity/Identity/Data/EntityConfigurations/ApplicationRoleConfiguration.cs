@@ -14,10 +14,5 @@ internal class ApplicationRoleConfiguration : IEntityTypeConfiguration<Role>
             .WithOne(e => e.Role)
             .HasForeignKey(ur => ur.RoleId)
             .IsRequired();
-
-        builder.HasOne(r => r.RoleGroup)
-            .WithMany(rg => rg.Roles)
-            .HasForeignKey(r => r.RoleGroupId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -10,7 +10,7 @@ public class ClaimGroup
     public string? Description { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedOn { get; set; }
     public DateTime? DeletedOn { get; set; }
 
     public virtual ICollection<ClaimGroupClaim> ClaimGroupClaims { get; set; } = new HashSet<ClaimGroupClaim>();

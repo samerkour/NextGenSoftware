@@ -14,7 +14,7 @@ public class ApplicationClaim
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedOn { get; set; }
     public DateTime? UpdatedOn { get; set; }
 

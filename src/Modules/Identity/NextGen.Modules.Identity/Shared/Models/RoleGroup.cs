@@ -8,12 +8,12 @@ namespace NextGen.Modules.Identity.Shared.Models;
 public class RoleGroup
 {
     public Guid Id { get; set; }
+    public Guid ModuleId { get; set; }
+    public ApplicationModule Module { get; set; } = default!;
+
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
 
-    public Guid ModuleId { get; set; }
-    public virtual ApplicationModule Module { get; set; } = default!;
-
-    // Navigation
-    public virtual ICollection<Role> Roles { get; set; } = new HashSet<Role>();
+    public ICollection<RoleGroupRole> RoleGroupRoles { get; set; } = new List<RoleGroupRole>();
 }
+

@@ -34,6 +34,8 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, Role, Guid,
     public DbSet<ClaimGroupClaim> ClaimGroupClaims { get; set; } = default!;
     public DbSet<RoleClaimGroup> RoleClaimGroups { get; set; } = default!;
     public DbSet<RoleClaim> RoleClaims { get; set; } = default!;
+    public DbSet<RoleGroupRole> RoleGroupRoles { get; set; } = default!;
+
     public DbSet<RefreshToken> RefreshTokens { get; set; } = default!;
 
     // ----------------------------
@@ -114,13 +116,6 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, Role, Guid,
             .HasForeignKey(rg => rg.ModuleId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // RoleGroup → Roles
-        builder.Entity<Role>()
-            .HasOne(r => r.RoleGroup)
-            .WithMany(rg => rg.Roles)
-            .HasForeignKey(r => r.RoleGroupId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         // ClaimGroupClaim (Many-to-Many)
         builder.Entity<ClaimGroupClaim>(entity =>
         {
@@ -174,6 +169,25 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, Role, Guid,
                 .HasForeignKey(x => x.ClaimId)
                 .OnDelete(DeleteBehavior.NoAction);
         });
+
+        // RoleGroupRoles (Many-to-Many between RoleGroup and Role)
+        builder.Entity<RoleGroupRole>(entity =>
+        {
+            entity.ToTable("RoleGroupRoles");
+
+            entity.HasKey(x => new { x.RoleGroupId, x.RoleId });
+
+            entity.HasOne(x => x.RoleGroup)
+                .WithMany(rg => rg.RoleGroupRoles)
+                .HasForeignKey(x => x.RoleGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Role)
+                .WithMany(r => r.RoleGroupRoles)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
     }
 
     // ----------------------------

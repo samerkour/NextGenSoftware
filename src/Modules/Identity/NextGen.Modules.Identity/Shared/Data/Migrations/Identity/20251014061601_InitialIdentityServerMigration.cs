@@ -61,7 +61,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -93,7 +93,10 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -189,7 +192,11 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 columns: table => new
                 {
                     ClaimGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClaimId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClaimId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,9 +220,9 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModuleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ModuleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -233,6 +240,10 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RoleGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -245,8 +256,7 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                         name: "FK_AspNetRoles_RoleGroups_RoleGroupId",
                         column: x => x.RoleGroupId,
                         principalTable: "RoleGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -254,7 +264,10 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 columns: table => new
                 {
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClaimGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClaimGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -278,7 +291,10 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 columns: table => new
                 {
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClaimId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClaimId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -297,11 +313,41 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoleGroupRoles",
+                columns: table => new
+                {
+                    RoleGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleGroupRoles", x => new { x.RoleGroupId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_RoleGroupRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RoleGroupRoles_RoleGroups_RoleGroupId",
+                        column: x => x.RoleGroupId,
+                        principalTable: "RoleGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -375,6 +421,11 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
                 column: "ClaimId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoleGroupRoles_RoleId",
+                table: "RoleGroupRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleGroups_ModuleId",
                 table: "RoleGroups",
                 column: "ModuleId");
@@ -408,6 +459,9 @@ namespace NextGen.Modules.Identity.Shared.Data.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "RoleGroupRoles");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
