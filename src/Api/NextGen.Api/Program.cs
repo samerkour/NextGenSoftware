@@ -18,6 +18,7 @@ using BuildingBlocks.Web;
 using BuildingBlocks.Web.Extensions;
 using BuildingBlocks.Web.Extensions.ServiceCollectionExtensions;
 using BuildingBlocks.Web.Module;
+using DotNetEnv;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -34,6 +35,7 @@ using NextGen.Modules.Parties;
 using NextGen.Modules.Sales;
 using Serilog;
 using Serilog.Events;
+using YamlDotNet.Core.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -315,19 +317,24 @@ namespace NextGen.Api
         private readonly RequestDelegate _next;
         private readonly ILogger<ApiResponseMiddleware> _logger;
         private readonly IStringLocalizer<SharedResource> _localizer;
+        private readonly IHostEnvironment _env;
 
-        public ApiResponseMiddleware(RequestDelegate next, ILogger<ApiResponseMiddleware> logger, IStringLocalizer<SharedResource> localizer)
+        public ApiResponseMiddleware(RequestDelegate next,
+            ILogger<ApiResponseMiddleware> logger,
+            IStringLocalizer<SharedResource> localizer,
+            IHostEnvironment env)
         {
             _next = next;
             _logger = logger;
             _localizer = localizer;
-       }
+            _env = env ?? throw new ArgumentNullException(nameof(env));
+        }
 
         public async Task InvokeAsync(HttpContext context)
         {
             var originalBodyStream = context.Response.Body;
 
-            using var responseBody = new MemoryStream();
+            await using var responseBody = new MemoryStream();
             context.Response.Body = responseBody;
 
             try
@@ -359,8 +366,10 @@ namespace NextGen.Api
             responseBody.Seek(0, SeekOrigin.Begin);
             var responseContent = await new StreamReader(responseBody).ReadToEndAsync();
 
+            // Skip if already formatted (contains success/apiVersion)
             if (!string.IsNullOrEmpty(responseContent) &&
-                responseContent.Contains("\"success\":") && responseContent.Contains("\"apiVersion\":"))
+                responseContent.Contains("\"success\":") &&
+                responseContent.Contains("\"apiVersion\":"))
             {
                 await CopyStreamToOriginal(responseBody, originalBodyStream);
                 return;
@@ -382,46 +391,75 @@ namespace NextGen.Api
                     data = responseContent;
                 }
 
-                // 🟢 Localized messages for success codes
                 var message = context.Response.StatusCode switch
                 {
-                    200 => _localizer["RequestSuccessful"],
-                    201 => _localizer["ResourceCreated"],
-                    204 => _localizer["NoContent"],
+                    StatusCodes.Status200OK => _localizer["RequestSuccessful"],
+                    StatusCodes.Status201Created => _localizer["ResourceCreated"],
+                    StatusCodes.Status204NoContent => _localizer["NoContent"],
                     _ => _localizer["RequestSuccessful"]
                 };
 
                 var apiResponse = ApiResponse.SuccessResponse(data, message, context.Response.StatusCode, apiVersion);
-                await WriteJsonResponse(context, apiResponse, originalBodyStream);
+                await WriteJsonResponse(context, apiResponse, originalBodyStream, context.Response.StatusCode);
             }
             else
             {
-                // 🔴 Localized fallback for error messages
-                var message = _localizer["GenericError"];
-                object errorPayload = new { message };
+                // Make sure we keep original error code (400, 404, 422, 500, etc.)
+                if (context.Response.StatusCode == 200)
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                var localizedMessage = _localizer["GenericError"];
+                object errorPayload = new { message = localizedMessage.Value };
 
                 try
                 {
                     if (!string.IsNullOrEmpty(responseContent))
                     {
-                        var errorObj = JsonSerializer.Deserialize<JsonElement>(responseContent);
+                        using var doc = JsonDocument.Parse(responseContent);
+                        var root = doc.RootElement;
 
-                        if (errorObj.TryGetProperty("title", out var title))
-                            message = new LocalizedString(nameof(title), title.GetString() ?? message.Value);
-                        else if (errorObj.TryGetProperty("detail", out var detail))
-                            message = new LocalizedString(nameof(detail), detail.GetString() ?? message.Value);
+                        if (root.TryGetProperty("errors", out var errors))
+                        {
+                            var validationErrors = errors.EnumerateObject()
+                                .ToDictionary(
+                                    e => e.Name,
+                                    e => e.Value.EnumerateArray().Select(v => v.GetString()).ToArray()
+                                );
 
-                        errorPayload = new { message = message.Value };
+                            localizedMessage = _localizer["ValidationFailed"];
+                            errorPayload = new
+                            {
+                                message = localizedMessage.Value,
+                                errors = validationErrors
+                            };
+
+                            // ensure 422 for validation
+                            context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+                        }
+                        else if (root.TryGetProperty("title", out var title))
+                        {
+                            localizedMessage = new LocalizedString(nameof(title), title.GetString() ?? localizedMessage.Value);
+                            errorPayload = new { message = localizedMessage.Value };
+                        }
+                        else if (root.TryGetProperty("detail", out var detail))
+                        {
+                            localizedMessage = new LocalizedString(nameof(detail), detail.GetString() ?? localizedMessage.Value);
+                            errorPayload = new { message = localizedMessage.Value };
+                        }
+                        else if (root.ValueKind == JsonValueKind.String)
+                        {
+                            localizedMessage = new LocalizedString("Error", root.GetString() ?? localizedMessage.Value);
+                            errorPayload = new { message = localizedMessage.Value };
+                        }
                     }
-
                 }
                 catch
                 {
-                    // fallback
+                    // fallback localization
                 }
 
                 var apiErrorResponse = new ApiErrorResponse(context.Response.StatusCode, errorPayload, apiVersion);
-                await WriteJsonResponse(context, apiErrorResponse, originalBodyStream);
+                await WriteJsonResponse(context, apiErrorResponse, originalBodyStream, context.Response.StatusCode);
             }
         }
 
@@ -431,34 +469,43 @@ namespace NextGen.Api
             context.Response.ContentType = "application/json";
 
             var apiVersion = GetApiVersionFromRequest(context);
+            var isDevelopment = _env.IsDevelopment();
 
-            var localizedMessage = exception switch
+            context.Response.StatusCode = exception switch
             {
-                UnauthorizedAccessException => _localizer["Unauthorized"],
-                KeyNotFoundException => _localizer["NotFound"],
-                _ => _localizer["InternalServerError"]
+                BadHttpRequestException => StatusCodes.Status400BadRequest,
+                FluentValidation.ValidationException => StatusCodes.Status422UnprocessableEntity,
+                KeyNotFoundException => StatusCodes.Status404NotFound,
+                UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+                _ => StatusCodes.Status500InternalServerError
             };
 
-            var apiError = new ApiErrorResponse(
-                context.Response.StatusCode == 0 ? 500 : context.Response.StatusCode,
-                new { message = localizedMessage },
-                apiVersion
-            );
+            var message = isDevelopment
+                ? exception.Message
+                : exception switch
+                {
+                    BadHttpRequestException => _localizer["BadRequest"],
+                    ValidationException => _localizer["ValidationFailed"],
+                    UnauthorizedAccessException => _localizer["Unauthorized"],
+                    KeyNotFoundException => _localizer["NotFound"],
+                    _ => _localizer["InternalServerError"]
+                };
 
-            await WriteJsonResponse(context, apiError, originalBodyStream);
+            var apiError = new ApiErrorResponse(context.Response.StatusCode, new { message }, apiVersion);
+            await WriteJsonResponse(context, apiError, originalBodyStream, context.Response.StatusCode);
         }
 
-        private async Task WriteJsonResponse(HttpContext context, object response, Stream originalBodyStream)
+        private async Task WriteJsonResponse(HttpContext context, object response, Stream originalBodyStream, int statusCode)
         {
             context.Response.Body = originalBodyStream;
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = 200;
+            context.Response.StatusCode = statusCode;
             context.Response.Headers.Remove("Content-Length");
 
             var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = context.RequestServices.GetService<IWebHostEnvironment>()?.IsDevelopment() == true
+                WriteIndented = _env.IsDevelopment()
             });
 
             await context.Response.WriteAsync(jsonResponse);
