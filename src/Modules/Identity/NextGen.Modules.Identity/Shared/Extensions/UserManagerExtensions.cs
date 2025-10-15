@@ -41,6 +41,50 @@ public static class UserManagerExtensions
                 cancellationToken: cancellationToken);
     }
 
+    public static async Task<ListResultModel<TResult>> FindAllRolesByPageAsync<TResult>(
+       this IdentityContext db,
+       IMapper mapper,
+       IPageRequest request,
+       CancellationToken cancellationToken)
+       where TResult : notnull
+    {
+
+        return await db.Roles
+            .OrderByDescending(x => x.CreatedAt)
+            .ApplyIncludeList(request.Includes)
+            .ApplyFilter(request.Filters)
+            .AsNoTracking()
+            .ApplyPagingAsync<Role, TResult>(
+                mapper.ConfigurationProvider,
+                request.Page,
+                request.PageSize,
+                cancellationToken: cancellationToken
+            );
+    }
+
+    public static async Task<ListResultModel<TResult>> FindAllClaimGroupsByPageAsync<TResult>(
+               this IdentityContext db,
+               IMapper mapper,
+               IPageRequest request,
+               CancellationToken cancellationToken)
+               where TResult : notnull
+    {
+        return await db.ClaimGroups
+            .OrderByDescending(x => x.CreatedAt)
+            .ApplyIncludeList(request.Includes)
+            .ApplyFilter(request.Filters)
+            .AsNoTracking()
+            .ApplyPagingAsync<ClaimGroup, TResult>(
+                mapper.ConfigurationProvider,
+                request.Page,
+                request.PageSize,
+                cancellationToken: cancellationToken
+            );
+    }
+
+
+
+
     public static async Task<ListResultModel<TResult>> FindAllClaimsByPageAsync<TResult>( 
     this IdentityContext userManager,
     IMapper mapper,

@@ -14,11 +14,7 @@ namespace NextGen.Modules.Identity.ClaimGroups
             // ---------------------------
             // GET All ClaimGroups
             // ---------------------------
-            CreateMap<ClaimGroup, GetClaimGroupsResponse>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name ?? string.Empty))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description ?? string.Empty))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
-                .ForMember(dest => dest.UpdatedOn, opt => opt.MapFrom(src => src.UpdatedOn));
+            CreateMap<ClaimGroup, GetClaimGroupsResponse>();
 
             // ---------------------------
             // GET ClaimGroup by Id

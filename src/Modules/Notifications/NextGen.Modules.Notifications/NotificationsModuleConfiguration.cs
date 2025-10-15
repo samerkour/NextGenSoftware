@@ -3,21 +3,15 @@ using Asp.Versioning.Builder;
 using BuildingBlocks.Abstractions.Web.Module;
 using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Core.Messaging.Extensions;
-using NextGen.Modules.Identity.ClaimGroups;
-using NextGen.Modules.Identity.Claims;
-using NextGen.Modules.Identity.Identity;
-using NextGen.Modules.Identity.RoleClaims;
-using NextGen.Modules.Identity.Roles;
-using NextGen.Modules.Identity.Shared.Extensions.ApplicationBuilderExtensions;
-using NextGen.Modules.Identity.Shared.Extensions.ServiceCollectionExtensions;
-using NextGen.Modules.Identity.Users;
+using NextGen.Modules.Notifications.Shared.Extensions.ApplicationBuilderExtensions;
+using NextGen.Modules.Notifications.Shared.Extensions.ServiceCollectionExtensions;
 
-namespace NextGen.Modules.Identity;
+namespace NextGen.Modules.Notifications;
 
-public class IdentityModuleConfiguration : IModuleDefinition
+public class NotificationsModuleConfiguration : IModuleDefinition
 {
-    public const string IdentityModulePrefixUri = "api/v{version:apiVersion}";
-    public const string ModuleName = "Identity";
+    public const string NotificationModulePrefixUri = "api/v{version:apiVersion}/notifications";
+    public const string ModuleName = "Notifications";
     public static ApiVersionSet VersionSet { get; private set; } = default!;
 
     public void AddModuleServices(
@@ -27,13 +21,9 @@ public class IdentityModuleConfiguration : IModuleDefinition
     {
         services.AddInfrastructure(configuration);
 
-        // Add Sub Modules Endpoints
-        services.AddIdentityServices(configuration, environment);
-        services.AddUsersServices(configuration);
-        services.AddClaimsServices(configuration);
-        services.AddClaimGroupServices(configuration);
-        services.AddRoleClaimsServices(configuration);
-        services.AddRoleServices(configuration);
+        services.AddStorage(configuration);
+
+        // Add Sub Modules Services
     }
 
     public async Task ConfigureModule(
@@ -46,12 +36,9 @@ public class IdentityModuleConfiguration : IModuleDefinition
         {
             // HostedServices just run on main service provider - It should not await because it will block the main thread.
             await app.ApplicationServices.StartHostedServices();
-            app.UseIdentityServer();
-
-            // TODO: Add Monitoring
         }
 
-        app.SubscribeAllMessageFromAssemblyOfType<IdentityRoot>();
+        app.SubscribeAllMessageFromAssemblyOfType<NotificationsRoot>();
 
         await app.ApplyDatabaseMigrations(logger);
         await app.SeedData(logger, environment);
@@ -69,21 +56,15 @@ public class IdentityModuleConfiguration : IModuleDefinition
             .HasApiVersion(v3)
             .Build();
 
-        endpoints.MapGet("identity", (HttpContext context) =>
+        endpoints.MapGet("notifications", (HttpContext context) =>
         {
             var requestId = context.Request.Headers.TryGetValue("X-Request-Id", out var requestIdHeader)
                 ? requestIdHeader.FirstOrDefault()
                 : string.Empty;
 
-            return $"Identity Service Apis, RequestId: {requestId}";
+            return $"Notifications Service Apis, RequestId: {requestId}";
         }).ExcludeFromDescription();
 
         // Add Sub Modules Endpoints
-        endpoints.MapIdentityEndpoints();
-        endpoints.MapUsersEndpoints();
-        endpoints.MapClaimEndpoints();
-        endpoints.MapClaimGroupEndpoints();
-        endpoints.MapRoleClaimEndpoints();
-        endpoints.MapRoleEndpoints();
     }
 }
