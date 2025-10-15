@@ -4,7 +4,7 @@ namespace NextGen.Modules.Identity.Identity.Features.Login;
 
 public class LoginFailedException : AppException
 {
-    public LoginFailedException(string userNameOrEmail, string message) : base($"Login failed for username: {userNameOrEmail} => {message}")
+    public LoginFailedException(string userNameOrEmail, string message) : base(message)
     {
         UserNameOrEmail = userNameOrEmail;
         Message = message;

@@ -1,5 +1,6 @@
 using Asp.Versioning.Conventions;
 using BuildingBlocks.Abstractions.Web;
+using Microsoft.Extensions.Localization;
 
 namespace NextGen.Modules.Identity.Identity.Features.Login;
 
@@ -25,6 +26,7 @@ public static class LoginEndpoint
     private static async Task<IResult> LoginUser(
      LoginUserRequest request,
      IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
+     IStringLocalizer<LoginValidator> validatorLocalizer,
      CancellationToken cancellationToken)
     {
         // 1. Map request → command
@@ -36,7 +38,7 @@ public static class LoginEndpoint
         );
 
         // 2. Validate command
-        var validator = new LoginValidator();
+        var validator = new LoginValidator(validatorLocalizer);
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)

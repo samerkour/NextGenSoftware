@@ -112,4 +112,28 @@
     <AdditionalFiles Remove="C:\Users\s_kour\.nuget\packages\microsoft.visualstudio.threading.analyzers\17.10.48\build\AdditionalFiles\vs-threading.MainThreadSwitchingMethods.txt" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\Identity\Features\Login\LoginHandler.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LoginHandler.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Identity\Features\Login\LoginValidator.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LoginValidator.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Identity\Features\Login\LoginHandler.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LoginHandler.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Identity\Features\Login\LoginValidator.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LoginValidator.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

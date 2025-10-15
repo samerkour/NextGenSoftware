@@ -1,29 +1,31 @@
 using FluentValidation;
+using Microsoft.Extensions.Localization;
+using NextGen.Modules.Identity.Identity.Features.Login;
 
 namespace NextGen.Modules.Identity.Identity.Features.Login;
 
 internal class LoginValidator : AbstractValidator<LoginCommand>
 {
-    public LoginValidator()
+    public LoginValidator(IStringLocalizer<LoginValidator> localizer)
     {
         RuleFor(x => x.Captcha)
-            .NotEmpty().WithMessage("Captcha is required.");
+            .NotEmpty().WithMessage(localizer["CaptchaRequired"]);
 
         RuleFor(x => x.UserNameOrEmail)
-            .NotEmpty().WithMessage("UserNameOrEmail cannot be empty.")
-            .MaximumLength(256).WithMessage("UserNameOrEmail cannot exceed 256 characters.");
+            .NotEmpty().WithMessage(localizer["UserNameOrEmailRequired"])
+            .MaximumLength(256).WithMessage(localizer["UserNameOrEmailMaxLength"]);
 
         When(x => !string.IsNullOrWhiteSpace(x.UserNameOrEmail) && x.UserNameOrEmail.Contains('@'), () =>
         {
             RuleFor(x => x.UserNameOrEmail)
-                .EmailAddress().WithMessage("Invalid email format.");
+                .EmailAddress().WithMessage(localizer["InvalidEmailFormat"]);
         });
 
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Password cannot be empty.")
-            .MinimumLength(8).WithMessage("Password must be at least 8 characters.")
-            .MaximumLength(128).WithMessage("Password cannot exceed 128 characters.")
+            .NotEmpty().WithMessage(localizer["PasswordRequired"])
+            .MinimumLength(8).WithMessage(localizer["PasswordMinLength"])
+            .MaximumLength(128).WithMessage(localizer["PasswordMaxLength"])
             .Matches(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*]).+$")
-            .WithMessage("Password must contain at least one letter, one number, and one special character.");
+            .WithMessage(localizer["PasswordComplexity"]);
     }
 }

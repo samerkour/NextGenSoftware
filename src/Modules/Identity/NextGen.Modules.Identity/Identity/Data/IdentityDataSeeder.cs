@@ -26,6 +26,7 @@ public class IdentityDataSeeder : IDataSeeder
         await SeedModulesAsync();
         await SeedRoleGroupsAsync();
         await SeedRolesAsync();
+        await SeedRoleGroupRolesAsync();
         await SeedClaimGroupsAsync();
         await SeedClaimsAsync();
         await SeedUsersAsync();
@@ -101,6 +102,45 @@ public class IdentityDataSeeder : IDataSeeder
             var role = Role.User;
             role.RoleGroupId = userGroup.Id;
             await _roleManager.CreateAsync(role);
+        }
+    }
+
+    // ---------------------------
+    // ROLE GROUP ROLES
+    // ---------------------------
+    private async Task SeedRoleGroupRolesAsync()
+    {
+        if (!_db.RoleGroupRoles.Any())
+        {
+            var securityGroup = _db.RoleGroups.First(rg => rg.Name == "Security Group");
+            var adminGroup = _db.RoleGroups.First(rg => rg.Name == "Admin Group");
+            var userGroup = _db.RoleGroups.First(rg => rg.Name == "User Group");
+
+            var securityAdminRole = await _roleManager.FindByNameAsync(Role.SecurityAdmin.Name);
+            var adminRole = await _roleManager.FindByNameAsync(Role.Admin.Name);
+            var userRole = await _roleManager.FindByNameAsync(Role.User.Name);
+
+            var roleGroupRoles = new List<RoleGroupRole>
+        {
+            new RoleGroupRole
+            {
+                RoleGroupId = securityGroup.Id,
+                RoleId = securityAdminRole.Id
+            },
+            new RoleGroupRole
+            {
+                RoleGroupId = adminGroup.Id,
+                RoleId = adminRole.Id
+            },
+            new RoleGroupRole
+            {
+                RoleGroupId = userGroup.Id,
+                RoleId = userRole.Id
+            }
+        };
+
+            _db.RoleGroupRoles.AddRange(roleGroupRoles);
+            await _db.SaveChangesAsync();
         }
     }
 

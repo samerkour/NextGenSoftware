@@ -6,6 +6,7 @@ using BuildingBlocks.Security.Jwt;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using NextGen.Modules.Identity.Shared.Extensions;
 using NextGen.Modules.Identity.Shared.Models;
@@ -21,10 +22,12 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
     private readonly AccountLockoutOptions _lockoutOptions;
     private readonly ICommandProcessor _commandProcessor;
     private readonly JwtOptions _jwtOptions;
+    private readonly IStringLocalizer<LoginHandler> _localizer;
 
     public LoginHandler(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
+        IStringLocalizer<LoginHandler> localizer,
         IMemoryCache cache,
         ILogger<LoginHandler> logger,
         IOptions<AccountLockoutOptions> lockoutOptions,
@@ -38,6 +41,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
         _lockoutOptions = lockoutOptions?.Value ?? new AccountLockoutOptions();
         _commandProcessor = Guard.Against.Null(commandProcessor, nameof(commandProcessor));
         _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
+        _localizer = localizer;
     }
 
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -48,14 +52,14 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
         if (!_cache.TryGetValue(request.Captcha.ToLowerInvariant(), out string cachedCaptchaCode))
         {
             _logger.LogWarning("Login attempt failed for {UserNameOrEmail}: Captcha is not found", request.UserNameOrEmail);
-            throw new LoginFailedException(request.UserNameOrEmail, "Captcha is not found");
+            throw new BadHttpRequestException(_localizer["CaptchaNotFound"]);
         }
 
         if (!string.Equals(request.Captcha, cachedCaptchaCode, StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogWarning("Login attempt failed for {UserNameOrEmail}: Captcha mismatch", request.UserNameOrEmail);
             _cache.Remove(request.Captcha.ToLowerInvariant());
-            throw new LoginFailedException(request.UserNameOrEmail, "Captcha is not valid");
+            throw new BadHttpRequestException(_localizer["CaptchaInvalid"]);
         }
 
         // Remove the captcha from cache
@@ -68,7 +72,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
         {
             _logger.LogWarning("Login attempt failed for {UserNameOrEmail}: User is not found", request.UserNameOrEmail);
             // keep message generic to avoid enumeration
-            throw new LoginFailedException(request.UserNameOrEmail, "User not found");
+            throw new BadHttpRequestException(_localizer["UserNotFound"]);
         }
 
         // Check password without automatic lockout (we will handle lockout using options)
@@ -84,16 +88,16 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
                 signInResult.RequiresTwoFactor ? "Requires 2FA" : "Invalid password");
 
             if (signInResult.IsNotAllowed && !await _userManager.IsEmailConfirmedAsync(identityUser))
-                throw new LoginFailedException(request.UserNameOrEmail, "User email is not confirmed");
+                throw new BadHttpRequestException(_localizer["UserEmailNotConfirmed"]);
 
             if (signInResult.IsNotAllowed && !await _userManager.IsPhoneNumberConfirmedAsync(identityUser))
-                throw new LoginFailedException(request.UserNameOrEmail, "User phone number is not confirmed");
+                throw new BadHttpRequestException(_localizer["UserPhoneNotConfirmed"]);
 
             if (signInResult.IsLockedOut)
-                throw new LoginFailedException(request.UserNameOrEmail, "User is locked out");
+                throw new BadHttpRequestException(_localizer["LockedOut"]);
 
             if (signInResult.RequiresTwoFactor)
-                throw new LoginFailedException(request.UserNameOrEmail, "Two factor authentication is required");
+                throw new BadHttpRequestException(_localizer["RequiresTwoFactor"]);
 
             // Invalid password path:
             // If lockout disabled via config (MaxFailedAccessAttempts <= 0) skip locking
@@ -101,7 +105,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
             {
                 // Still increment the AccessFailedCount for metrics if desired, but do not lock
                 await _userManager.AccessFailedAsync(identityUser);
-                throw new LoginFailedException(request.UserNameOrEmail, "Invalid username or password");
+                throw new BadHttpRequestException(_localizer["InvalidPassword"]);
             }
 
             // increment failed attempts
@@ -122,13 +126,14 @@ public class LoginHandler : IRequestHandler<LoginCommand, LoginResponse>
                 var lockoutEnd = DateTimeOffset.UtcNow.AddMinutes(_lockoutOptions.LockoutDurationMinutes);
                 await _userManager.SetLockoutEndDateAsync(identityUser, lockoutEnd);
 
-                _logger.LogWarning("User {UserNameOrEmail} locked out until {LockoutEnd} after {FailedCount} failed attempts",
+                _logger.LogWarning(
+                    "User {UserNameOrEmail} locked out until {LockoutEnd} after {FailedCount} failed attempts",
                     request.UserNameOrEmail, lockoutEnd, identityUser.AccessFailedCount);
 
-                throw new LoginFailedException(request.UserNameOrEmail, "User is locked out due to multiple failed login attempts");
+                throw new BadHttpRequestException(_localizer["UserLockedOutMultipleAttempts"]);
             }
 
-            throw new LoginFailedException(request.UserNameOrEmail, "Invalid username or password");
+            throw new BadHttpRequestException(_localizer["InvalidPassword"]);
         }
 
         // Successful login: optionally reset failed attempts
