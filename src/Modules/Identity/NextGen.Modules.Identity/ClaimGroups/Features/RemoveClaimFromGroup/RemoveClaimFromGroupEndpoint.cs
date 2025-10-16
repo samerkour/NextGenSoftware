@@ -1,53 +1,41 @@
 using BuildingBlocks.Abstractions.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NextGen.Modules.Identity;
-using NextGen.Modules.Identity.ClaimGroups;
-using NextGen.Modules.Identity.ClaimGroups.Features.RemoveClaimFromGroup;
 
-public static class RemoveClaimFromGroupEndpoint
+namespace NextGen.Modules.Identity.ClaimGroups.Features.RemoveClaimFromGroup
 {
-    public static IEndpointConventionBuilder MapRemoveClaimFromGroupEndpoint(this IEndpointRouteBuilder endpoints)
+    public static class RemoveClaimFromGroupEndpoint
     {
-        return endpoints.MapDelete($"{ClaimGroupConfigs.ClaimGroupsPrefixUri}/{{groupId:guid}}/Claims/{{claimId:guid}}", RemoveClaimFromGroup)
-            .AllowAnonymous()
-            .WithTags(ClaimGroupConfigs.Tag)
-            .Produces<RemoveClaimFromGroupResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound)
-            .WithName("RemoveClaimFromGroup")
-            .WithDisplayName("Remove a Claim from a Claim Group")
-            .WithApiVersionSet(ClaimGroupConfigs.VersionSet)
-            .HasApiVersion(1.0);
-    }
-
-    private static async Task<IResult> RemoveClaimFromGroup(
-       [FromRoute] Guid groupId,
-       [FromRoute] Guid claimId,
-       [FromServices] IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
-       CancellationToken cancellationToken)
-    {
-        var command = new RemoveClaimFromGroupRequest(groupId, claimId);
-
-        // اعتبارسنجی با FluentValidation
-        var validator = new RemoveClaimFromGroupValidator();
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
+        public static IEndpointRouteBuilder MapRemoveClaimFromGroupEndpoint(this IEndpointRouteBuilder endpoints)
         {
-            var errors = validationResult.Errors
-                .Select(e => new { e.PropertyName, e.ErrorMessage });
-            return Results.BadRequest(errors); // 400
+            endpoints.MapDelete($"{ClaimGroupConfigs.ClaimGroupsPrefixUri}/{{groupId:guid}}/Claims/{{claimId:guid}}/{{isDeleted:bool}}", DeleteClaimFromGroup)
+                .AllowAnonymous()
+                .WithTags(ClaimGroupConfigs.Tag)
+                .Produces(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .WithName("RemoveClaimFromGroup")
+                .WithDisplayName("Soft Delete a Claim from a Claim Group")
+                .WithApiVersionSet(ClaimGroupConfigs.VersionSet)
+                .HasApiVersion(1.0);
+
+            return endpoints;
         }
 
-        // اجرای Command
-        var result = await gatewayProcessor.ExecuteCommand(processor =>
-            processor.SendAsync<RemoveClaimFromGroupResponse>(command, cancellationToken));
+        private static async Task<IResult> DeleteClaimFromGroup(
+            [FromRoute] Guid groupId,
+            [FromRoute] Guid claimId,
+            [FromRoute] bool isDeleted,
+            [FromServices] IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
+            CancellationToken cancellationToken)
+        {
+            var command = new RemoveClaimFromGroupCommand(groupId, claimId, isDeleted);
 
-        // بررسی وضعیت حذف
-        return result.Removed
-            ? Results.Ok(result) // 200
-            : Results.NotFound(new { message = "Claim not found in this group." }); // 404
+            var success = await gatewayProcessor.ExecuteCommand(processor =>
+                processor.SendAsync(command, cancellationToken));
+
+            return success
+                ? Results.Ok(new { GroupId = groupId, ClaimId = claimId, IsDeleted = isDeleted })
+                : Results.NotFound(new { message = "Claim not found in this group." });
+        }
     }
-
-
 }

@@ -8,7 +8,7 @@ namespace NextGen.Modules.Identity.RoleClaims.Features.DeleteRoleClaim
     {
         public static IEndpointConventionBuilder MapDeleteRoleClaimEndpoint(this IEndpointRouteBuilder endpoints)
         {
-            return endpoints.MapDelete($"{RoleClaimConfigs.RoleClaimsPrefixUri}/roles/{{roleId:guid}}/claims/{{claimId:guid}}", DeleteRoleClaim)
+            return endpoints.MapDelete($"{RoleClaimConfigs.RoleClaimsPrefixUri}/roles/{{roleId:guid}}/claims/{{claimId:guid}}/{{isDeleted:bool}}", DeleteRoleClaim)
                 .AllowAnonymous()
                 .WithTags(RoleClaimConfigs.Tag)
                 .Produces<DeleteRoleClaimResponse>(StatusCodes.Status200OK)
@@ -23,10 +23,11 @@ namespace NextGen.Modules.Identity.RoleClaims.Features.DeleteRoleClaim
         private static async Task<IResult> DeleteRoleClaim(
             [FromRoute] Guid roleId,
             [FromRoute] Guid claimId,
+            [FromRoute] bool isDeleted,
             [FromServices] IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
             CancellationToken cancellationToken)
         {
-            var command = new DeleteRoleClaimCommand(roleId, claimId);
+            var command = new DeleteRoleClaimCommand(roleId, claimId, isDeleted);
 
             var validator = new DeleteRoleClaimValidator();
             var validationResult = await validator.ValidateAsync(command, cancellationToken);

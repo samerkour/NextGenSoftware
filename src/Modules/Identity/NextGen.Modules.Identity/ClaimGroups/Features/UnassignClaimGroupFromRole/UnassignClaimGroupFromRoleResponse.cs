@@ -4,6 +4,7 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.UnassignClaimGroupFromRo
     {
         public Guid ClaimGroupId { get; set; }
         public Guid RoleId { get; set; }
+        public bool IsDeleted { get; set; }
         public bool Success { get; set; }
     }
 }

@@ -2,7 +2,6 @@ using AutoMapper;
 using BuildingBlocks.Abstractions.CQRS.Command;
 using Microsoft.EntityFrameworkCore;
 using NextGen.Modules.Identity.Shared.Data;
-using NextGen.Modules.Identity.Shared.Models;
 
 namespace NextGen.Modules.Identity.ClaimGroups.Features.UnassignClaimGroupFromRole
 {
@@ -23,17 +22,29 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.UnassignClaimGroupFromRo
             var entity = await _db.RoleClaimGroups
                 .FirstOrDefaultAsync(x => x.ClaimGroupId == request.ClaimGroupId && x.RoleId == request.RoleId, cancellationToken);
 
-            if (entity != null)
+            if (entity == null)
             {
-                _db.RoleClaimGroups.Remove(entity);
-                await _db.SaveChangesAsync(cancellationToken);
+                return new UnassignClaimGroupFromRoleResponse
+                {
+                    ClaimGroupId = request.ClaimGroupId,
+                    RoleId = request.RoleId,
+                    IsDeleted = request.IsDeleted,
+                    Success = false
+                };
             }
+
+            // Soft Delete / Restore
+            entity.DeletedOn = request.IsDeleted ? DateTime.UtcNow : null;
+
+            _db.RoleClaimGroups.Update(entity);
+            await _db.SaveChangesAsync(cancellationToken);
 
             return new UnassignClaimGroupFromRoleResponse
             {
                 ClaimGroupId = request.ClaimGroupId,
                 RoleId = request.RoleId,
-                Success = entity != null
+                IsDeleted = request.IsDeleted,
+                Success = true
             };
         }
     }

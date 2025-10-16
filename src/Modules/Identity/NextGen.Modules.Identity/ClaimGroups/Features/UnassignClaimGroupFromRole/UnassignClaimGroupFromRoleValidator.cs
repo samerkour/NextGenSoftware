@@ -6,11 +6,8 @@ namespace NextGen.Modules.Identity.ClaimGroups.Features.UnassignClaimGroupFromRo
     {
         public UnassignClaimGroupFromRoleValidator()
         {
-            RuleFor(x => x.ClaimGroupId)
-                .NotEmpty().WithMessage("ClaimGroupId is required.");
-
-            RuleFor(x => x.RoleId)
-                .NotEmpty().WithMessage("RoleId is required.");
+            RuleFor(x => x.ClaimGroupId).NotEmpty().WithMessage("ClaimGroupId is required.");
+            RuleFor(x => x.RoleId).NotEmpty().WithMessage("RoleId is required.");
         }
     }
 }

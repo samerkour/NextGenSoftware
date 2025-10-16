@@ -5,7 +5,7 @@ using NextGen.Modules.Identity.Shared.Data;
 namespace NextGen.Modules.Identity.RoleClaims.Features.DeleteRoleClaim
 {
     internal sealed class DeleteRoleClaimHandler
-        : ICommandHandler<DeleteRoleClaimCommand, DeleteRoleClaimResponse>
+        : ICommandHandler<DeleteRoleClaimCommand, bool>
     {
         private readonly IdentityContext _db;
 
@@ -14,7 +14,7 @@ namespace NextGen.Modules.Identity.RoleClaims.Features.DeleteRoleClaim
             _db = db;
         }
 
-        public async Task<DeleteRoleClaimResponse> Handle(DeleteRoleClaimCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteRoleClaimCommand request, CancellationToken cancellationToken)
         {
             var roleClaim = await _db.RoleClaims
                 .FirstOrDefaultAsync(rc => rc.RoleId == request.RoleId && rc.ClaimId == request.ClaimId, cancellationToken);
@@ -22,15 +22,17 @@ namespace NextGen.Modules.Identity.RoleClaims.Features.DeleteRoleClaim
             if (roleClaim == null)
                 throw new KeyNotFoundException("Role claim not found.");
 
-            _db.RoleClaims.Remove(roleClaim);
-            await _db.SaveChangesAsync(cancellationToken);
-
-            return new DeleteRoleClaimResponse
+            if (request.IsDeleted)
             {
-                RoleId = request.RoleId,
-                ClaimId = request.ClaimId,
-                Message = "Role claim deleted successfully."
-            };
+                roleClaim.DeletedOn = DateTime.UtcNow;
+            }
+            else
+            {
+                roleClaim.DeletedOn = null;
+            }
+
+            var result = await _db.SaveChangesAsync(cancellationToken);
+            return result > 0;
         }
     }
 }

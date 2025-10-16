@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NextGen.Modules.Identity.ClaimGroups.Features.GetClaimGroupById;
 using NextGen.Modules.Identity.ClaimGroups.Features.GetClaimGroups;
+using NextGen.Modules.Identity.ClaimGroups.Features.RemoveClaimFromGroup;
 using NextGen.Modules.Identity.Claims;
 
 namespace NextGen.Modules.Identity.ClaimGroups
