@@ -1,4 +1,5 @@
 using AutoMapper;
+using NextGen.Modules.Identity.ClaimGroups.Dtos;
 using NextGen.Modules.Identity.ClaimGroups.Features.CreateClaimGroup;
 using NextGen.Modules.Identity.ClaimGroups.Features.GetClaimGroupById;
 using NextGen.Modules.Identity.ClaimGroups.Features.GetClaimGroups;
@@ -14,7 +15,7 @@ namespace NextGen.Modules.Identity.ClaimGroups
             // ---------------------------
             // GET All ClaimGroups
             // ---------------------------
-            CreateMap<ClaimGroup, GetClaimGroupsResponse>();
+            CreateMap<ClaimGroup, ClaimGroupDto>();
 
             // ---------------------------
             // GET ClaimGroup by Id

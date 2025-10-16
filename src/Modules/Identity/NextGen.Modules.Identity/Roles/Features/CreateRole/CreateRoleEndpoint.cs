@@ -2,6 +2,7 @@ using BuildingBlocks.Abstractions.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NextGen.Modules.Identity;
+using NextGen.Modules.Identity.Claims.Features.CreateClaim;
 
 namespace NextGen.Modules.Identity.Roles.Features.CreateRole
 {
@@ -21,10 +22,15 @@ namespace NextGen.Modules.Identity.Roles.Features.CreateRole
         }
 
         private static async Task<IResult> CreateRole(
-            [FromBody] CreateRoleCommand command,
+            [FromBody] CreateRoleRequest request,
             [FromServices] IGatewayProcessor<IdentityModuleConfiguration> gatewayProcessor,
             CancellationToken cancellationToken)
         {
+            var command = new CreateRoleCommand(
+               request.Name,
+               request.Description
+           );
+
             var validator = new CreateRoleValidator();
             var validationResult = await validator.ValidateAsync(command, cancellationToken);
 

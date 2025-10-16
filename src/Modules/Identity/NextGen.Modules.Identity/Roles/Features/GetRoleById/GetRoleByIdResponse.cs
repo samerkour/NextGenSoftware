@@ -1,9 +1,6 @@
-namespace NextGen.Modules.Identity.Roles.Features.GetRoleById
-{
-    public class GetRoleByIdResponse
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = default!;
-        public string? Description { get; set; }
-    }
-}
+using NextGen.Modules.Identity.Claims.Dtos;
+using NextGen.Modules.Identity.Roles.Dtos;
+
+namespace NextGen.Modules.Identity.Roles.Features.GetRoleById;
+
+public record GetRoleByIdResponse(RoleDto Claim);
