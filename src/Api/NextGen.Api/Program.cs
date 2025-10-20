@@ -147,6 +147,7 @@ static void RegisterServices(WebApplicationBuilder builder)
     })
     .AddNewtonsoftJson(options =>
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+
     // Enable DataAnnotation localization
     .AddDataAnnotationsLocalization();
 

@@ -60,10 +60,9 @@ namespace NextGen.Modules.Identity.Shared.Services
                 new(JwtRegisteredClaimNames.UniqueName, userName),
                 new(JwtRegisteredClaimNames.Email, email),
                 new(JwtRegisteredClaimNames.Name, fullName ?? string.Empty),
+                new(JwtRegisteredClaimNames.Exp,  DateTimeOffset.UtcNow.AddSeconds(_jwtOptions.TokenLifeTimeSecond).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                 // issued at as epoch seconds (per JWT best practices)
-                new(JwtRegisteredClaimNames.Iat,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
-                ClaimValueTypes.Integer64),
+                new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new(CustomClaimTypes.RefreshToken, refreshToken ?? string.Empty),
                 new(CustomClaimTypes.IpAddress, ipAddress)

@@ -45,12 +45,12 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, Role, Guid,
     {
         base.OnModelCreating(builder);
 
-        // Remove AspNetRoleClaims
-        var roleClaimEntity = builder.Model.FindEntityType(typeof(IdentityRoleClaim<Guid>));
-        if (roleClaimEntity != null)
-        {
-            builder.Model.RemoveEntityType(roleClaimEntity);
-        }
+        //// Remove AspNetRoleClaims
+        //var roleClaimEntity = builder.Model.FindEntityType(typeof(IdentityRoleClaim<Guid>));
+        //if (roleClaimEntity != null)
+        //{
+        //    builder.Model.RemoveEntityType(roleClaimEntity);
+        //}
 
         //builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         //// ----------------------------

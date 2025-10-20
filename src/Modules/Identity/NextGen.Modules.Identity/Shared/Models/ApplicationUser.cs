@@ -31,4 +31,6 @@ public class ApplicationUser : IdentityUser<Guid>
 
     // Soft delete marker
     public DateTime? DeletedOn { get; set; }
+
+    public DateTime? UpdatedOn { get; set; }
 }

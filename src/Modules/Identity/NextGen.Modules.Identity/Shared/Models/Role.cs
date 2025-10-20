@@ -6,6 +6,7 @@ namespace NextGen.Modules.Identity.Shared.Models;
 public class Role : IdentityRole<Guid>
 {
     public string? Description { get; set; }
+    public bool Status { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedOn { get; set; }
